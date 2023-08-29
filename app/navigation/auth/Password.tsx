@@ -12,7 +12,7 @@ import {Button} from '../../ui/Button';
 import {PrivacyMessage} from '../../features/auth/components/PrivacyMessage';
 import {Link} from '../../ui/Link';
 import {openLink} from '../../helpers/openLink';
-import {useMutation} from 'react-query';
+import {useMutation} from '@tanstack/react-query';
 import {doLogin} from '../../features/auth/hooks/useDoLogin';
 import {errorToString} from '../../helpers/errorToString';
 import { WORKERS } from '../../features/auth/parsers/Workers';

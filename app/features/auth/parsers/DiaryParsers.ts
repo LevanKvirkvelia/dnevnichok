@@ -1,4 +1,4 @@
-import { EduTatarRu } from "./parsers/EduTatarRu/EduTatarRu";
+import { EduTatarRu } from "./parsers/EduTatarRu";
 import { Mosru } from "./parsers/Mosru/Mosru";
 import { Peterburg } from "./parsers/Peterburg/Peterburg";
 

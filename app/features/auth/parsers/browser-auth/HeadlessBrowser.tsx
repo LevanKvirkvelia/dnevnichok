@@ -6,12 +6,12 @@ import React, {
   useState,
 } from 'react';
 import WebView, {WebViewProps} from 'react-native-webview';
-import {Dimensions, Platform, StyleSheet, View} from 'react-native';
+import {Dimensions, View} from 'react-native';
 import {useWebview, WebviewHandlers} from './useWebview';
 import {defaultUserAgent} from './utils';
-import {useTheme} from '../../themes/useTheme';
-import {ProgressBar} from '../../browser/components/ProgressBar';
-import {CloseButton} from '../../../ui/CloseButton';
+import {useTheme} from '../../../themes/useTheme';
+import {ProgressBar} from '../../../browser/components/ProgressBar';
+import {CloseButton} from '../../../../ui/CloseButton';
 
 const HeadlessBrowserContext =
   React.createContext<HeadlessBrowserHandlers | null>(null);

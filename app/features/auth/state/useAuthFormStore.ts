@@ -31,5 +31,5 @@ export const useAuthFormStore = create<AuthFormState>()(set => ({
       form: {...form, login: form.login || '', password: form.password || ''},
     })),
 
-  setError: error => set(() => ({error})),
+  setError: error => set(() => ({error})), // todo remove
 }));

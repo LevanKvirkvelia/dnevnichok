@@ -2,8 +2,8 @@ import {useCallback, useEffect, useRef} from 'react';
 import {HeadlessBrowserHandlers, useHeadlessBrowser} from '../HeadlessBrowser';
 import {DiaryParsers} from '../../DiaryParsers';
 import {Mosru} from '../../parsers/Mosru/Mosru';
-import {Request} from '../../request/Request';
-import {setUrlParams} from '../../helpers/setUrlParams';
+
+import {setUrlParams} from '../../../helpers/setUrlParams';
 import {useUsersStore} from '../../../state/useUsersStore';
 import {useGetLatest} from '../../../../../helpers/useGetLatest';
 import {useAuthFormStore} from '../../../state/useAuthFormStore';
@@ -178,7 +178,6 @@ function trackSuccessUrl(
         (async () => {
           const parser = DiaryParsers.get('MOS.RU') as Mosru;
 
-          parser.r = new Request('mos.ru:'); // TODO Request remove
           await parser.getToken(url);
 
           const {token, pid} = parser.session;

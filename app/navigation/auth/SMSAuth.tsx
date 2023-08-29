@@ -4,7 +4,7 @@ import {useTheme} from '../../features/themes/useTheme';
 import {useAuthHeader} from '../../features/auth/hooks/useAuthHeader';
 import {useAuthFormStore} from '../../features/auth/state/useAuthFormStore';
 import {errorToString} from '../../helpers/errorToString';
-import {useMutation} from 'react-query';
+import {useMutation} from '@tanstack/react-query';
 import {doLogin} from '../../features/auth/hooks/useDoLogin';
 import {useStartSMSAuth} from '../../features/auth/parsers/browser-auth/helpers/mosru';
 
@@ -19,7 +19,7 @@ export function SMSAuth() {
   });
 
   const authQuery = useMutation(
-    'MosAuth',
+    ['MosAuth'],
     async () => {
       return startSMSAuth();
     },

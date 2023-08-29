@@ -17,13 +17,13 @@ function App() {
 
   return (
     <Stack.Navigator>
-      {activeUser && (
+      {/* {activeUser && (
         <Stack.Screen
           name="Tabs"
           component={Tabs}
           options={{headerShown: false}}
         />
-      )}
+      )} */}
 
       <Stack.Screen
         name="Auth"
@@ -40,7 +40,7 @@ function App() {
 
 const RootStack = createStackNavigator();
 
-export default function AppWithModals() {
+export default function RootNavigation() {
   return (
     <RootStack.Navigator
       screenOptions={{

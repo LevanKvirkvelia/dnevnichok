@@ -5,7 +5,7 @@ import {useAuthFormStore} from '../../features/auth/state/useAuthFormStore';
 import {errorToString} from '../../helpers/errorToString';
 import {useTheme} from '../../features/themes/useTheme';
 
-import {useMutation} from 'react-query';
+import {useMutation} from '@tanstack/react-query';
 import {doLogin} from '../../features/auth/hooks/useDoLogin';
 import {useVisibleMosAuth} from '../../features/auth/parsers/browser-auth/helpers/mosru';
 
@@ -19,7 +19,7 @@ export function MosPassword() {
 
   useAuthHeader({header: 'MOS.RU', onBack: () => setForm({password: ''})});
   const authQuery = useMutation(
-    'MosAuth',
+    ['MosAuth'],
     async () => {
       return startAuth();
     },

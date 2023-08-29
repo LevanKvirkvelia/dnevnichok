@@ -12,11 +12,20 @@ export type User = {
   accountId: string;
 
   name: string;
-  engine: any;
+  engine: EngineNames;
 
-  userData: any;
-  settings: UserSettings;
+  parsedData: {
+    schoolId: string | number;
+    classId: string | number;
+    schoolName: string;
+    className: string;
+  };
+
+  engineUserData?: any;
+  settings?: UserSettings;
 };
+
+export type ParsedUser = Omit<User, 'accountId'>;
 
 export type AccountAuthData = {
   login: string;

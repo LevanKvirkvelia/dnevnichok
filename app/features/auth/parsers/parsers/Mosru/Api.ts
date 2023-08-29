@@ -1,4 +1,3 @@
-import {SDate, Request, UUID} from '../..';
 import {SessionProperties} from './Mosru';
 import {
   CoreAPIMarks,
@@ -11,16 +10,17 @@ import {
   MobileAPIVProfile,
   ReportsAPIProgressJSON,
 } from '../../types/MOS.RU';
+import {Req} from '../../../helpers/Req';
+import {SDate} from '../../../helpers/SDate';
 
 export class API {
   static AcademicYear = '9';
 
   static getTeachers(
-    r: Request,
     session: SessionProperties,
     studentID: string,
   ): Promise<CoreAPITeacherProfiles[]> {
-    return r.get(
+    return Req.get(
       'https://dnevnik.mos.ru/core/api/teacher_profiles',
       {
         pid: session.pid,
@@ -35,32 +35,12 @@ export class API {
     );
   }
 
-  static getClassmates(r: Request, session: SessionProperties) {
-    return r.get(
-      'https://dnevnik.mos.ru/core/api/profiles',
-      {
-        page: '1',
-        per_page: '300',
-        types: 'student',
-        pid: session.pid,
-      },
-      {
-        'Profile-Id': session.pid,
-        'Auth-Token': session.token,
-        Cookie: 'aid=' + API.AcademicYear,
-        Accept: 'application/json',
-        Referer: 'https://dnevnik.mos.ru/new_messages/new',
-      },
-    );
-  }
-
   static setLinksList(
-    r: Request,
     session: SessionProperties,
     hid: any,
     newAttachments: any[],
   ) {
-    return r.post(
+    return Req.post(
       `https://dnevnik.mos.ru/core/api/student_homeworks/${hid}`,
       {
         remote_attachments: newAttachments,
@@ -80,12 +60,11 @@ export class API {
   }
 
   static uploadFileToMos(
-    r: Request,
     session: SessionProperties,
     homeworkId: string,
     file: unknown,
   ) {
-    return r.post(
+    return Req.post(
       `https://dnevnik.mos.ru/mobile/api/homeworks/${homeworkId}/attachment`,
       file,
       {
@@ -101,12 +80,11 @@ export class API {
   }
 
   static setAttachmentsList(
-    r: Request,
     session: SessionProperties,
     hid: any,
     newAttachments: (number | string)[],
   ) {
-    return r.post(
+    return Req.post(
       `https://dnevnik.mos.ru/core/api/student_homeworks/${hid}`,
       {
         attachment_ids: newAttachments,
@@ -125,12 +103,8 @@ export class API {
     );
   }
 
-  static getControlForms(
-    r: Request,
-    session: SessionProperties,
-    ids: string[],
-  ) {
-    return r.get(
+  static getControlForms(session: SessionProperties, ids: string[]) {
+    return Req.get(
       'https://dnevnik.mos.ru/core/api/control_forms',
       {
         ids: ids,
@@ -147,11 +121,10 @@ export class API {
   }
 
   static getMarks(
-    r: Request,
     session: SessionProperties,
     studentID: string,
   ): Promise<ReportsAPIProgressJSON[]> {
-    return r.get(
+    return Req.get(
       'https://dnevnik.mos.ru/reports/api/progress/json',
       {
         academic_year_id: API.AcademicYear,
@@ -168,14 +141,13 @@ export class API {
   }
 
   static getScheduleItems(
-    r: Request,
     session: SessionProperties,
     dateFrom: SDate,
     dateTo: SDate,
     studentID: string,
     groups: string,
   ): Promise<JerseyAPIScheduleItems[]> {
-    return r.get(
+    return Req.get(
       'https://dnevnik.mos.ru/jersey/api/schedule_items/',
       {
         academic_year_id: API.AcademicYear,
@@ -197,12 +169,11 @@ export class API {
   }
 
   static getScheduleItemsRooms(
-    r: Request,
     session: SessionProperties,
     studentID: string,
     ids: string,
   ): Promise<CoreAPIRooms[]> {
-    return r.get(
+    return Req.get(
       'https://dnevnik.mos.ru/core/api/rooms',
       {
         ids,
@@ -217,13 +188,12 @@ export class API {
   }
 
   static getScheduleMarks(
-    r: Request,
     session: SessionProperties,
     dateFrom: SDate,
     dateTo: SDate,
     studentID: string,
   ): Promise<CoreAPIMarks[]> {
-    return r.get(
+    return Req.get(
       'https://dnevnik.mos.ru/core/api/marks',
       {
         created_at_from: dateFrom.ddmmyyyy(),
@@ -244,13 +214,12 @@ export class API {
   }
 
   static getHomeWork(
-    r: Request,
     session: SessionProperties,
     dateFrom: SDate,
     dateTo: SDate,
     studentID: string,
   ): Promise<CoreAPIStudentHomeworks[]> {
-    return r.get(
+    return Req.get(
       'https://dnevnik.mos.ru/core/api/student_homeworks',
       {
         academic_year_id: API.AcademicYear,
@@ -269,26 +238,10 @@ export class API {
     );
   }
 
-  static getChats(r: Request, session: SessionProperties) {
-    return r.get(
-      'https://dnevnik.mos.ru/core/api/chats',
-      {
-        per_page: 1000,
-        pid: session.pid,
-      },
-      {
-        'Profile-Id': session.pid,
-        'Auth-Token': session.token,
-      },
-      'json',
-    );
-  }
-
   static getWebStudents(
-    r: Request,
     session: SessionProperties,
   ): Promise<CoreAPIStudentProfiles[]> {
-    return r.get(
+    return Req.get(
       'https://dnevnik.mos.ru/core/api/student_profiles',
       {
         academic_year_id: API.AcademicYear,
@@ -301,11 +254,10 @@ export class API {
   }
 
   static getSchoolById(
-    r: Request,
     session: SessionProperties,
     schoolId: string | number,
   ): Promise<CoreAPISchools> {
-    return r.get(
+    return Req.get(
       `https://dnevnik.mos.ru/core/api/schools/${schoolId}`,
       {pid: session.pid},
       {'auth-token': session.token, 'profile-id': session.pid},
@@ -313,10 +265,9 @@ export class API {
   }
 
   static getMobileStudents(
-    r: Request,
     session: SessionProperties,
   ): Promise<MobileAPIVProfile> {
-    return r.get(
+    return Req.get(
       'https://dnevnik.mos.ru/mobile/api/v1.0/profile',
       {},
       {'auth-token': session.token, 'profile-id': session.pid},
@@ -324,54 +275,33 @@ export class API {
   }
 
   static getMobileSchedule(
-    r: Request,
     session: SessionProperties,
     studentId: string | number,
     yyyymmdd: string,
   ) {
-    return r.get(
+    return Req.get(
       'https://dnevnik.mos.ru/mobile/api/v1.0/schedule',
       {student_id: studentId, date: yyyymmdd},
       {'auth-token': session.token, 'profile-id': session.pid},
     );
   }
   static getMobileLessonInfo(
-    r: Request,
     session: SessionProperties,
     studentId: string | number,
     itemId: string,
   ) {
-    return r.get(
+    return Req.get(
       'https://dnevnik.mos.ru/mobile/api/v1.0/lesson/' + itemId,
       {student_id: studentId},
       {'auth-token': session.token, 'profile-id': session.pid},
     );
   }
 
-  static startAuth(r: Request, session: SessionProperties) {
-    return r.get(
-      `https://login.mos.ru/sps/oauth/ae?scope=openid+profile+blitz_user_rights+snils+contacts+blitz_change_password&access_type=offline&response_type=code&redirect_uri=https://dnevnik.mos.ru/sudir&state=${UUID()}&client_id=dnevnik.mos.ru`,
-      {},
-      {},
-      'all',
-    );
-  }
-
-  static async startSMSAuth(r: Request): Promise<string> {
-    return await r.get(
-      `https://login.mos.ru/sps/oauth/ae?scope=openid+profile&response_type=code&redirect_uri=https://dnevnik.mos.ru/sudir&access_type=offline&state=${UUID()}&client_id=dnevnik.mos.ru&bip_action_hint=used_sms`,
-      {},
-      {},
-      'text',
-    );
-  }
-
   static getExistingLogin(
-    r: Request,
     session: SessionProperties,
     userId: string | number,
   ): Promise<{value?: string}> {
-    return r.get(
+    return Req.get(
       `https://dnevnik.mos.ru/lms/api/sudir/user/${userId}/login`,
       {},
       {Host: 'dnevnik.mos.ru', 'auth-token': session.token},
@@ -380,11 +310,10 @@ export class API {
   }
 
   static generateLogin(
-    r: Request,
     session: SessionProperties,
     userId: string | number,
   ): Promise<{value?: string}> {
-    return r.post(
+    return Req.post(
       `https://dnevnik.mos.ru/lms/api/sudir/user/${userId}/login`,
       {},
       {Host: 'dnevnik.mos.ru', 'auth-token': session.token},
@@ -392,8 +321,8 @@ export class API {
     );
   }
 
-  static hasMosruAccount(r: Request, userId: string | number) {
-    return r.get(
+  static hasMosruAccount(userId: string | number) {
+    return Req.get(
       `https://dnevnik.mos.ru/acl/api/users/exists_sso?user_id=${userId}`,
       {},
       {},
@@ -401,8 +330,8 @@ export class API {
     );
   }
 
-  static refreshToken(r: Request, session: SessionProperties) {
-    return r.get(
+  static refreshToken(session: SessionProperties) {
+    return Req.get(
       `https://dnevnik.mos.ru/lms/api/sudir/oauth/te/refresh_token`,
       {},
       {
@@ -414,12 +343,11 @@ export class API {
   }
 
   static changeStudentPassword(
-    r: Request,
     session: SessionProperties,
     userId: string | number,
     password: string,
   ): Promise<{code: number; message: string | null}> {
-    return r.post(
+    return Req.post(
       `https://dnevnik.mos.ru/lms/api/sudir/user/${userId}/password`,
       {value: password},
       {
@@ -432,7 +360,6 @@ export class API {
   }
 
   static createStudentAccount(
-    r: Request,
     session: SessionProperties,
     userId: string | number,
     data: {
@@ -442,7 +369,7 @@ export class API {
       password: string;
     },
   ): Promise<{status: number; errors?: Array<{errMsg: string}>}> {
-    return r.post(
+    return Req.post(
       `https://dnevnik.mos.ru/lms/api/sudir/register/user/${userId}`,
       data,
       {

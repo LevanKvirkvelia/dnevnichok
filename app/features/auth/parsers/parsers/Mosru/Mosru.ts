@@ -1,17 +1,13 @@
-import {
-  Day,
-  timeout,
-  delay,
-  SDate,
-  hash,
-  IMinimumDiaryParser,
-  Request,
-  IAuthData,
-} from '../..';
+import {Day} from '../../MarkHolder/Day';
+import {SDate} from '../../../helpers/SDate';
+import { any } from "../../../helpers/any";
+import { delay } from '../../../helpers/delay';
+import { timeout } from '../../../helpers/timeout';
+import {Req} from '../../../helpers/Req';
+import {IDiaryStudent, IMinimumDiaryParser} from '../globalTypes';
 import {API} from './Api';
-import mem = require('mem');
 import {Transformer} from './Transformer';
-import {IDiaryStudent} from '../..';
+
 import {AxiosResponse} from 'axios';
 
 const cheerio = require('cheerio-without-node-native');
@@ -26,21 +22,12 @@ export type SessionProperties = Partial<{
 }>;
 
 export class Mosru implements IMinimumDiaryParser {
-  r: Request;
   session: SessionProperties = {};
-
-  onAuthed: Promise<void>;
-  resolveAuthed: (...rest) => void;
 
   allowLogin: boolean = true;
 
-  syncedToken = false;
-
   async newSession() {
     this.session = {};
-    this.onAuthed = new Promise(ok => (this.resolveAuthed = ok));
-    this.syncedToken = false;
-    if (this.r) await this.r.clearCookies();
   }
 
   constructor() {
@@ -85,7 +72,6 @@ export class Mosru implements IMinimumDiaryParser {
     let password = authData.password;
     this.session.authData = {login, password, engine: 'MOS.RU'};
 
-    this.r = new Request('mos.ru:' + [login, password].join(':'));
     if (authData.token && authData.pid) {
       this.setToken(authData.token, authData.pid);
       return true;
@@ -109,7 +95,6 @@ export class Mosru implements IMinimumDiaryParser {
   ): Promise<Day[]> {
     await this.onAuthed;
     const diary = await API.getMobileSchedule(
-      this.r,
       this.session,
       userData.profileId,
       sDate.yyyymmdd(),
@@ -131,7 +116,6 @@ export class Mosru implements IMinimumDiaryParser {
         if (item.lesson.link_types.length > 0) {
           const itemId = item.lesson.schedule_item_id;
           const allData = await API.getMobileLessonInfo(
-            this.r,
             this.session,
             userData.profileId,
             itemId,
@@ -183,17 +167,10 @@ export class Mosru implements IMinimumDiaryParser {
     const groups = userData.groups.map((i: any) => i.id).join(',');
 
     const results = await Promise.all([
-      API.getTeachers(this.r, this.session, studentID),
-      API.getHomeWork(this.r, this.session, dateFrom, dateTo, studentID),
-      API.getScheduleMarks(this.r, this.session, dateFrom, dateTo, studentID),
-      API.getScheduleItems(
-        this.r,
-        this.session,
-        dateFrom,
-        dateTo,
-        studentID,
-        groups,
-      ),
+      API.getTeachers(this.session, studentID),
+      API.getHomeWork(this.session, dateFrom, dateTo, studentID),
+      API.getScheduleMarks(this.session, dateFrom, dateTo, studentID),
+      API.getScheduleItems(this.session, dateFrom, dateTo, studentID, groups),
     ]);
 
     for (const response of results) {
@@ -206,7 +183,6 @@ export class Mosru implements IMinimumDiaryParser {
 
     const [teachers, homework, scheduleMarks, scheduleItems] = results;
     const rooms = await API.getScheduleItemsRooms(
-      this.r,
       this.session,
       studentID,
       scheduleItems?.map(i => i.room_id)?.join(','),
@@ -233,7 +209,7 @@ export class Mosru implements IMinimumDiaryParser {
   }
 
   async getWebStudents(): Promise<IDiaryStudent[]> {
-    const students = await API.getWebStudents(this.r, this.session);
+    const students = await API.getWebStudents(this.session);
 
     if (
       students === null ||
@@ -251,18 +227,14 @@ export class Mosru implements IMinimumDiaryParser {
 
     return Promise.all(
       students.map(async (s: any) => {
-        const school = await API.getSchoolById(
-          this.r,
-          this.session,
-          s.school_id,
-        );
+        const school = await API.getSchoolById(this.session, s.school_id);
         return Transformer.webStudent(s, school);
       }),
     );
   }
 
   async getMobileStudents(): Promise<IDiaryStudent[]> {
-    let students = await API.getMobileStudents(this.r, this.session);
+    let students = await API.getMobileStudents(this.session);
     // @ts-ignore
     if (students.message)
       return await this._handleError(students.message, () =>
@@ -292,27 +264,18 @@ export class Mosru implements IMinimumDiaryParser {
     return this.getPeriodsWith(userData, 1);
   }
 
-  async _getPeriodsWith(userData: any, period: string | number = 1) {
+  async getPeriodsWith(userData: any, period: string | number = 1) {
     await this.onAuthed;
 
-    const marks = await API.getMarks(this.r, this.session, userData.profileId);
+    const marks = await API.getMarks(this.session, userData.profileId);
     // @ts-ignore
     if (marks.message)
       return await this._handleError(marks.message, () =>
-        this._getPeriodsWith(userData, period),
+        this.getPeriodsWith(userData, period),
       );
 
     return Transformer.periodsWith(marks);
   }
-
-  getPeriodsWith: IMinimumDiaryParser['getPeriodsWith'] = mem(
-    this._getPeriodsWith,
-    {
-      cacheKey: (x, y = 1) => JSON.stringify({x, y}),
-      maxAge: 10 * 1000,
-      cachePromiseRejection: false,
-    },
-  );
 
   async _login(login: string, password: string) {
     if (!this.session.loginPromise) {
@@ -327,7 +290,7 @@ export class Mosru implements IMinimumDiaryParser {
   }
 
   async validateToken(token: string, method?: any) {
-    const data = await this.r.post('https://dnevnik.mos.ru/lms/api/sessions', {
+    const data = await Req.post('https://dnevnik.mos.ru/lms/api/sessions', {
       auth_token: token || this.session.token,
     });
     if (method) return await this._handleError(data.description, method);
@@ -336,31 +299,30 @@ export class Mosru implements IMinimumDiaryParser {
     this.resolveAuthed();
   }
 
-  async getToken(url) {
+  async getToken(url: string) {
     const code = url.split('code=')[1];
     this.resolveAuthed();
-    const session = await this.r.get(
+    const session = await Req.get(
       `https://school.mos.ru/v1/sudir/main/callback?code=${code}`,
     );
     if (!session.userId) throw new Error('Error at get token');
     const userId = session.userId;
 
-    const token = await this.r.get(
+    const token = await Req.get(
       `https://school.mos.ru/v2/token/refresh?roleId=${session.roles?.[0]?.id}&subsystem=2`,
       {},
       {},
       'text',
     );
-    await this.r.get(
+    await Req.get(
       `https://dnevnik.mos.ru/aupd/auth`,
       {},
-      {
-        Cookie: `;aupd_token=${token};obr_id=${userId};`,
-      },
+      {Cookie: `;aupd_token=${token};obr_id=${userId};`},
       'text',
     );
+
     await this.validateToken(token);
-    this.saveMosSessionOnServer(session);
+
     return true;
   }
 
@@ -380,26 +342,7 @@ export class Mosru implements IMinimumDiaryParser {
   }
 
   async __login(login: string, password: string, retry = 2): Promise<boolean> {
-    if (retry < 0) throw new Error('Ошибка, попробуйте позднее');
-    const d = await API.startAuth(this.r, this.session);
-    if (await this.checkResponse(d)) return true;
-    const d2 = await API.doAuth(this.r, this.session, login, password, false);
-
-    if (await this.checkResponse(d2)) return true;
-    else if (d2.data.indexOf('Ожидайте') + 1)
-      if (retry == 0) throw new Error('Попробуйте чуть позже/3 сек');
-      else {
-        await delay(3500);
-        const d2 = await API.doAuth(
-          this.r,
-          this.session,
-          login,
-          password,
-          true,
-        );
-        if (await this.checkResponse(d2)) return true;
-      }
-    return await this.__login(login, password, retry - 1);
+    return false;
   }
 
   async getAccountId() {
@@ -419,7 +362,7 @@ export class Mosru implements IMinimumDiaryParser {
       .toISOString()
       .split('T')[0];
 
-    let visits = await this.r.get(
+    let visits = await Req.get(
       'https://dnevnik.mos.ru/mobile/api/v1.0/visits',
       {contract_id: student.contract_id, from, to},
       {'auth-token': this.session.token, 'profile-id': this.session.pid},
@@ -429,7 +372,7 @@ export class Mosru implements IMinimumDiaryParser {
         this.getAttendance(student),
       );
 
-    let attendance = await this.r.get(
+    let attendance = await Req.get(
       'https://dnevnik.mos.ru/mobile/api/v1.0/attendance',
       {student_id: student.profileId},
       {'auth-token': this.session.token, 'profile-id': this.session.pid},
@@ -447,7 +390,7 @@ export class Mosru implements IMinimumDiaryParser {
   }
 
   async addAttendanceNotifications(student: any, days: string[]) {
-    let attendance = await this.r.post(
+    let attendance = await Req.post(
       'https://dnevnik.mos.ru/mobile/api/v1.0/attendance',
       {
         student_id: student.profileId,
@@ -464,7 +407,7 @@ export class Mosru implements IMinimumDiaryParser {
   }
 
   async deleteAttendanceNotifications(student: any, days: string[]) {
-    let attendance = await this.r.post(
+    let attendance = await Req.post(
       'https://dnevnik.mos.ru/mobile/api/v1.0/attendance',
       {
         student_id: student.profileId,
@@ -495,7 +438,7 @@ export class Mosru implements IMinimumDiaryParser {
       .toISOString()
       .split('T')[0];
 
-    let billing = await this.r.get(
+    let billing = await Req.get(
       'https://dnevnik.mos.ru/mobile/api/v1.0/billing',
       {contract_id: student.contract_id, from, to},
       {'auth-token': this.session.token, 'profile-id': this.session.pid},
@@ -514,7 +457,7 @@ export class Mosru implements IMinimumDiaryParser {
     let contract_ids = students
       .map((student: any) => student.contract_id)
       .join(',');
-    let data = await this.r.get(
+    let data = await Req.get(
       `https://dnevnik.mos.ru/mobile/api/v1.0/status?contract_ids=${contract_ids}`,
       {},
       {'auth-token': this.session.token, 'profile-id': this.session.pid},
@@ -522,23 +465,8 @@ export class Mosru implements IMinimumDiaryParser {
     return data.students;
   }
 
-  async getClassmates(userData: any) {
-    const allContacts = await API.getClassmates(this.r, this.session);
-    return allContacts
-      .filter((s: any) => s.class_unit.name == userData.className)
-      .map((s: any) => ({
-        name: [s.user.last_name, s.user.first_name].filter(v => !!v).join(' '),
-        schoolId: s.school.id,
-        schoolName: s.school.short_name,
-        classId: hash(s.class_unit.name),
-        className: s.class_unit.name,
-        profileId: s.id,
-      }));
-  }
-
   async setLinksList(homeworkId: any, attachments: any) {
     const newHomework = await API.setLinksList(
-      this.r,
       this.session,
       homeworkId,
       attachments,
@@ -555,7 +483,6 @@ export class Mosru implements IMinimumDiaryParser {
 
   async setAttachmentsList(homeworkId: any, attachments: any) {
     const newHomework = await API.setAttachmentsList(
-      this.r,
       this.session,
       homeworkId,
       attachments,
@@ -571,12 +498,7 @@ export class Mosru implements IMinimumDiaryParser {
   }
 
   async uploadFileToMos(homeworkId: string, file: unknown) {
-    const files = await API.uploadFileToMos(
-      this.r,
-      this.session,
-      homeworkId,
-      file,
-    );
+    const files = await API.uploadFileToMos(this.session, homeworkId, file);
 
     if (files.message) {
       return await this._handleError(files.message, () =>
@@ -601,7 +523,7 @@ export class Mosru implements IMinimumDiaryParser {
   }
 
   async getChats() {
-    return API.getChats(this.r, this.session);
+    return API.getChats(this.session);
   }
 
   validatePassword(password: string) {
@@ -619,13 +541,12 @@ export class Mosru implements IMinimumDiaryParser {
 
     const errorMessage = 'Произошла ошибка при смене пароля';
 
-    const refresh = await API.refreshToken(this.r, this.session);
+    const refresh = await API.refreshToken(this.session);
 
     if (!refresh) throw new Error(errorMessage);
     if (refresh.message) throw new Error(refresh.message);
 
     const result = await API.changeStudentPassword(
-      this.r,
       this.session,
       userId,
       password,
@@ -650,17 +571,12 @@ export class Mosru implements IMinimumDiaryParser {
 
     const errorMessage = 'Произошла ошибка при создании аккаунта';
 
-    const refresh = await API.refreshToken(this.r, this.session);
+    const refresh = await API.refreshToken(this.session);
 
     if (!refresh) throw new Error(errorMessage);
     if (refresh.message) throw new Error(refresh.message);
 
-    const result = await API.createStudentAccount(
-      this.r,
-      this.session,
-      userId,
-      data,
-    );
+    const result = await API.createStudentAccount(this.session, userId, data);
 
     if (!result) throw new Error(errorMessage);
     if (result.errors) {
@@ -676,10 +592,10 @@ export class Mosru implements IMinimumDiaryParser {
     let accountType: 'no' | 'dnevnik' | 'mosru' = 'no';
 
     const [{value}, hasMosruAccount] = await Promise.all([
-      API.getExistingLogin(this.r, this.session, userId)
+      API.getExistingLogin(this.session, userId)
         .then(res => (res == null ? {value: undefined} : res))
         .catch(() => ({value: undefined})),
-      API.hasMosruAccount(this.r, userId).catch(() => false),
+      API.hasMosruAccount(userId).catch(() => false),
     ]);
 
     if (value) {
@@ -693,9 +609,9 @@ export class Mosru implements IMinimumDiaryParser {
     login = value;
 
     if (!login) {
-      const res = await API.generateLogin(this.r, this.session, userId).catch(
-        () => ({value: undefined}),
-      );
+      const res = await API.generateLogin(this.session, userId).catch(() => ({
+        value: undefined,
+      }));
       login = res?.value;
     }
 

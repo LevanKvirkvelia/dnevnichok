@@ -1,22 +1,11 @@
 import {Platform} from 'react-native';
+import CookieManager from '@react-native-cookies/cookies';
 
 export async function clearCookies() {
-  if (Platform.OS === 'web') return;
-
-  const CookieManager = await import('@react-native-cookies/cookies').then(
-    m => m.default,
-  );
-
   return Promise.all([CookieManager.clearAll(true), CookieManager.clearAll()]);
 }
 
 export async function getCookie(url: string, name: string) {
-  if (Platform.OS === 'web') return;
-
-  const CookieManager = await import('@react-native-cookies/cookies').then(
-    m => m.default,
-  );
-
   const empty = Promise.resolve({} as never);
 
   return Promise.all([

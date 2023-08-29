@@ -7,15 +7,15 @@
 
 import React from 'react';
 
-import {Splash} from './app/features/Splash';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native';
 import {View} from 'react-native';
 import {FlashMessage} from './app/ui/FlashMessage';
-import {QueryClient, QueryClientProvider} from 'react-query';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {HeadlessBrowserProvider} from './app/features/auth/parsers/browser-auth/HeadlessBrowser';
+import RootNavigation from './app/navigation/Root';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({});
 
 function App(): JSX.Element {
   return (
@@ -24,7 +24,7 @@ function App(): JSX.Element {
         <SafeAreaProvider>
           <NavigationContainer>
             <View>
-              <Splash />
+              <RootNavigation />
               <FlashMessage />
             </View>
           </NavigationContainer>
