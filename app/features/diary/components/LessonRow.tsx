@@ -6,7 +6,7 @@ import {useTheme} from '../../themes/useTheme';
 import {StyledDescription} from '../../../ui/typography/StyledDescription';
 import {HomeworkText} from './HomeworkText';
 import {Files} from './Files';
-import {ItemColor} from '../../advices/ItemColor';
+import {ItemColor} from '../../marks/components/ItemColor';
 
 const Touchable = TouchableOpacity;
 

@@ -1,6 +1,18 @@
-// TODO remove and use something from NPM
+// TODO refactor
 
 export class SDate {
+  static getAcademicYearBoundaries() {
+    const year = new Date().getFullYear();
+
+    const startDay = SDate.parseDDMMYYY(`30.08.${year}`).isFuture()
+      ? SDate.parseDDMMYYY(`30.08.${year - 1}`)
+      : SDate.parseDDMMYYY(`30.08.${year}`);
+
+    const endDay = SDate.parseDDMMYYY(`10.06.${startDay.year()}`);
+
+    return {startDay, endDay};
+  }
+
   static parseDDMMYYY(input: string) {
     let parts = input.split('.');
     return new SDate(parts[2], +parts[1] - 1, parts[0]); // Note: months are 0-based
@@ -83,10 +95,6 @@ export class SDate {
 
   copy() {
     return new SDate(this.date.getTime());
-  }
-
-  getClassDate() {
-    return new Date(this.date.getTime());
   }
 
   getLastWorkDate(is6: boolean): SDate {

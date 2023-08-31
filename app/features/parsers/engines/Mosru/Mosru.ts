@@ -253,10 +253,10 @@ export const mosruParser = createParser({
     },
   },
   periods: {
-    async getLenPeriods({account, user}) {
+    async getPeriodsLenQuick({account, user}) {
       return (await getPeriodsWith(account, user)).length;
     },
-    getAllPeriods({account, user}) {
+    getAllPeriodsQuick({account, user}) {
       return getPeriodsWith(account, user);
     },
     getPeriodsWith({account, user, period}) {

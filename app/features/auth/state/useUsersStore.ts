@@ -1,8 +1,8 @@
 import {create} from 'zustand';
-import {EngineNames} from '../../parsers/parsers/getParser';
 import {createJSONStorage, persist} from 'zustand/middleware';
 import {immer} from 'zustand/middleware/immer';
 import {zustandStorage} from '../../../shared/helpers/zustandStorage';
+import { EngineNames } from '../../parsers/getParser';
 
 export type UserSettings = {
   showSaturday: boolean;
@@ -117,8 +117,8 @@ export const useUsersStore = create<UsersState>()(
           ...activeUser,
           settings: {
             // TODO remove this after proper auth
-            showSaturday: activeUser.settings.showSaturday ?? true,
-            target: activeUser.settings.target ?? 5,
+            showSaturday: activeUser.settings?.showSaturday ?? true,
+            target: activeUser.settings?.target ?? 5,
           },
         };
       },

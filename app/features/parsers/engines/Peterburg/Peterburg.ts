@@ -232,15 +232,15 @@ export const peterburgParser = createParser({
     },
   },
   periods: {
-    async getLenPeriods({account, user}) {
+    async getPeriodsLenQuick({account, user}) {
       const items = await getListPeriod(account, user);
       return items.length - 1;
     },
     async getPeriodsWith({account, user, period}) {
       return getPeriodsWith(account, user, period as number); // TODO DEFAULT PERIOD
     },
-    async getAllPeriods({account, user}) {
-      const lenPeriods = await this.getLenPeriods({
+    async getAllPeriodsQuick({account, user}) {
+      const lenPeriods = await this.getPeriodsLenQuick({
         account,
         user,
       });

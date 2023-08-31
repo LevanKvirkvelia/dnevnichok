@@ -7,10 +7,15 @@ export const queryClient = new QueryClient({
     queries: {
       cacheTime: 0,
       staleTime: 0,
+
+      refetchInterval: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchIntervalInBackground: false,
     },
   },
 });
-
 
 const storage = new MMKV();
 

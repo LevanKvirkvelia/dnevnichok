@@ -10,12 +10,7 @@ import {ScheduleLessonsList} from '../../features/diary/components/ScheduleLesso
 import {useDiaryState} from '../../features/diary/state/useDiaryState';
 
 function calculateScrollRange(showSaturday: boolean) {
-  const year = new Date().getFullYear();
-
-  const startDay = SDate.parseDDMMYYY(`30.08.${year}`).isFuture()
-    ? SDate.parseDDMMYYY(`30.08.${year - 1}`)
-    : SDate.parseDDMMYYY(`30.08.${year}`);
-  const endDay = SDate.parseDDMMYYY(`10.06.${startDay.year()}`);
+  const {startDay, endDay} = SDate.getAcademicYearBoundaries();
 
   let range = [];
   for (let _d = startDay; _d.getTime() <= endDay.getTime(); _d = _d.getNextWorkDate(showSaturday)) {
@@ -44,7 +39,6 @@ export function Diary() {
   const {currentDisplayDate, setCurrentDisplayDate} = useDiaryState();
 
   useDiaryNavOptions({
-    title: 'Расписание',
     header: () => <DiaryHeader />,
   });
 

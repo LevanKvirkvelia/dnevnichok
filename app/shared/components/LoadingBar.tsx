@@ -1,9 +1,34 @@
 import React, {useState, useEffect} from 'react';
 import {ActivityIndicator, Text, View} from 'react-native';
+import {useUserPeriodsState} from '../../features/marks/state/usePeriodsState';
+import {useDiaryState} from '../../features/diary/state/useDiaryState';
+import {useDayScheduleQuery} from '../../features/diary/hooks/useDayScheduleQuery';
+import {usePeriodQuery} from '../../features/marks/hooks/usePeriodQuery';
 
+export function LoadingBar({track = ['diary', 'period']}: {track?: ('period' | 'diary')[]}) {
+  const {activePeriodNumber} = useUserPeriodsState();
+  const {currentDisplayDate} = useDiaryState();
+  const diaryQuery = useDayScheduleQuery(currentDisplayDate);
+  const {periodQuery} = usePeriodQuery(activePeriodNumber);
 
-// TODO refactor this component
-export function LoadingBar({hasData, isLoading, error}: {hasData: boolean; isLoading: boolean; error: boolean}) {
+  const isLoading = track.some(item => {
+    if (item === 'diary') return diaryQuery.isLoading;
+    if (item === 'period') return periodQuery.isLoading;
+    return false;
+  });
+
+  const hasData = track.some(item => {
+    if (item === 'diary') return diaryQuery.isSuccess;
+    if (item === 'period') return periodQuery.isSuccess;
+    return false;
+  });
+
+  const error = track.some(item => {
+    if (item === 'diary') return diaryQuery.isError;
+    if (item === 'period') return periodQuery.isError;
+    return false;
+  });
+
   const [loading, setLoading] = useState(false);
   const [color, setColor] = useState<string>('#ffcc00');
   const [text, setText] = useState<string | null>();

@@ -1,10 +1,10 @@
 import {stringMd5} from 'react-native-quick-md5';
-import { Req } from '../../auth/helpers/Req';
-import { SDate } from '../../auth/helpers/SDate';
-import { SessionData, User, ParsedUser } from '../../auth/state/useUsersStore';
-import { createParser } from '../createParser';
-import { DayScheduleConstructor, PeriodConstructor } from '../data/constructors';
-import { IDaySchedule, IMark } from '../data/types';
+import {Req} from '../../auth/helpers/Req';
+import {SDate} from '../../auth/helpers/SDate';
+import {SessionData, User, ParsedUser} from '../../auth/state/useUsersStore';
+import {createParser} from '../createParser';
+import {DayScheduleConstructor, PeriodConstructor} from '../data/constructors';
+import {IDaySchedule, IMark} from '../data/types';
 const cheerio = require('cheerio-without-node-native');
 
 async function login(login: string, password: string): Promise<SessionData> {
@@ -150,7 +150,7 @@ async function getPeriodsWith(periodNumber: number) {
 // TODO check staleTime and cacheTime
 export const eduTatarParser = createParser({
   auth: {
-    async login({authData, sessionData}) {
+    async login({authData}) {
       if (!authData.login || !authData.password) {
         throw new Error('Неправильный логин или пароль');
       }
@@ -174,7 +174,7 @@ export const eduTatarParser = createParser({
     },
   },
   periods: {
-    async getLenPeriods(){
+    async getPeriodsLenQuick() {
       const terms = await Req.post(
         'https://edu.tatar.ru/user/diary/term?term=1',
         {},
@@ -190,26 +190,7 @@ export const eduTatarParser = createParser({
     async getPeriodsWith({period}) {
       return getPeriodsWith(period as number);
     },
-    async getAllPeriods({account, user}) {
-      const lenPeriods = await this.getLenPeriods({
-        account,
-        user,
-      });
-
-      const response = await Promise.all(
-        Array(lenPeriods)
-          .fill(null)
-          .map(async (u, i: number) =>
-            this.getPeriodsWith({
-              period: i,
-              account,
-              user,
-            }),
-          ),
-      );
-
-      return response.flat();
-    },
+    getAllPeriodsQuick: null,
   },
   diary: {
     async getDaysWithDay({user, sDate}) {

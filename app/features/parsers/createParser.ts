@@ -1,8 +1,7 @@
-import {SDate} from '../../auth/helpers/SDate';
-import {Account, AccountAuthData, ParsedUser, SessionData, User} from '../../auth/state/useUsersStore';
-import {IDaySchedule, IPeriod} from '../data/types';
 import {FetchQueryOptions} from '@tanstack/react-query';
-import {queryClient} from '../../../shared/helpers/persistedQueryClient';
+import {SDate} from '../auth/helpers/SDate';
+import {Account, User, AccountAuthData, SessionData, ParsedUser} from '../auth/state/useUsersStore';
+import {IDaySchedule, IPeriod} from './data/types';
 
 export type BaseProps = {
   account: Account;
@@ -51,17 +50,17 @@ export interface ParserDefitionFeatures {
     getDaysWithDay: FeatureFunction<{sDate: SDate} & BaseProps, Error, IDaySchedule[]>;
   }>;
 
-  periods: Feature<{
-    getPeriodsWith: FeatureFunction<
-      {
-        period: string | number | undefined;
-      } & BaseProps,
-      Error,
-      IPeriod[]
-    >;
-    getAllPeriods: FeatureFunction<BaseProps, Error, IPeriod[]>;
-    getLenPeriods: FeatureFunction<BaseProps, Error, number>;
-  }>;
+  periods:
+    | Feature<{
+        getPeriodsWith: FeatureFunction<{period: string | number | undefined} & BaseProps, Error, IPeriod[]>;
+        getAllPeriodsQuick: FeatureFunction<BaseProps, Error, IPeriod[]>;
+        getPeriodsLenQuick: OptionalFeatureFunction<BaseProps, Error, number>;
+      }>
+    | Feature<{
+        getPeriodsWith: FeatureFunction<{period: string | number | undefined} & BaseProps, Error, IPeriod[]>;
+        getAllPeriodsQuick: OptionalFeatureFunction<BaseProps, Error, IPeriod[]>;
+        getPeriodsLenQuick: FeatureFunction<BaseProps, Error, number>;
+      }>;
 }
 
 export function createParser(parserFeatures: ParserDefitionFeatures) {

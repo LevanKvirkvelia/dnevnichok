@@ -5,6 +5,7 @@ import {DiaryTab} from './diary/DiaryTab';
 import {DiaryIcon} from '../icons/DiaryIcon';
 import {PeriodsIcon} from '../icons/PeriodsIcon';
 import {useTheme} from '../features/themes/useTheme';
+import {PeriodsTab} from './periods/PeriodsTab';
 
 const Tab = createBottomTabNavigator();
 
@@ -32,6 +33,7 @@ export default function Tabs() {
           },
           Platform.OS === 'ios' ? {} : {padding: 0, margin: 0},
         ],
+        header: () => null,
       }}>
       <Tab.Screen
         key="PeriodsTab"
@@ -51,7 +53,7 @@ export default function Tabs() {
           tabBarIcon: ({color}) => <DiaryIcon fill={color} />,
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         key="Profile"
         name="Profile"
         component={Profile}
@@ -59,7 +61,7 @@ export default function Tabs() {
           tabBarLabel: 'Профиль',
           tabBarIcon: props => <UserAvatar {...props} containerStyle={{margin: 0}} size={23} />,
         }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 }

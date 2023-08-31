@@ -1,18 +1,25 @@
 import type {CompositeScreenProps, NavigatorScreenParams} from '@react-navigation/native';
 import type {StackScreenProps} from '@react-navigation/stack';
 import type {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
+import {ISubjectPeriod} from '../features/parsers/data/types';
 
-// ------------------ Auth ------------------
-export type AuthModalStackParamList = {
-  Login: undefined;
-  Password: undefined;
-  SMSAuth: undefined;
-  MosPassword: undefined;
+// ------------------ Periods Tab ------------------
+
+export type PeriodsTabParamList = {
+  Periods: undefined;
+  SubjectInfo: {
+    subject: ISubjectPeriod;
+  };
+  PeriodsSettings: undefined;
 };
 
-export type AuthModalNavigationProp = StackScreenProps<AuthModalStackParamList>;
+export type PeriodsTabScreenProps = CompositeScreenProps<
+  TabsScreenProps<keyof TabsParamList>,
+  StackScreenProps<PeriodsTabParamList>
+>;
 
 // ------------------ Diary Tab ------------------
+
 export type DiaryTabParamList = {
   Diary: undefined;
   LessionInfo: {
@@ -34,15 +41,27 @@ export type DiaryTabScreenProps = CompositeScreenProps<
 >;
 
 // ------------------ Tabs ------------------
+
 export type TabsParamList = {
   DiaryTab: NavigatorScreenParams<DiaryTabParamList>;
-  PeriodsTab: undefined;
+  PeriodsTab: NavigatorScreenParams<PeriodsTabParamList>;
   Profile: undefined;
 };
 export type TabsScreenProps<T extends keyof TabsParamList> = CompositeScreenProps<
   BottomTabScreenProps<TabsParamList, T>,
   RootStackScreenProps<keyof RootStackParamList>
 >;
+
+// ------------------ Auth ------------------
+
+export type AuthModalStackParamList = {
+  Login: undefined;
+  Password: undefined;
+  SMSAuth: undefined;
+  MosPassword: undefined;
+};
+
+export type AuthModalNavigationProp = StackScreenProps<AuthModalStackParamList>;
 
 // ------------------ Root ------------------
 

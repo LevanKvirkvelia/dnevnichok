@@ -2,7 +2,7 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Diary} from './Diary';
 import {LessonInfo} from './LessonInfo';
-import { InAppBrowser } from '../InAppBrowser';
+import {InAppBrowser} from '../InAppBrowser';
 
 const Stack = createStackNavigator();
 
