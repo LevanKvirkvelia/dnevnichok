@@ -1,7 +1,7 @@
 import {Source} from 'react-native-fast-image';
-import mosLogo from './../assets/mos_ru.png';
-import eduTatarLogo from './../assets/edu_tatar.png';
-import spbLogo from './../assets/petersburg.png';
+import mosLogo from './assets/mos_ru.png';
+import eduTatarLogo from './assets/edu_tatar.png';
+import spbLogo from './assets/petersburg.png';
 import {EngineNames} from './getParser';
 
 type Worker = {

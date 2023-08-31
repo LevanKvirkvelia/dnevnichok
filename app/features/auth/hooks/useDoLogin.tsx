@@ -1,6 +1,6 @@
 import {errorToString} from '../../../shared/helpers/errorToString';
 import {showMessage} from '../../../ui/FlashMessage';
-import {EngineNames, getParser} from '../../parsers/parsers/getParser';
+import {EngineNames, getParser} from '../../parsers/getParser';
 
 import {useAuthFormStore} from '../state/useAuthFormStore';
 import {Account, AccountAuthData, SessionData, User, useUsersStore} from '../state/useUsersStore';

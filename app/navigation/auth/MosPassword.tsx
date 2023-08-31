@@ -7,7 +7,7 @@ import {useTheme} from '../../features/themes/useTheme';
 
 import {useMutation} from '@tanstack/react-query';
 import {processLogin} from '../../features/auth/hooks/useDoLogin';
-import {useVisibleMosAuth} from '../../features/parsers/parsers/browser-auth/mosru';
+import {useVisibleMosAuth} from '../../features/parsers/browser-auth/mosru';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 
 export function MosPassword() {

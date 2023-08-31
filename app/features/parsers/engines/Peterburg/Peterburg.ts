@@ -1,3 +1,9 @@
+import { Req } from '../../../auth/helpers/Req';
+import { SDate } from '../../../auth/helpers/SDate';
+import { SessionData, ParsedUser, Account, User } from '../../../auth/state/useUsersStore';
+import { createParser } from '../../createParser';
+import { PeriodConstructor, DayScheduleConstructor } from '../../data/constructors';
+import { IDaySchedule } from '../../data/types';
 import {
   APIGroupGroupGetListPeriod,
   APIJournalEstimateTable,
@@ -8,27 +14,9 @@ import {
   IndigoItem,
   TentacledItem,
 } from './types';
-import {Req} from '../../../../auth/helpers/Req';
-import {
-  Account,
-  AccountAuthData,
-  ParsedUser,
-  SessionData,
-  User,
-} from '../../../../auth/state/useUsersStore';
-import {SDate} from '../../../../auth/helpers/SDate';
-import {createParser} from '../../createParser';
-import {
-  DayScheduleConstructor,
-  PeriodConstructor,
-} from '../../../data/constructors';
 import {stringMd5} from 'react-native-quick-md5';
-import {IDaySchedule} from '../../../data/types';
 
-async function login(
-  login: string,
-  password: string,
-): Promise<{token: string}> {
+async function login(login: string, password: string): Promise<{token: string}> {
   const logon: APIUserAuthLogin = await Req.post(
     'https://dnevnik2.petersburgedu.ru/api/user/auth/login',
     {
@@ -51,17 +39,15 @@ async function login(
     return logon.data;
   }
 
-  throw new Error(
-    logon?.validations[0]?.message || 'Неправильный логин или пароль',
-  );
+  throw new Error(logon?.validations[0]?.message || 'Неправильный логин или пароль');
 }
 
-async function getStudents(account: Account): Promise<ParsedUser[]> {
+async function getStudents(sessionData: SessionData): Promise<ParsedUser[]> {
   const response = await Req.get(
     'https://dnevnik2.petersburgedu.ru/api/journal/person/related-child-list',
     {},
     {
-      'X-JWT-Token': account.sessionData?.token,
+      'X-JWT-Token': sessionData?.token,
     },
     'all',
   );
@@ -74,7 +60,6 @@ async function getStudents(account: Account): Promise<ParsedUser[]> {
 
   return childList.data.items.map((student: any) => ({
     id: student.identity.id,
-    accountId: account.id,
     engine: 'Петербургское образование',
     name: `${student.surname} ${student.firstname}`,
     parsedData: {
@@ -128,8 +113,7 @@ async function getPeriodsWith(account: Account, user: User, periodNum: number) {
     });
     if (
       mark.estimate_type_name != null &&
-      (mark.estimate_type_name.indexOf('четверть') + 1 ||
-        mark.estimate_type_name.indexOf('триместр') + 1)
+      (mark.estimate_type_name.indexOf('четверть') + 1 || mark.estimate_type_name.indexOf('триместр') + 1)
     ) {
       period.upsertLessonData({
         id: lessonId,
@@ -149,11 +133,7 @@ async function getPeriodsWith(account: Account, user: User, periodNum: number) {
   return [period.toPeriod()];
 }
 
-async function getDaysWithDay(
-  account: Account,
-  user: User,
-  sDate: SDate,
-): Promise<IDaySchedule[]> {
+async function getDaysWithDay(account: Account, user: User, sDate: SDate): Promise<IDaySchedule[]> {
   const selectedDate = new SDate(sDate).copy().setMonday();
   const response: APIJournalLessonListByEducation = await Req.get(
     'https://dnevnik2.petersburgedu.ru/api/journal/lesson/list-by-education',
@@ -185,12 +165,7 @@ async function getDaysWithDay(
   const lessons: {[hash: string]: TentacledItem | IndigoItem} = {};
 
   [...schedule.data.items, ...response.data.items].forEach(item => {
-    const itemHash = [
-      item.subject_name,
-      item.datetime_from,
-      item.datetime_to,
-      item.number,
-    ].join(':');
+    const itemHash = [item.subject_name, item.datetime_from, item.datetime_to, item.number].join(':');
     const lesson = lessons[itemHash] || {};
 
     lessons[itemHash] = {...lesson, ...item};
@@ -215,8 +190,7 @@ async function getDaysWithDay(
       },
       homework: {
         attachments: [],
-        text:
-          ('tasks' in item && item.tasks[0] && item.tasks[0].task_name) || '',
+        text: ('tasks' in item && item.tasks[0] && item.tasks[0].task_name) || '',
       },
       theme: ('content_name' in item && item.content_name) || '',
       marks:
@@ -236,103 +210,57 @@ async function getDaysWithDay(
 
   return Object.values(days).map(day => day.toDaySchedule());
 }
-
 export const peterburgParser = createParser({
   auth: {
-    login: {
-      cacheTime: 0,
-      staleTime: 0,
-      async queryFn({queryKey}) {
-        const [{authData, sessionData}] = queryKey;
-        if (!authData.login || !authData.password) {
-          throw new Error('Неправильный логин или пароль');
-        }
-
-        return login(authData.login, authData.password);
-      },
+    async login({authData, sessionData}) {
+      if (!authData.login || !authData.password) {
+        throw new Error('Неправильный логин или пароль');
+      }
+      return login(authData.login, authData.password);
     },
-
-    backgroundLogin: {
-      cacheTime: 0,
-      staleTime: 0,
-      async queryFn({queryKey}) {
-        const [{account}] = queryKey;
-        return peterburgParser.auth.login!({
-          authData: account.authData,
-          sessionData: account.sessionData,
-        });
-      },
+    async backgroundLogin({account}) {
+      return peterburgParser.auth.login!({
+        authData: account.authData,
+        sessionData: account.sessionData,
+      });
     },
-    getStudents: {
-      cacheTime: 0,
-      staleTime: 0,
-      async queryFn({queryKey}) {
-        const [{account}] = queryKey;
-        return getStudents(account);
-      },
+    async getStudents({sessionData}) {
+      return getStudents(sessionData);
     },
-    getAccountId: {
-      cacheTime: 0,
-      staleTime: 0,
-      async queryFn({queryKey}) {
-        const [{account}] = queryKey;
-        return account.engine + ':' + account.authData.login.toLowerCase();
-      },
+    async getAccountId({authData}) {
+      return 'Peterburg:' + authData.login.toLowerCase();
     },
   },
   periods: {
-    getLenPeriods: {
-      cacheTime: 0,
-      staleTime: 0,
-      async queryFn({queryKey}) {
-        const [{account, user}] = queryKey;
-
-        const items = await getListPeriod(account, user);
-        return items.length - 1;
-      },
+    async getLenPeriods({account, user}) {
+      const items = await getListPeriod(account, user);
+      return items.length - 1;
     },
-    getPeriodsWith: {
-      cacheTime: 0,
-      staleTime: 0,
-      async queryFn({queryKey}) {
-        const [{account, user, period}] = queryKey;
-        return getPeriodsWith(account, user, period as number); // TODO DEFAULT PERIOD
-      },
+    async getPeriodsWith({account, user, period}) {
+      return getPeriodsWith(account, user, period as number); // TODO DEFAULT PERIOD
     },
-
-    getAllPeriods: {
-      async queryFn({queryKey}) {
-        const {account, user} = queryKey[0];
-        const lenPeriods = await peterburgParser.periods.getLenPeriods({
-          account,
-          user,
-        });
-
-        const response = await Promise.all(
-          Array(lenPeriods)
-            .fill(null)
-            .map(async (u, i: number) =>
-              peterburgParser.periods.getPeriodsWith({
-                period: i,
-                account,
-                user,
-              }),
-            ),
-        );
-
-        return response.flat();
-      },
+    async getAllPeriods({account, user}) {
+      const lenPeriods = await this.getLenPeriods({
+        account,
+        user,
+      });
+      const response = await Promise.all(
+        Array(lenPeriods)
+          .fill(null)
+          .map(async (u, i: number) =>
+            this.getPeriodsWith({
+              period: i,
+              account,
+              user,
+            }),
+          ),
+      );
+      return response.flat();
     },
   },
-
   diary: {
-    getDaysWithDay: {
-      cacheTime: 0,
-      staleTime: 0,
-      async queryFn({queryKey}) {
-        const [{account, user, sDate}] = queryKey;
-        return getDaysWithDay(account, user, sDate);
-      },
+    async getDaysWithDay({account, user, sDate}) {
+      return getDaysWithDay(account, user, sDate);
     },
   },
 });

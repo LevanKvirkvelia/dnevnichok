@@ -332,7 +332,11 @@ export interface CoreAPITeacherProfiles {
   assigned_ec_group_ids: any[];
   rooms: CoreAPIRooms[];
   comment: null;
-  user: User | null;
+  user: {
+    last_name: string;
+    middle_name: string;
+    first_name: string;
+  } | null;
   virtual: boolean;
   gap_allowed: boolean;
   is_gap_allowed: boolean;
@@ -440,12 +444,6 @@ export interface Subject {
   control_forms: null;
   knowledge_field_link: any[];
   education_level_ids: number[];
-}
-
-export interface User {
-  last_name: string;
-  middle_name: string;
-  first_name: string;
 }
 
 export interface JerseyAPIScheduleItems {

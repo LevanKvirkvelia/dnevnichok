@@ -1,17 +1,16 @@
-import {SDate} from '../../../../auth/helpers/SDate';
-import {any} from '../../../../auth/helpers/any';
-import {delay} from '../../../../auth/helpers/delay';
-import {timeout} from '../../../../auth/helpers/timeout';
-import {Req} from '../../../../auth/helpers/Req';
+import {stringMd5} from 'react-native-quick-md5';
+
 import {API} from './Api';
 import {Transformer} from './Transformer';
-
 import {createParser} from '../../createParser';
-import {IDaySchedule, IMark, IPeriod} from '../../../data/types';
-import {Account, ParsedUser, SessionData, User} from '../../../../auth/state/useUsersStore';
-import {DayScheduleConstructor} from '../../../data/constructors';
-import {stringMd5} from 'react-native-quick-md5';
 import {UserInfo} from './types';
+import {Req} from '../../../auth/helpers/Req';
+import {SDate} from '../../../auth/helpers/SDate';
+import {any} from '../../../auth/helpers/any';
+import {timeout} from '../../../auth/helpers/timeout';
+import {Account, SessionData, ParsedUser, User} from '../../../auth/state/useUsersStore';
+import {DayScheduleConstructor} from '../../data/constructors';
+import {IDaySchedule, IMark, IPeriod} from '../../data/types';
 
 async function getMobileDaysWithDay(account: Account, user: User, sDate: SDate): Promise<IDaySchedule[]> {
   const diary = await API.getMobileSchedule(account.sessionData!, user.id, sDate.yyyymmdd());
@@ -239,68 +238,34 @@ export async function getToken(url: string) {
 
   return validateToken(token);
 }
-
 export const mosruParser = createParser({
   auth: {
     login: null,
-
-    backgroundLogin: {
-      cacheTime: 0,
-      staleTime: 0,
-      async queryFn() {
-        throw new Error('Error at backgroundLogin');
-      },
+    backgroundLogin() {
+      throw new Error('Error at backgroundLogin');
     },
-
-    getStudents: {
-      cacheTime: 0,
-      staleTime: 0,
-      async queryFn({queryKey}) {
-        const [{sessionData}] = queryKey;
-        return getStudents(sessionData!);
-      },
+    getStudents({sessionData}) {
+      return getStudents(sessionData!);
     },
-
-    getAccountId: {
-      cacheTime: 0,
-      staleTime: 0,
-      async queryFn({queryKey}) {
-        const [{sessionData}] = queryKey;
-        if (!sessionData?.pid) throw new Error('No pid');
-        return sessionData?.pid;
-      },
+    getAccountId({sessionData}) {
+      if (!sessionData?.pid) throw new Error('No pid');
+      return sessionData?.pid;
     },
   },
   periods: {
-    getLenPeriods: {
-      cacheTime: 0,
-      staleTime: 0,
-      async queryFn({queryKey}) {
-        const [{account, user}] = queryKey;
-        return (await getPeriodsWith(account, user)).length;
-      },
+    async getLenPeriods({account, user}) {
+      return (await getPeriodsWith(account, user)).length;
     },
-    getAllPeriods: {
-      cacheTime: 0,
-      staleTime: 0,
-      async queryFn({queryKey}) {
-        const [{account, user}] = queryKey;
-        return getPeriodsWith(account, user);
-      },
+    getAllPeriods({account, user}) {
+      return getPeriodsWith(account, user);
     },
-    getPeriodsWith: {
-      async queryFn({queryKey}) {
-        const [{account, user, period}] = queryKey;
-        return getPeriodsWith(account, user, period);
-      },
+    getPeriodsWith({account, user, period}) {
+      return getPeriodsWith(account, user, period);
     },
   },
   diary: {
-    getDaysWithDay: {
-      async queryFn({queryKey}) {
-        const [{account, user, sDate}] = queryKey;
-        return getDaysWithDay(account, user, sDate);
-      },
+    getDaysWithDay({account, user, sDate}) {
+      return getDaysWithDay(account, user, sDate);
     },
   },
 });

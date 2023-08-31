@@ -1,6 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {Dimensions} from 'react-native';
-import {FlashList} from '@shopify/flash-list';
 import {Route, TabView} from 'react-native-tab-view';
 
 const initialLayout = {width: Dimensions.get('window').width};
@@ -42,7 +41,6 @@ export function InfiniteHorizontalScroll({
   return (
     <TabView
       initialLayout={initialLayout}
-      timingConfig={{duration: 0}}
       renderTabBar={() => null}
       navigationState={{index, routes}}
       renderScene={({route}) => renderItem(route.key)}

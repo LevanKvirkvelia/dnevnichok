@@ -68,7 +68,6 @@ function ListHeader() {
 
 export function ScheduleLessonsList({ddmmyyyy}: {ddmmyyyy: string}) {
   const navigation = useNavigation<DiaryTabScreenProps['navigation']>();
-  const user = useActiveUser();
   const {isLoading, data, refetch} = useDayScheduleQuery(ddmmyyyy);
 
   return (

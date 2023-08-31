@@ -1,7 +1,6 @@
 import React from 'react';
 import {Keyboard, Text, View} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
-import {AuthModalNavigationProp} from './AuthModal';
 import {useAuthFormStore} from '../../features/auth/state/useAuthFormStore';
 
 import {AuthInput} from '../../features/auth/components/AuthInput';
@@ -10,7 +9,8 @@ import FastImage from 'react-native-fast-image';
 import {AvoidingScrollContainer} from '../../shared/components/AvoidingScrollContainer';
 import {Button} from '../../ui/Button';
 import {useAuthHeader} from '../../features/auth/hooks/useAuthHeader';
-import {WORKERS} from '../../features/parsers/parsers/Workers';
+import {AuthModalNavigationProp} from '../types';
+import {WORKERS} from '../../features/parsers/Workers';
 
 export const Login = () => {
   const {colors} = useTheme();
@@ -38,11 +38,7 @@ export const Login = () => {
     <AvoidingScrollContainer>
       <View className="items-center px-6">
         <View style={{marginTop: 36}}>
-          <FastImage
-            source={WORKERS[engine].logo}
-            style={{height: 85, width: 85}}
-            resizeMode="contain"
-          />
+          <FastImage source={WORKERS[engine].logo} style={{height: 85, width: 85}} resizeMode="contain" />
         </View>
 
         <Text

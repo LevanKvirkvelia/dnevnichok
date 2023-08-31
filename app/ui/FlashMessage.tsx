@@ -1,13 +1,8 @@
 import React, {MutableRefObject, useEffect, useRef} from 'react';
-import RNFlashMessage, {
-  showMessage as showFlashMessage,
-  MessageOptions,
-} from 'react-native-flash-message';
-import {useKeyboardHeight} from '../shared/helpers/useKeyboardHeight';
+import RNFlashMessage, {showMessage as showFlashMessage, MessageOptions} from 'react-native-flash-message';
+import { useKeyboardHeight } from '../shared/hooks/useKeyboardHeight';
 
-const flashMessageRef = React.createRef<
-  null | any
->() as MutableRefObject<RNFlashMessage | null>;
+const flashMessageRef = React.createRef<null | any>() as MutableRefObject<RNFlashMessage | null>;
 
 export function showMessage(options: MessageOptions) {
   if (flashMessageRef.current) {
@@ -30,11 +25,5 @@ export function FlashMessage() {
     };
   }, []);
 
-  return (
-    <RNFlashMessage
-      ref={ref}
-      position={keyboardHeight > 0 ? 'top' : 'bottom'}
-      style={{zIndex: 9999999999}}
-    />
-  );
+  return <RNFlashMessage ref={ref} position={keyboardHeight > 0 ? 'top' : 'bottom'} style={{zIndex: 9999999999}} />;
 }

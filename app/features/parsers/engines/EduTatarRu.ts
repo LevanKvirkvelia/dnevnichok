@@ -1,13 +1,11 @@
-import {SDate} from '../../../auth/helpers/SDate';
-import {createParser} from '../createParser';
-import {Req} from '../../../auth/helpers/Req';
-import {ParsedUser, SessionData, User} from '../../../auth/state/useUsersStore';
-
 import {stringMd5} from 'react-native-quick-md5';
+import { Req } from '../../auth/helpers/Req';
+import { SDate } from '../../auth/helpers/SDate';
+import { SessionData, User, ParsedUser } from '../../auth/state/useUsersStore';
+import { createParser } from '../createParser';
+import { DayScheduleConstructor, PeriodConstructor } from '../data/constructors';
+import { IDaySchedule, IMark } from '../data/types';
 const cheerio = require('cheerio-without-node-native');
-
-import {IDaySchedule, IMark} from '../../data/types';
-import {DayScheduleConstructor, PeriodConstructor} from '../../data/constructors';
 
 async function login(login: string, password: string): Promise<SessionData> {
   let logon = await Req.post(
@@ -152,102 +150,70 @@ async function getPeriodsWith(periodNumber: number) {
 // TODO check staleTime and cacheTime
 export const eduTatarParser = createParser({
   auth: {
-    login: {
-      cacheTime: 0,
-      staleTime: 0,
-      async queryFn({queryKey}) {
-        const [{authData, sessionData}] = queryKey;
-        if (!authData.login || !authData.password) {
-          throw new Error('Неправильный логин или пароль');
-        }
+    async login({authData, sessionData}) {
+      if (!authData.login || !authData.password) {
+        throw new Error('Неправильный логин или пароль');
+      }
 
-        return login(authData.login, authData.password);
-      },
+      return login(authData.login, authData.password);
     },
 
-    backgroundLogin: {
-      cacheTime: 0,
-      staleTime: 0,
-      async queryFn({queryKey}) {
-        const [{account}] = queryKey;
-        return eduTatarParser.auth.login!({
-          authData: account.authData,
-          sessionData: account.sessionData,
-        });
-      },
+    async backgroundLogin({account}) {
+      return eduTatarParser.auth.login!({
+        authData: account.authData,
+        sessionData: account.sessionData,
+      });
     },
 
-    getStudents: {
-      cacheTime: 0,
-      staleTime: 0,
-      async queryFn() {
-        return getStudents();
-      },
+    async getStudents() {
+      return getStudents();
     },
 
-    getAccountId: {
-      cacheTime: 0,
-      staleTime: 0,
-      async queryFn({queryKey}) {
-        const [{authData}] = queryKey;
-        return 'EduTatarRu:' + authData.login.toLowerCase();
-      },
+    async getAccountId({authData}) {
+      return 'EduTatarRu:' + authData.login.toLowerCase();
     },
   },
   periods: {
-    getLenPeriods: {
-      cacheTime: 0,
-      staleTime: 0,
-      async queryFn(): Promise<number> {
-        const terms = await Req.post(
-          'https://edu.tatar.ru/user/diary/term?term=1',
-          {},
-          {
-            Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-          },
-          'form',
-          'text',
-        );
-        const $ = cheerio.load(terms.trim());
-        return $('#term').children().length - 1;
-      },
+    async getLenPeriods(){
+      const terms = await Req.post(
+        'https://edu.tatar.ru/user/diary/term?term=1',
+        {},
+        {
+          Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        },
+        'form',
+        'text',
+      );
+      const $ = cheerio.load(terms.trim());
+      return $('#term').children().length - 1;
     },
-    getPeriodsWith: {
-      async queryFn({queryKey}) {
-        const [{period}] = queryKey;
-        return getPeriodsWith(period as number);
-      },
+    async getPeriodsWith({period}) {
+      return getPeriodsWith(period as number);
     },
-    getAllPeriods: {
-      async queryFn({queryKey}) {
-        const {account, user} = queryKey[0];
-        const lenPeriods = await eduTatarParser.periods.getLenPeriods({
-          account,
-          user,
-        });
+    async getAllPeriods({account, user}) {
+      const lenPeriods = await this.getLenPeriods({
+        account,
+        user,
+      });
 
-        const response = await Promise.all(
-          Array(lenPeriods)
-            .fill(null)
-            .map(async (u, i: number) =>
-              eduTatarParser.periods.getPeriodsWith({
-                period: i,
-                account,
-                user,
-              }),
-            ),
-        );
+      const response = await Promise.all(
+        Array(lenPeriods)
+          .fill(null)
+          .map(async (u, i: number) =>
+            this.getPeriodsWith({
+              period: i,
+              account,
+              user,
+            }),
+          ),
+      );
 
-        return response.flat();
-      },
+      return response.flat();
     },
   },
   diary: {
-    getDaysWithDay: {
-      async queryFn({queryKey}) {
-        const [{user, sDate}] = queryKey;
-        return getDaysWithDay(user, sDate);
-      },
+    async getDaysWithDay({user, sDate}) {
+      return getDaysWithDay(user, sDate);
     },
   },
 });

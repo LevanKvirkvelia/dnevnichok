@@ -11,11 +11,11 @@ import {AuthInput} from '../../features/auth/components/AuthInput';
 import {Button} from '../../ui/Button';
 import {PrivacyMessage} from '../../features/auth/components/PrivacyMessage';
 import {Link} from '../../ui/Link';
-import {openLink} from '../../shared/helpers/openLink';
 import {useMutation} from '@tanstack/react-query';
 import {doLogin} from '../../features/auth/hooks/useDoLogin';
 import {errorToString} from '../../shared/helpers/errorToString';
-import { WORKERS } from '../../features/parsers/parsers/Workers';
+import {openLink} from '../../shared/hooks/useOptimisticOpenLink';
+import {WORKERS} from '../../features/parsers/Workers';
 
 export const Password = () => {
   const {colors} = useTheme();
@@ -29,13 +29,6 @@ export const Password = () => {
     },
   });
 
-  const getRecoveryURL = () =>
-    engine === 'MOS.RU'
-      ? `${WORKERS[engine].recoveryLink}?login=${encodeURIComponent(
-          form.login,
-        )}`
-      : WORKERS[engine].recoveryLink;
-
   const loginMutation = useMutation(
     () => {
       return doLogin({
@@ -47,7 +40,7 @@ export const Password = () => {
     {
       onError(error) {
         if (errorToString(error)?.includes('Ваш пароль устарел')) {
-          openLink(getRecoveryURL()!);
+          openLink(WORKERS[engine].recoveryLink!);
         }
       },
     },
@@ -59,11 +52,7 @@ export const Password = () => {
     <AvoidingScrollContainer>
       <View className="items-center px-6">
         <View style={{marginTop: 36}}>
-          <FastImage
-            source={WORKERS[engine].logo}
-            style={{height: 85, width: 85}}
-            resizeMode="contain"
-          />
+          <FastImage source={WORKERS[engine].logo} style={{height: 85, width: 85}} resizeMode="contain" />
         </View>
         <Text
           style={{
@@ -88,7 +77,7 @@ export const Password = () => {
               loginMutation.isLoading ? (
                 <ActivityIndicator color={colors.textOnRow} />
               ) : WORKERS[engine].recoveryLink ? (
-                <Link href={getRecoveryURL()}>Я не знаю пароль</Link>
+                <Link href={WORKERS[engine].recoveryLink}>Я не знаю пароль</Link>
               ) : null
             }
           />

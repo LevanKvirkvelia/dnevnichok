@@ -5,9 +5,9 @@ import {useIDFA} from '../../features/ads/useIDFA';
 import {useTheme} from '../../features/themes/useTheme';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {HeaderBackButton} from '@react-navigation/elements';
-import {openLink} from '../../shared/helpers/openLink';
 import {EngineList} from '../../features/auth/components/EngineList';
 import {AuthNavigationProp} from './Auth';
+import {openLink} from '../../shared/hooks/useOptimisticOpenLink';
 
 export const EngineSelect = () => {
   const {colors} = useTheme();
@@ -22,11 +22,7 @@ export const EngineSelect = () => {
         flex: 1,
         backgroundColor: colors.primary,
       }}>
-      <ScrollView
-        contentContainerStyle={[
-          {flex: 1},
-          Platform.OS === 'web' ? {alignItems: 'center'} : {},
-        ]}>
+      <ScrollView contentContainerStyle={[{flex: 1}, Platform.OS === 'web' ? {alignItems: 'center'} : {}]}>
         <View style={{alignSelf: 'flex-start', marginTop: top + 15}}>
           {navigation.canGoBack() ? (
             <HeaderBackButton
@@ -40,9 +36,7 @@ export const EngineSelect = () => {
         </View>
         <View style={{padding: 20, flexGrow: 2, justifyContent: 'center'}}>
           <View style={{alignItems: 'center'}}>
-            <Text style={{fontWeight: 'bold', color: 'white', fontSize: 30}}>
-              Выберите дневник
-            </Text>
+            <Text style={{fontWeight: 'bold', color: 'white', fontSize: 30}}>Выберите дневник</Text>
             <Text
               style={{
                 color: 'rgba(255, 255, 255, 0.75)',

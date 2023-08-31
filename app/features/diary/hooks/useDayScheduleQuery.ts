@@ -1,7 +1,7 @@
 import {FetchQueryOptions, useQuery, useQueryClient} from '@tanstack/react-query';
 import {useActiveAccount, useActiveUser} from '../../auth/hooks/useActiveUser';
-import {getParser} from '../../parsers/parsers/getParser';
 import {SDate} from '../../auth/helpers/SDate';
+import { getParser } from '../../parsers/getParser';
 
 const HOUR = 1000 * 60 * 60;
 const DAY = HOUR * 24;

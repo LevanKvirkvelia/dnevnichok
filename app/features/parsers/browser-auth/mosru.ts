@@ -1,13 +1,13 @@
 import {useCallback, useEffect, useRef} from 'react';
-import {HeadlessBrowserHandlers, useHeadlessBrowser} from '../../HeadlessBrowser/HeadlessBrowser';
+import {HeadlessBrowserHandlers, useHeadlessBrowser} from '../HeadlessBrowser/HeadlessBrowser';
 
-import {setUrlParams} from '../../../auth/helpers/setUrlParams';
-import {useAuthFormStore} from '../../../auth/state/useAuthFormStore';
-import {useActiveAccount} from '../../../auth/hooks/useActiveUser';
+import {setUrlParams} from '../../auth/helpers/setUrlParams';
+import {useAuthFormStore} from '../../auth/state/useAuthFormStore';
+import {useActiveAccount} from '../../auth/hooks/useActiveUser';
 import {getToken} from '../engines/Mosru/Mosru';
 import {getParser} from '../getParser';
 import {BaseProps} from '../createParser';
-import {useGetLatest} from '../../../../shared/hooks/useGetLatest';
+import {useGetLatest} from '../../../shared/hooks/useGetLatest';
 
 export function InjectMosAuth() {
   const doRelogin = useHeadlessRelogin();

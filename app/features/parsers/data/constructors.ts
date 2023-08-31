@@ -58,7 +58,7 @@ export class DayScheduleConstructor {
 
   toDaySchedule(): IDaySchedule {
     return {
-      date: this.date,
+      ddmmyyyy: this.date,
       lessons: Object.values(this.data).sort((a, b) => a.number - b.number),
     };
   }

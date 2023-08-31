@@ -10,7 +10,7 @@ import {RootStackParamList} from './types';
 const RootStack = createStackNavigator<RootStackParamList>();
 
 export default function RootNavigation() {
-  const activeUser = useActiveUser();
+  const activeUser = useActiveUser(false);
 
   return (
     <RootStack.Navigator

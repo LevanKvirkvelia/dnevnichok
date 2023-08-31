@@ -1,3 +1,7 @@
+import { SDate } from '../../../auth/helpers/SDate';
+import { ParsedUser, SessionData } from '../../../auth/state/useUsersStore';
+import { PeriodConstructor, DayScheduleConstructor } from '../../data/constructors';
+import { IPeriod, IMark, IDaySchedule, ILesson } from '../../data/types';
 import {
   Child,
   CoreAPIMarks,
@@ -10,11 +14,7 @@ import {
   JerseyAPIScheduleItems,
   ReportsAPIProgressJSON,
 } from './types';
-import {IDaySchedule, ILesson, IMark, IPeriod} from '../../../data/types';
-import {ParsedUser, SessionData} from '../../../../auth/state/useUsersStore';
 import {stringMd5} from 'react-native-quick-md5';
-import {DayScheduleConstructor, PeriodConstructor} from '../../../data/constructors';
-import {SDate} from '../../../../auth/helpers/SDate';
 
 export class Transformer {
   static createStudent(

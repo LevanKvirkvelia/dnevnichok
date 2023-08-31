@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, ViewProps} from 'react-native';
-import {Divider} from '../settingsList/Divider';
+import {Divider} from '../SettingsList/Divider';
 
 interface CardSettingsListProps extends ViewProps {
   debug?: boolean;

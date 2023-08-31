@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "react-native setup-ios-permissions"
   },
   "reactNativePermissionsIOS": [
     "AppTrackingTransparency",
@@ -39,6 +40,7 @@
     "endent": "^2.1.0",
     "immer": "^10.0.2",
     "nativewind": "^2.0.11",
+    "pod-install": "^0.1.39",
     "qs": "^6.11.2",
     "react": "18.2.0",
     "react-content-loader": "^6.2.1",
@@ -50,6 +52,7 @@
     "react-native-gesture-handler": "^2.12.1",
     "react-native-keychain": "^8.1.2",
     "react-native-mmkv": "^2.10.2",
+    "react-native-pager-view": "^6.2.1",
     "react-native-permissions": "^3.8.4",
     "react-native-quick-md5": "^3.0.5",
     "react-native-reanimated": "^3.4.2",
@@ -60,6 +63,7 @@
     "react-native-vector-icons": "^10.0.0",
     "react-native-webview": "^13.4.0",
     "typograf": "^7.1.0",
+    "url": "^0.11.1",
     "zustand": "^4.4.1"
   },
   "devDependencies": {

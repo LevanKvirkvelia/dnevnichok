@@ -1,3 +1,6 @@
+import { Req } from '../../../auth/helpers/Req';
+import { SDate } from '../../../auth/helpers/SDate';
+import { SessionData } from '../../../auth/state/useUsersStore';
 import {
   CoreAPIMarks,
   CoreAPIRooms,
@@ -9,9 +12,6 @@ import {
   MobileAPIVProfile,
   ReportsAPIProgressJSON,
 } from './types';
-import {Req} from '../../../../auth/helpers/Req';
-import {SDate} from '../../../../auth/helpers/SDate';
-import {SessionData} from '../../../../auth/state/useUsersStore';
 
 export class API {
   static AcademicYear = '9';

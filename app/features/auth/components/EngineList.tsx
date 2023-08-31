@@ -1,22 +1,16 @@
 import React from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
-import {EngineNames} from '../../parsers/parsers/getParser';
 import {useTheme} from '../../themes/useTheme';
-import {WORKERS} from '../../parsers/parsers/Workers';
 import {useAuthFormStore} from '../state/useAuthFormStore';
 import FastImage from 'react-native-fast-image';
 import {IonIcon} from '../../../ui/IonIcon';
+import {WORKERS} from '../../parsers/Workers';
+import {EngineNames} from '../../parsers/getParser';
 
-export function EngineList({
-  onNavigate,
-}: {
-  onNavigate(engine: EngineNames): void;
-}) {
+export function EngineList({onNavigate}: {onNavigate(engine: EngineNames): void}) {
   const {colors} = useTheme();
 
-  const engines = Object.values(WORKERS).filter(
-    (w): w is NonNullable<typeof w> => !!w,
-  );
+  const engines = Object.values(WORKERS).filter((w): w is NonNullable<typeof w> => !!w);
 
   const {setEngine} = useAuthFormStore();
 
@@ -36,11 +30,7 @@ export function EngineList({
               borderTopWidth: index ? 1 : 0,
             }}>
             <View style={{flex: 1, flexDirection: 'row'}}>
-              <FastImage
-                source={engine.logo!}
-                style={{width: 38, height: 38}}
-                resizeMode="contain"
-              />
+              <FastImage source={engine.logo!} style={{width: 38, height: 38}} resizeMode="contain" />
               <View style={{marginLeft: 12}}>
                 <Text
                   style={{
@@ -51,19 +41,11 @@ export function EngineList({
                   {engine.name}
                 </Text>
                 {engine.subTitle ? (
-                  <Text
-                    style={{color: '#818388', fontSize: 12, lineHeight: 14}}>
-                    {engine.subTitle}
-                  </Text>
+                  <Text style={{color: '#818388', fontSize: 12, lineHeight: 14}}>{engine.subTitle}</Text>
                 ) : null}
               </View>
             </View>
-            <IonIcon
-              name="chevron-forward"
-              style={{marginLeft: 10}}
-              size={25}
-              color="#BCBEC6"
-            />
+            <IonIcon name="chevron-forward" style={{marginLeft: 10}} size={25} color="#BCBEC6" />
           </TouchableOpacity>
         );
       })}

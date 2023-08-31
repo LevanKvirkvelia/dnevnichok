@@ -1,9 +1,9 @@
 import React from 'react';
-import {Linking, Platform, Text, TextProps} from 'react-native';
+import {Text, TextProps} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 
-import {openLink} from '../shared/helpers/openLink';
 import {useTheme} from '../features/themes/useTheme';
+import {openLink} from '../shared/hooks/useOptimisticOpenLink';
 
 interface LinkProps extends TextProps {
   disabled?: boolean;
@@ -12,15 +12,7 @@ interface LinkProps extends TextProps {
   onPress?(): void;
 }
 
-export const Link: React.FC<LinkProps> = ({
-  style,
-  children,
-  to,
-  href,
-  onPress,
-  disabled,
-  ...props
-}) => {
+export const Link: React.FC<LinkProps> = ({style, children, to, href, onPress, disabled, ...props}) => {
   const {colors} = useTheme();
   const navigation = useNavigation<any>(); // TODO FIX
 

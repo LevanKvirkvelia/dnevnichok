@@ -1,20 +1,13 @@
 import React, {useEffect} from 'react';
-import {
-  Button as NativeButton,
-  Platform,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Button as NativeButton, Platform, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 
 import Color from 'color';
 import {AuthNavigationProp} from '../../../navigation/auth/Auth';
 import {HeaderBackButton} from '@react-navigation/elements';
 import {useTheme} from '../../themes/useTheme';
-import {useGetLatest} from '../../../shared/helpers/useGetLatest';
 import {IconButton} from '../../../ui/IconButton';
-
+import {useGetLatest} from '../../../shared/hooks/useGetLatest';
 
 // TODO Refactoring
 export const useAuthHeader = ({
@@ -48,10 +41,7 @@ export const useAuthHeader = ({
     navigation.setOptions({
       title: header,
       headerTitle: () => (
-        <TouchableOpacity
-          disabled={!canClose}
-          onPress={closeModal}
-          style={{alignItems: 'center'}}>
+        <TouchableOpacity disabled={!canClose} onPress={closeModal} style={{alignItems: 'center'}}>
           <Text
             style={{
               fontWeight: '600',
@@ -93,13 +83,7 @@ export const useAuthHeader = ({
         if (Platform.OS === 'ios') {
           content = <NativeButton title="Закрыть" onPress={closeModal} />;
         } else {
-          content = (
-            <IconButton
-              onPress={closeModal}
-              name="close"
-              color={colors.textOnRow}
-            />
-          );
+          content = <IconButton onPress={closeModal} name="close" color={colors.textOnRow} />;
         }
 
         return <View>{canClose ? content : null}</View>;

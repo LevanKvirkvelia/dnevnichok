@@ -6,7 +6,7 @@ import {useAuthFormStore} from '../../features/auth/state/useAuthFormStore';
 import {errorToString} from '../../shared/helpers/errorToString';
 import {useMutation} from '@tanstack/react-query';
 import {doLogin} from '../../features/auth/hooks/useDoLogin';
-import {useStartSMSAuth} from '../../features/parsers/parsers/browser-auth/mosru';
+import {useStartSMSAuth} from '../../features/parsers/browser-auth/mosru';
 
 export function SMSAuth() {
   const {colors} = useTheme();
