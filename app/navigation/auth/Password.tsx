@@ -5,17 +5,17 @@ import {useNavigation} from '@react-navigation/core';
 import {useAuthHeader} from '../../features/auth/hooks/useAuthHeader';
 import {useTheme} from '../../features/themes/useTheme';
 import {useAuthFormStore} from '../../features/auth/state/useAuthFormStore';
-import {AvoidingScrollContainer} from '../../components/AvoidingScrollContainer';
+import {AvoidingScrollContainer} from '../../shared/components/AvoidingScrollContainer';
 import FastImage from 'react-native-fast-image';
 import {AuthInput} from '../../features/auth/components/AuthInput';
 import {Button} from '../../ui/Button';
 import {PrivacyMessage} from '../../features/auth/components/PrivacyMessage';
 import {Link} from '../../ui/Link';
-import {openLink} from '../../helpers/openLink';
+import {openLink} from '../../shared/helpers/openLink';
 import {useMutation} from '@tanstack/react-query';
 import {doLogin} from '../../features/auth/hooks/useDoLogin';
-import {errorToString} from '../../helpers/errorToString';
-import { WORKERS } from '../../features/auth/parsers/Workers';
+import {errorToString} from '../../shared/helpers/errorToString';
+import { WORKERS } from '../../features/parsers/parsers/Workers';
 
 export const Password = () => {
   const {colors} = useTheme();

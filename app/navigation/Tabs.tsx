@@ -1,17 +1,10 @@
 import React from 'react';
-import {
-  createBottomTabNavigator,
-  BottomTabBar,
-  BottomTabBarProps,
-} from '@react-navigation/bottom-tabs';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Platform} from 'react-native';
-import {Profile} from './Profile/Profile';
-import {DiaryTab} from './Diary/DiaryTab';
-import {PeriodsTab} from './Periods/PeriodsTab';
-import {UserAvatar} from '../features/avatar/containers/UserAvatar';
+import {DiaryTab} from './diary/DiaryTab';
 import {DiaryIcon} from '../icons/DiaryIcon';
 import {PeriodsIcon} from '../icons/PeriodsIcon';
-import { useTheme } from '../features/themes/useTheme';
+import {useTheme} from '../features/themes/useTheme';
 
 const Tab = createBottomTabNavigator();
 
@@ -64,9 +57,7 @@ export default function Tabs() {
         component={Profile}
         options={{
           tabBarLabel: 'Профиль',
-          tabBarIcon: props => (
-            <UserAvatar {...props} containerStyle={{margin: 0}} size={23} />
-          ),
+          tabBarIcon: props => <UserAvatar {...props} containerStyle={{margin: 0}} size={23} />,
         }}
       />
     </Tab.Navigator>

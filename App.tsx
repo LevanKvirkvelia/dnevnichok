@@ -1,36 +1,32 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native';
-import {View} from 'react-native';
 import {FlashMessage} from './app/ui/FlashMessage';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
-import {HeadlessBrowserProvider} from './app/features/auth/parsers/browser-auth/HeadlessBrowser';
+import {QueryClientProvider} from '@tanstack/react-query';
 import RootNavigation from './app/navigation/Root';
+import {RootStackParamList} from './app/navigation/types';
+import {HeadlessBrowserProvider} from './app/features/parsers/HeadlessBrowser/HeadlessBrowser';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { mmkvClientPersister, queryClient } from './app/shared/helpers/persistedQueryClient';
 
-const queryClient = new QueryClient({});
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
 
 function App(): JSX.Element {
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider client={queryClient} persistOptions={{persister:mmkvClientPersister}}>
       <HeadlessBrowserProvider>
         <SafeAreaProvider>
           <NavigationContainer>
-            <View>
-              <RootNavigation />
-              <FlashMessage />
-            </View>
+            <RootNavigation />
+            <FlashMessage />
           </NavigationContainer>
         </SafeAreaProvider>
       </HeadlessBrowserProvider>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 }
 

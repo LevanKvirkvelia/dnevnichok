@@ -2,12 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {View, Text} from 'react-native';
 import {useAuthHeader} from '../../features/auth/hooks/useAuthHeader';
 import {useAuthFormStore} from '../../features/auth/state/useAuthFormStore';
-import {errorToString} from '../../helpers/errorToString';
+import {errorToString} from '../../shared/helpers/errorToString';
 import {useTheme} from '../../features/themes/useTheme';
 
 import {useMutation} from '@tanstack/react-query';
-import {doLogin} from '../../features/auth/hooks/useDoLogin';
-import {useVisibleMosAuth} from '../../features/auth/parsers/browser-auth/helpers/mosru';
+import {processLogin} from '../../features/auth/hooks/useDoLogin';
+import {useVisibleMosAuth} from '../../features/parsers/parsers/browser-auth/mosru';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 
 export function MosPassword() {
   const {colors} = useTheme();
@@ -17,20 +18,23 @@ export function MosPassword() {
 
   const {form, setForm} = useAuthFormStore();
 
+  const navigator = useNavigation<NavigationProp<any>>();
+
   useAuthHeader({header: 'MOS.RU', onBack: () => setForm({password: ''})});
-  const authQuery = useMutation(
+  const {mutate} = useMutation(
     ['MosAuth'],
     async () => {
-      return startAuth();
+      const {pid, token} = await startAuth();
+      await processLogin({
+        authData: form,
+        sessionData: {token, pid},
+        engine: 'MOS.RU',
+      });
     },
     {
-      onSuccess({token, pid}) {
-        doLogin({
-          authData: form,
-          sessionData: {token, pid},
-          engine: 'MOS.RU',
-          isAuth: true,
-        });
+      onSuccess() {
+        console.log('success auth');
+        navigator.navigate('Tabs');
       },
       onError(error) {
         setError(errorToString(error));
@@ -39,14 +43,13 @@ export function MosPassword() {
   );
 
   useEffect(() => {
-    authQuery.mutate();
-  }, [authQuery]);
+    console.log('authQuery');
+    mutate();
+  }, [mutate]);
 
   return (
     <View style={{flex: 1, minHeight: 100}}>
-      {error ? (
-        <Text style={{color: colors.problem, marginTop: 5}}>{error}</Text>
-      ) : null}
+      {error ? <Text style={{color: colors.problem, marginTop: 5}}>{error}</Text> : null}
       <View style={{flex: 1, display: error ? 'none' : 'flex'}}>{webview}</View>
     </View>
   );

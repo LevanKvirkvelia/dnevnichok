@@ -2,7 +2,7 @@ import React from 'react';
 import {Linking, Platform, Text, TextProps} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 
-import {openLink} from '../helpers/openLink';
+import {openLink} from '../shared/helpers/openLink';
 import {useTheme} from '../features/themes/useTheme';
 
 interface LinkProps extends TextProps {

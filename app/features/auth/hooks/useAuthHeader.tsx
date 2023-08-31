@@ -12,9 +12,11 @@ import Color from 'color';
 import {AuthNavigationProp} from '../../../navigation/auth/Auth';
 import {HeaderBackButton} from '@react-navigation/elements';
 import {useTheme} from '../../themes/useTheme';
-import {useGetLatest} from '../../../helpers/useGetLatest';
+import {useGetLatest} from '../../../shared/helpers/useGetLatest';
 import {IconButton} from '../../../ui/IconButton';
 
+
+// TODO Refactoring
 export const useAuthHeader = ({
   header,
   subHeader = null,

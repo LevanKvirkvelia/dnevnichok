@@ -7,10 +7,10 @@ import {useAuthFormStore} from '../../features/auth/state/useAuthFormStore';
 import {AuthInput} from '../../features/auth/components/AuthInput';
 import {useTheme} from '../../features/themes/useTheme';
 import FastImage from 'react-native-fast-image';
-import {AvoidingScrollContainer} from '../../components/AvoidingScrollContainer';
+import {AvoidingScrollContainer} from '../../shared/components/AvoidingScrollContainer';
 import {Button} from '../../ui/Button';
 import {useAuthHeader} from '../../features/auth/hooks/useAuthHeader';
-import {WORKERS} from '../../features/auth/parsers/Workers';
+import {WORKERS} from '../../features/parsers/parsers/Workers';
 
 export const Login = () => {
   const {colors} = useTheme();

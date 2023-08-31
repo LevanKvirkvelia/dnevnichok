@@ -3,10 +3,10 @@ import {View, Text} from 'react-native';
 import {useTheme} from '../../features/themes/useTheme';
 import {useAuthHeader} from '../../features/auth/hooks/useAuthHeader';
 import {useAuthFormStore} from '../../features/auth/state/useAuthFormStore';
-import {errorToString} from '../../helpers/errorToString';
+import {errorToString} from '../../shared/helpers/errorToString';
 import {useMutation} from '@tanstack/react-query';
 import {doLogin} from '../../features/auth/hooks/useDoLogin';
-import {useStartSMSAuth} from '../../features/auth/parsers/browser-auth/helpers/mosru';
+import {useStartSMSAuth} from '../../features/parsers/parsers/browser-auth/mosru';
 
 export function SMSAuth() {
   const {colors} = useTheme();

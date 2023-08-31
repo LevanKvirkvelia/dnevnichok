@@ -1,8 +1,8 @@
 import React from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
-import {EngineNames} from '../parsers/DiaryParsers';
+import {EngineNames} from '../../parsers/parsers/getParser';
 import {useTheme} from '../../themes/useTheme';
-import {WORKERS} from '../parsers/Workers';
+import {WORKERS} from '../../parsers/parsers/Workers';
 import {useAuthFormStore} from '../state/useAuthFormStore';
 import FastImage from 'react-native-fast-image';
 import {IonIcon} from '../../../ui/IonIcon';
@@ -30,12 +30,8 @@ export function EngineList({
               setEngine(engine.name);
               if (onNavigate) onNavigate(engine.name);
             }}
+            className="flex-row justify-center items-center py-4 px-5"
             style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingVertical: 18,
-              paddingHorizontal: 20,
               borderColor: colors.border,
               borderTopWidth: index ? 1 : 0,
             }}>

@@ -1,6 +1,6 @@
 import {create} from 'zustand';
 import {devtools, persist} from 'zustand/middleware';
-import {EngineNames} from '../parsers/DiaryParsers';
+import {EngineNames} from '../../parsers/parsers/getParser';
 
 interface AuthFormState {
   engine: EngineNames;
@@ -27,8 +27,8 @@ export const useAuthFormStore = create<AuthFormState>()(set => ({
   clearForm: () => set(() => ({form: {login: '', password: ''}})),
   setEngine: engine => set(() => ({engine})),
   setForm: form =>
-    set(() => ({
-      form: {...form, login: form.login || '', password: form.password || ''},
+    set(state => ({
+      form: {...state.form, ...form},
     })),
 
   setError: error => set(() => ({error})), // todo remove

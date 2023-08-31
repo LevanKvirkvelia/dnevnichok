@@ -13,8 +13,9 @@ import {ProgressBar} from '../components/ProgressBar';
 import {DefaultFunctions} from '../helpers/DefaultFunctions';
 import {useActiveAccount, useActiveUser} from '../../auth/hooks/useActiveUser';
 import {NavButton} from '../../../ui/NavButton';
+import {EngineNames} from '../../parsers/parsers/getParser';
 
-export const webFunctionsMap = {
+export const webFunctionsMap: Record<EngineNames, typeof MosWebFunctions> = {
   'MOS.RU': MosWebFunctions,
   'Петербургское образование': SpbWebFunctions,
   'edu.tatar.ru': TatarWebFunctions,
@@ -65,18 +66,13 @@ export function Web({
       return `<style>*{margin:0;}</style><img src="${startUrl}" width="100%" />`;
     }
 
-    if (
-      format &&
-      ['doc', 'docx', 'pdf', 'ppt', 'pptx', 'xls', 'xlsx'].includes(format)
-    ) {
+    if (format && ['doc', 'docx', 'pdf', 'ppt', 'pptx', 'xls', 'xlsx'].includes(format)) {
       return `<style>*{margin:0;}</style><iframe width="100%" height="100%" src="http://docs.google.com/viewer?url=${startUrl}&embedded=true"></iframe>`;
     }
   };
 
   const startHtml = getStartHtml();
-  const [source, setSource] = useState(
-    startHtml ? {html: startHtml} : {uri: startUrl || webFunctions.DEFAULT_URL},
-  );
+  const [source, setSource] = useState(startHtml ? {html: startHtml} : {uri: startUrl || webFunctions.DEFAULT_URL});
 
   useEffect(() => {
     if (!showHeaderRightReload || !webview) return;
@@ -105,9 +101,7 @@ export function Web({
       {isVisible ? null : <LoadingSplash />}
       <View
         style={[
-          isVisible && canDisplay
-            ? {flex: 1}
-            : {position: 'absolute', height, width, left: -1000 - width},
+          isVisible && canDisplay ? {flex: 1} : {position: 'absolute', height, width, left: -1000 - width},
           {overflow: 'hidden'},
         ]}>
         <View style={{flex: 1}}>
@@ -120,12 +114,7 @@ export function Web({
             injectedJavaScript={injectedJavaScript}
             onMessage={() => null} // should be added in order to `injectedJavaScript` prop work
             onNavigationStateChange={event => {
-              const {
-                url,
-                canGoBack: newCanGoBack,
-                canGoForward: newCanGoForward,
-                loading,
-              } = event;
+              const {url, canGoBack: newCanGoBack, canGoForward: newCanGoForward, loading} = event;
               navigation.setParams({url, loading});
               webFunctions.onNavigationStateChange?.({
                 nextUrl,
@@ -180,12 +169,7 @@ export function Web({
           />
         </View>
       </View>
-      <BottomBar
-        webview={webview}
-        url={uri}
-        canGoBack={canGoBack}
-        canGoForward={canGoForward}
-      />
+      <BottomBar webview={webview} url={uri} canGoBack={canGoBack} canGoForward={canGoForward} />
     </>
   );
 }

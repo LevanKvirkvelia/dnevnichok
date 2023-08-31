@@ -5,7 +5,7 @@ import {useIDFA} from '../../features/ads/useIDFA';
 import {useTheme} from '../../features/themes/useTheme';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {HeaderBackButton} from '@react-navigation/elements';
-import {openLink} from '../../helpers/openLink';
+import {openLink} from '../../shared/helpers/openLink';
 import {EngineList} from '../../features/auth/components/EngineList';
 import {AuthNavigationProp} from './Auth';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import {Platform, StyleSheet, Text, TouchableOpacity} from 'react-native';
 
 import {IonIcon} from './IonIcon';
-import {getContrastColor} from '../helpers/getContrastColor';
+import {getContrastColor} from '../shared/helpers/getContrastColor';
 
 export function NavButton(props: {
   left?: boolean;

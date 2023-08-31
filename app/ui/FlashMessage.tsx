@@ -3,7 +3,7 @@ import RNFlashMessage, {
   showMessage as showFlashMessage,
   MessageOptions,
 } from 'react-native-flash-message';
-import {useKeyboardHeight} from '../helpers/useKeyboardHeight';
+import {useKeyboardHeight} from '../shared/helpers/useKeyboardHeight';
 
 const flashMessageRef = React.createRef<
   null | any

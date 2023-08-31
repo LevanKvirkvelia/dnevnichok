@@ -1,17 +1,28 @@
 import {useMemo} from 'react';
-import {useUsersStore} from '../state/useUsersStore';
+import {Account, User, useUsersStore} from '../state/useUsersStore';
 
-export function useActiveUser() {
+export function useActiveUser(): User;
+export function useActiveUser(suspense: true): User;
+export function useActiveUser(suspense: false): User | undefined;
+export function useActiveUser(suspense = true): User | undefined {
   const {getActiveUser, activeAccountId, activeUserId} = useUsersStore();
 
-  return useMemo(
-    () => getActiveUser(),
-    [getActiveUser, activeAccountId, activeUserId],
-  );
+  if (suspense && (!activeAccountId || !activeUserId)) {
+    throw new Error('No active user');
+  }
+
+  return useMemo(() => getActiveUser(), [getActiveUser, activeAccountId, activeUserId]);
 }
 
-export function useActiveAccount() {
-  const {getActiveAccount, activeAccountId, activeUserId} = useUsersStore();
+export function useActiveAccount(): Account;
+export function useActiveAccount(suspense: true): Account;
+export function useActiveAccount(suspense: false): Account | undefined;
+export function useActiveAccount(suspense = true): Account | undefined {
+  const {getActiveAccount, activeAccountId} = useUsersStore();
+
+  if (suspense && !activeAccountId) {
+    throw new Error('No active account');
+  }
 
   return useMemo(() => getActiveAccount(), [getActiveAccount, activeAccountId]);
 }
