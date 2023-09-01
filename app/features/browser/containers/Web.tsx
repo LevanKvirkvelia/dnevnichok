@@ -13,7 +13,8 @@ import {ProgressBar} from '../components/ProgressBar';
 import {DefaultFunctions} from '../helpers/DefaultFunctions';
 import {useActiveAccount, useActiveUser} from '../../auth/hooks/useActiveUser';
 import {NavButton} from '../../../ui/NavButton';
-import {EngineNames} from '../../parsers/parsers/getParser';
+import {EngineNames} from '../../parsers/getParser';
+import {DiaryTabScreenProps} from '../../../navigation/types';
 
 export const webFunctionsMap: Record<EngineNames, typeof MosWebFunctions> = {
   'MOS.RU': MosWebFunctions,
@@ -42,7 +43,7 @@ export function Web({
   showHeaderRightReload = false,
 }: WebProps) {
   const account = useActiveAccount()!;
-  const navigation = useNavigation();
+  const navigation = useNavigation<DiaryTabScreenProps<'InAppBrowser'>['navigation']>();
   const webview = useRef<WebView>(null);
 
   const [isVisible, setVisible] = useState(!!startUrl);
@@ -115,7 +116,7 @@ export function Web({
             onMessage={() => null} // should be added in order to `injectedJavaScript` prop work
             onNavigationStateChange={event => {
               const {url, canGoBack: newCanGoBack, canGoForward: newCanGoForward, loading} = event;
-              navigation.setParams({url, loading});
+              navigation.setParams({displayUrl: url});
               webFunctions.onNavigationStateChange?.({
                 nextUrl,
                 event,

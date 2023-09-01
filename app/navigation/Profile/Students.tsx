@@ -17,6 +17,8 @@ import {useActiveUser} from '../../features/auth/hooks/useActiveUser';
 import {IonIcon} from '../../ui/IonIcon';
 import {AvatarPicker, AvatarPickerRef} from '../../features/profile/components/AvatarPicker';
 import {Avatar} from '../../features/profile/components/Avatar';
+import {useOTAVersionQuery} from '../../features/codePush/hooks/useOTAVersion';
+import {useOTAState} from '../../features/codePush/state/useOTAState';
 
 export function StudentsList() {
   const navigation = useNavigation();
@@ -62,7 +64,7 @@ export function StudentsList() {
             navigation.navigate('Auth', {
               screen: 'Login',
             })
-          } // TODO ADD user
+          }
           title="Добавить пользователя"
           hasNavArrow
         />
@@ -88,6 +90,9 @@ export function Students() {
 
   const [isEmulator] = useState(isEmulatorSync());
   const [isAdmin = false, setIsAdmin] = useMMKVBoolean('isAdmin');
+
+  const appVersion = useOTAVersionQuery();
+  const {progress} = useOTAState();
 
   return (
     <ThemedScrollView style={{paddingBottom: 20}}>
@@ -185,13 +190,12 @@ export function Students() {
           <SettingsListItem onPress={() => fullLogout()} title="Выход" hasNavArrow />
         </CardSettingsList>
       </Card>
-      {/* 
-	  // TODO 
-	  <View style={{alignItems: 'center', padding: 8}}>
+
+      <View style={{alignItems: 'center', padding: 8}}>
         <Text style={{color: colors.textOnRow, opacity: 0.2}}>
-          {appVersion} - {(+otaPercent).toFixed(2) * 100}
+          {appVersion.data} - {+progress * 100}
         </Text>
-      </View> */}
+      </View>
     </ThemedScrollView>
   );
 }

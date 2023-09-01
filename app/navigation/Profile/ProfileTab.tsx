@@ -6,7 +6,7 @@ import {AdminPage} from './AdminPage';
 
 const Stack = createStackNavigator();
 
-export function Profile() {
+export function ProfileTab() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Students" component={Students} />

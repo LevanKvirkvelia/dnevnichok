@@ -6,7 +6,7 @@ import {DiaryIcon} from '../icons/DiaryIcon';
 import {PeriodsIcon} from '../icons/PeriodsIcon';
 import {useTheme} from '../features/themes/useTheme';
 import {PeriodsTab} from './periods/PeriodsTab';
-import {Profile} from './Profile/Profile';
+import {ProfileTab} from './Profile/ProfileTab';
 import {useActiveUser} from '../features/auth/hooks/useActiveUser';
 import {Avatar} from '../features/profile/components/Avatar';
 
@@ -19,7 +19,6 @@ export default function Tabs() {
   return (
     <Tab.Navigator
       initialRouteName={'DiaryTab'}
-      //   safeAreaInsets={{}} TODO ADS
       screenOptions={{
         tabBarActiveTintColor: colors.activeTab,
         tabBarInactiveTintColor: colors.inactiveTab,
@@ -60,7 +59,7 @@ export default function Tabs() {
       <Tab.Screen
         key="ProfileTab"
         name="ProfileTab"
-        component={Profile}
+        component={ProfileTab}
         options={{
           tabBarLabel: 'Профиль',
           tabBarIcon: props => <Avatar {...props} user={user} containerStyle={{margin: 0}} size={23} />,
