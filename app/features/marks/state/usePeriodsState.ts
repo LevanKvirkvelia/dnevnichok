@@ -57,7 +57,7 @@ export const usePeriodsState = create<usePeriodsState>()(
   ),
 );
 
-const emptyCustomPeriods: Array<PeriodDate> = []; // a lil hack to remove unnecessary rerenders.
+const emptyCustomPeriods: Array<PeriodDate> = [{day: 1, month: 9}];
 export function useUserPeriodsState() {
   const user = useActiveUser();
   const {userState, setActivePeriod, setVariant, setCustomPeriods} = usePeriodsState();

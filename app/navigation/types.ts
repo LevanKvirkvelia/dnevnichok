@@ -14,17 +14,16 @@ export type PeriodsTabParamList = {
 };
 
 export type PeriodsTabScreenProps = CompositeScreenProps<
-  TabsScreenProps<keyof TabsParamList>,
-  StackScreenProps<PeriodsTabParamList>
+  StackScreenProps<PeriodsTabParamList>,
+  TabsScreenProps<keyof TabsParamList>
 >;
 
 // ------------------ Diary Tab ------------------
 
 export type DiaryTabParamList = {
   Diary: undefined;
-  LessionInfo: {
+  LessonInfo: {
     index: number;
-    title: string;
     ddmmyyyy: string;
   };
   InAppBrowser?: {
@@ -35,9 +34,9 @@ export type DiaryTabParamList = {
   };
 };
 
-export type DiaryTabScreenProps = CompositeScreenProps<
-  TabsScreenProps<keyof TabsParamList>,
-  StackScreenProps<DiaryTabParamList>
+export type DiaryTabScreenProps<T extends keyof DiaryTabParamList> = CompositeScreenProps<
+  StackScreenProps<DiaryTabParamList, T>,
+  TabsScreenProps<keyof TabsParamList>
 >;
 
 // ------------------ Tabs ------------------

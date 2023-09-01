@@ -17,7 +17,7 @@ import {useUserPeriodsState} from '../../features/marks/state/usePeriodsState';
 const {width} = Dimensions.get('window');
 
 const RenderItem = React.memo(({period}: {period: number}) => (
-  <View style={{width, minHeight: 100}}>
+  <View style={{width, minHeight: 100, flex: 1}}>
     <MarksSubjectsList period={period} />
   </View>
 ));
@@ -32,15 +32,15 @@ export function Periods() {
   useDiaryNavOptions({
     headerTitleAlign: 'center',
     headerTitle: () => <PeriodsHeader />,
-    headerRight: () => (
-      <NavButton
-        color={colors.textOnPrimary}
-        style={{padding: 10}}
-        iconName="settings-sharp"
-        size={22}
-        onPress={() => navigation.navigate('PeriodsSettings')}
-      />
-    ),
+    // headerRight: () => (
+    //   <NavButton
+    //     color={colors.textOnPrimary}
+    //     style={{padding: 10}}
+    //     iconName="settings-sharp"
+    //     size={22}
+    //     onPress={() => navigation.navigate('PeriodsSettings')}
+    //   />
+    // ),
   });
 
   const len = periodsLenQuery.data ?? 0;

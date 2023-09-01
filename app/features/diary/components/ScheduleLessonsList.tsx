@@ -15,9 +15,7 @@ import {useInAppBrowser} from '../../../navigation/diary/InAppBrowser';
 import {useUsersStore} from '../../auth/state/useUsersStore';
 import {useDiaryState} from '../state/useDiaryState';
 import {LessonsLoadingSkeleton} from '../../../shared/components/SubjectsLoadingSkeleton';
-import {DiaryTabScreenProps, TabsScreenProps} from '../../../navigation/types';
 import {copyHomework} from '../../../shared/helpers/clipboard';
-import {IDaySchedule} from '../../parsers/data/types';
 import {useDayScheduleQuery} from '../hooks/useDayScheduleQuery';
 
 function ListHeader() {
@@ -67,8 +65,8 @@ function ListHeader() {
 }
 
 export function ScheduleLessonsList({ddmmyyyy}: {ddmmyyyy: string}) {
-  const navigation = useNavigation<DiaryTabScreenProps['navigation']>();
-  const {isLoading, data, refetch} = useDayScheduleQuery(ddmmyyyy);
+  const navigation = useNavigation();
+  const {isLoading, data, refetch, isFetching} = useDayScheduleQuery(ddmmyyyy);
 
   return (
     <View style={{flexGrow: 1}}>
@@ -80,7 +78,7 @@ export function ScheduleLessonsList({ddmmyyyy}: {ddmmyyyy: string}) {
           contentContainerStyle={{flexGrow: 1, paddingBottom: 5}}
           ListEmptyComponent={ListHeader}
           showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={false} onRefresh={() => refetch()} />}
+          refreshControl={<RefreshControl refreshing={isFetching} onRefresh={() => refetch()} />}
           data={data?.lessons || []}
           keyExtractor={item => `${item.name}${item.number}`}
           renderItem={({item, index}) => (
@@ -88,7 +86,13 @@ export function ScheduleLessonsList({ddmmyyyy}: {ddmmyyyy: string}) {
               lesson={item}
               onCopy={() => copyHomework(item)}
               onPress={() => {
-                navigation.push('LessionInfo', {title: 'Расписание', ddmmyyyy, index});
+                navigation.navigate('Tabs', {
+                  screen: 'DiaryTab',
+                  params: {
+                    screen: 'LessonInfo',
+                    params: {ddmmyyyy, index},
+                  },
+                });
               }}
             />
           )}

@@ -9,11 +9,12 @@ import {PeriodsTabScreenProps} from '../../../navigation/types';
 import {IonIcon} from '../../../ui/IonIcon';
 import {useTheme} from '../../themes/useTheme';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {LoadingBar} from '../../../shared/components/LoadingBar';
 
 interface MarksSubjectsListProps {
   period: number;
 }
-
+// todo remove from here
 export function CardButton(props) {
   const {onPress, style = {}, title, desc, icon} = props;
   const {colors, styles, theme, isDark} = useTheme();
@@ -61,15 +62,7 @@ export function MarksSubjectsList({period}: MarksSubjectsListProps) {
       return null;
     }
 
-    // TODO check this code
-
     return <CardButton style={{margin: 5}} title="Оценок пока нет" desc="Получите оценку и она здесь появится 👨‍🎓👩‍🎓" />;
-
-    return (
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <Text style={{fontSize: 20, textAlign: 'center'}}>Нет оценок. Скорее всего ваш дневник еще не заполнен</Text>
-      </View>
-    );
   }
 
   const openItem = (lesson: ISubjectPeriod) => {
@@ -93,7 +86,7 @@ export function MarksSubjectsList({period}: MarksSubjectsListProps) {
       contentContainerStyle={{paddingBottom: 5}}
       data={data}
       removeClippedSubviews={false}
-      refreshing={false}
+      refreshing={periodQuery.isFetching}
       showsVerticalScrollIndicator={false}
       onRefresh={() => periodQuery.refetch()}
       ListHeaderComponent={getListHeaderComponent()}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo, useState} from 'react';
 import {Dimensions, Platform, StyleSheet, Text, View} from 'react-native';
 import {useRoute} from '@react-navigation/core';
 import {useTheme} from '../../features/themes/useTheme';
@@ -8,17 +8,25 @@ import {useDiaryNavOptions} from '../../shared/hooks/useDiaryNavOptions';
 import {LessonDiaryInfo} from '../../features/diary/components/LessonDiaryInfo';
 import {DiaryTabScreenProps, TabsScreenProps} from '../types';
 import {InfiniteHorizontalScroll} from '../../features/diary/components/InfiniteHorizontalScroll';
+import {ThemedView} from '../../features/themes/ThemedView';
+import {useDayScheduleQuery} from '../../features/diary/hooks/useDayScheduleQuery';
 
 const {width} = Dimensions.get('window');
 
 export function LessonInfo() {
   const {colors, isDark} = useTheme();
 
-  const {params} = useRoute<DiaryTabScreenProps<'LessionInfo'>['route']>();
-  const {title, index, ddmmyyyy} = params;
+  const route = useRoute<DiaryTabScreenProps<'LessonInfo'>['route']>();
+  const {index, ddmmyyyy} = route.params;
+
+  const dayQuery = useDayScheduleQuery(ddmmyyyy);
+
+  const rows = useMemo(() => {
+    return new Array(dayQuery.data?.lessons.length).fill(0).map((_, i) => i) || 0;
+  }, [dayQuery.data?.lessons.length]);
 
   useDiaryNavOptions({
-    title,
+    headerTitle: 'Расписание',
     headerStyle: {
       borderBottomWidth: 0,
       elevation: 0,
@@ -44,14 +52,12 @@ export function LessonInfo() {
 
       <InfiniteHorizontalScroll
         current={index}
-        pastScrollRange={index}
-        futureScrollRange={lesson?.lessons?.length - index - 2}
-        renderItem={({route: {key}}) => (
-          <View style={{width, minHeight: 100}}>
-            <LessonDiaryInfo ddmmyyyy={ddmmyyyy} index={key} />
+        rows={rows}
+        renderItem={(key: number) => (
+          <View style={{width, flex: 1, minHeight: 100}}>
+            <LessonDiaryInfo lesson={dayQuery.data?.lessons[key]!} />
           </View>
         )}
-        deps={[]}
         placeholder={() => (
           <View style={{width, minHeight: 100}}>
             <Text>Loading...</Text>

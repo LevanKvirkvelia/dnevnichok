@@ -1,9 +1,11 @@
 import React from 'react';
-import {Text, TextProps} from 'react-native';
+import {Pressable, Text, TextProps, Touchable} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 
 import {useTheme} from '../features/themes/useTheme';
 import {openLink} from '../shared/hooks/useOptimisticOpenLink';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {PressableOpacity} from './PressableOpacity';
 
 interface LinkProps extends TextProps {
   disabled?: boolean;
@@ -24,12 +26,13 @@ export const Link: React.FC<LinkProps> = ({style, children, to, href, onPress, d
   };
 
   return (
-    <Text
-      accessibilityRole="button"
-      onPress={handlePress}
-      style={[{color: colors.linkColor, opacity: disabled ? 0.6 : 1}, style]}
-      {...props}>
-      {children}
-    </Text>
+    <PressableOpacity onPress={handlePress} pressRetentionOffset={15} hitSlop={10}>
+      <Text
+        accessibilityRole="button"
+        style={[{color: colors.linkColor, opacity: disabled ? 0.6 : 1}, style]}
+        {...props}>
+        {children}
+      </Text>
+    </PressableOpacity>
   );
 };

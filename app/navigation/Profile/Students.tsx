@@ -41,14 +41,14 @@ export function StudentsList() {
       <CardSettingsList>
         {sortedUsers.map(user => (
           <SettingsListItem
-            // icon={
-            //   <Avatar
-            //     user={user}
-            //     size={25}
-            //     style={{borderWidth: 0}}
-            //     containerStyle={{margin: 0, marginRight: 10, alignSelf: 'center'}}
-            //   />
-            // }
+            icon={
+              <Avatar
+                user={user}
+                size={25}
+                style={{borderWidth: 0}}
+                containerStyle={{margin: 0, marginRight: 10, alignSelf: 'center'}}
+              />
+            }
             onPress={() => setActiveUserId(user.id, user.accountId)}
             key={user.id}
             title={replaceAbbr(user?.name)}
@@ -58,7 +58,11 @@ export function StudentsList() {
         ))}
         <SettingsListItem
           icon={<SettingsIconWrapper backgroundColor="#e91e63" iconName="add" iconSize={25} />}
-          // onPress={() => navigation.navigate('Auth')} // TODO ADD user
+          onPress={() =>
+            navigation.navigate('Auth', {
+              screen: 'Login',
+            })
+          } // TODO ADD user
           title="Добавить пользователя"
           hasNavArrow
         />
@@ -73,7 +77,6 @@ export function Students() {
   const navigation = useNavigation();
   const {fullLogout, setUserSettings} = useUsersStore();
   const showActionSheet = useThemedActionSheet();
-  const avatarPicker = useRef<AvatarPickerRef>(null);
 
   useDiaryNavOptions({
     headerTitle: () => (
@@ -91,7 +94,6 @@ export function Students() {
       <Card>
         <CardSettingsList>
           <SettingsListItem
-            onPress={() => avatarPicker.current?.showAvatarPicker()}
             rightIcon={
               <IonIcon
                 name="settings-outline"
@@ -123,7 +125,7 @@ export function Students() {
               color: colors.textOnRow,
             }}
             numberOfLines={2}
-            description={<AvatarPicker ref={avatarPicker} />}
+            description={<AvatarPicker />}
             icon={<Avatar user={user} size={60} />}
           />
           <SettingsListItem
