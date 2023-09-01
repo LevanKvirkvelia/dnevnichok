@@ -165,7 +165,18 @@ export function Students() {
             hasNavArrow
           />
           {isAdmin || isEmulator ? (
-            <SettingsListItem title="Раздел разработчика" onPress={() => navigation.navigate('Test')} hasNavArrow />
+            <SettingsListItem
+              title="Раздел разработчика"
+              onPress={() =>
+                navigation.navigate('Tabs', {
+                  screen: 'ProfileTab',
+                  params: {
+                    screen: 'Admin',
+                  },
+                })
+              }
+              hasNavArrow
+            />
           ) : null}
         </CardSettingsList>
       </Card>

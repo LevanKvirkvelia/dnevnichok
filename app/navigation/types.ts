@@ -13,8 +13,8 @@ export type PeriodsTabParamList = {
   PeriodsSettings: undefined;
 };
 
-export type PeriodsTabScreenProps = CompositeScreenProps<
-  StackScreenProps<PeriodsTabParamList>,
+export type PeriodsTabScreenProps<T extends keyof PeriodsTabParamList> = CompositeScreenProps<
+  StackScreenProps<PeriodsTabParamList, T>,
   TabsScreenProps<keyof TabsParamList>
 >;
 
@@ -39,13 +39,27 @@ export type DiaryTabScreenProps<T extends keyof DiaryTabParamList> = CompositeSc
   TabsScreenProps<keyof TabsParamList>
 >;
 
+// ------------------ Profile Tab ------------------
+
+export type ProfileTabParamList = {
+  Students: undefined;
+  Theme: undefined;
+  Admin: undefined;
+};
+
+export type ProfileTabScreenProps<T extends keyof DiaryTabParamList> = CompositeScreenProps<
+  StackScreenProps<DiaryTabParamList, T>,
+  TabsScreenProps<keyof TabsParamList>
+>;
+
 // ------------------ Tabs ------------------
 
 export type TabsParamList = {
   DiaryTab: NavigatorScreenParams<DiaryTabParamList>;
   PeriodsTab: NavigatorScreenParams<PeriodsTabParamList>;
-  Profile: undefined;
+  ProfileTab: NavigatorScreenParams<ProfileTabParamList>;
 };
+
 export type TabsScreenProps<T extends keyof TabsParamList> = CompositeScreenProps<
   BottomTabScreenProps<TabsParamList, T>,
   RootStackScreenProps<keyof RootStackParamList>

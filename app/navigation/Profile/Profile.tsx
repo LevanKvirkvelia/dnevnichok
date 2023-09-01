@@ -11,7 +11,7 @@ export function Profile() {
     <Stack.Navigator>
       <Stack.Screen name="Students" component={Students} />
       <Stack.Screen name="Theme" component={Theme} />
-      <Stack.Screen name="Test" component={AdminPage} />
+      <Stack.Screen name="Admin" component={AdminPage} />
     </Stack.Navigator>
   );
 }

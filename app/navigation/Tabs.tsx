@@ -58,8 +58,8 @@ export default function Tabs() {
         }}
       />
       <Tab.Screen
-        key="Profile"
-        name="Profile"
+        key="ProfileTab"
+        name="ProfileTab"
         component={Profile}
         options={{
           tabBarLabel: 'Профиль',

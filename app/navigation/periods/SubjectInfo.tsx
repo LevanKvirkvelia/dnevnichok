@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {RouteProp, useRoute} from '@react-navigation/core';
-import {ISubjectPeriod} from '../../features/parsers/data/types';
+import React from 'react';
+import {useRoute} from '@react-navigation/core';
 import {LoadingBar} from '../../shared/components/LoadingBar';
 import {useDiaryNavOptions} from '../../shared/hooks/useDiaryNavOptions';
 import {ThemedView} from '../../features/themes/ThemedView';
@@ -14,15 +13,10 @@ import {StyledTitle} from '../../ui/typography/StyledTitle';
 import {useTheme} from '../../features/themes/useTheme';
 import {GoalCard} from '../../features/marks/components/GoalCard';
 import {useProcessedSubjectPeriod} from '../../features/marks/hooks/useProccessedSubjectPeriod';
-
-type SubjectInfoPageParamList = {
-  SubjectInfoPage: {
-    subject: ISubjectPeriod;
-  };
-};
+import {PeriodsTabScreenProps} from '../types';
 
 export function SubjectInfoPage() {
-  const route = useRoute<RouteProp<SubjectInfoPageParamList, 'SubjectInfoPage'>>();
+  const route = useRoute<PeriodsTabScreenProps<'SubjectInfo'>['route']>();
   const {subject} = route.params;
 
   const {color} = useProcessedSubjectPeriod(subject);

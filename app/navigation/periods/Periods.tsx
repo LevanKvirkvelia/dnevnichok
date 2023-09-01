@@ -27,7 +27,7 @@ export function Periods() {
 
   const {periodsLenQuery} = usePeriodQuery(activePeriodNumber);
   const {colors} = useTheme();
-  const navigation = useNavigation<PeriodsTabScreenProps['navigation']>();
+  const navigation = useNavigation();
 
   useDiaryNavOptions({
     headerTitleAlign: 'center',
