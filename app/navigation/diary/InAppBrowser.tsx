@@ -1,11 +1,11 @@
 import React, {useCallback} from 'react';
 import * as Url from 'url';
 import {useNavigation, useRoute} from '@react-navigation/core';
-import {Web, webFunctionsMap} from '../features/browser/containers/Web';
-import {useActiveUser} from '../features/auth/hooks/useActiveUser';
-import {DiaryTabScreenProps} from './types';
-import {useDiaryNavOptions} from '../shared/hooks/useDiaryNavOptions';
-import {BackButton} from '../shared/components/BackButton';
+import {useActiveUser} from '../../features/auth/hooks/useActiveUser';
+import {Web, webFunctionsMap} from '../../features/browser/containers/Web';
+import {BackButton} from '../../shared/components/BackButton';
+import {useDiaryNavOptions} from '../../shared/hooks/useDiaryNavOptions';
+import {DiaryTabScreenProps} from '../types';
 
 export function useInAppBrowser() {
   const {navigate} = useNavigation();

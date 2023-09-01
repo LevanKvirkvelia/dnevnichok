@@ -4,7 +4,7 @@ import {ItemColor, MiddleWithColor} from './ItemColor';
 import {useTheme} from '../../themes/useTheme';
 import {ISubjectPeriod} from '../../parsers/data/types';
 import {SDate} from '../../auth/helpers/SDate';
-import {SubjectTextAdvice} from '../../advices/SubjectTextAdvice';
+import {SubjectTextAdvice} from './SubjectTextAdvice';
 
 export function MarksRow({subjectPeriod, onPress}: {subjectPeriod: ISubjectPeriod; onPress: () => void}) {
   const {styles} = useTheme();
@@ -14,7 +14,7 @@ export function MarksRow({subjectPeriod, onPress}: {subjectPeriod: ISubjectPerio
     <TouchableOpacity activeOpacity={0.6} onPress={() => onPress()}>
       <View style={[styles.mainWrapper, styles.largeWrapper, {borderWidth: 0}]}>
         <View style={{flex: 1, flexDirection: 'row'}}>
-          <ItemColor subjectId={id} />
+          <ItemColor subjectPeriod={subjectPeriod} />
           <View style={[styles.mainContainer, styles.contentField]}>
             <View style={{alignSelf: 'stretch', flex: 1}}>
               <Text style={[styles.title]}>{name}</Text>

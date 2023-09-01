@@ -1,5 +1,5 @@
 import React, {PropsWithChildren} from 'react';
-import {Text, TextProps, View} from 'react-native';
+import {StyleSheet, Text, TextProps, View} from 'react-native';
 import {SettingsListRow, SettingsListRowProps} from './SettingsListRow';
 import {useTheme} from '../../features/themes/useTheme';
 import {IonIcon} from '../IonIcon';
@@ -21,8 +21,8 @@ function Description({children, numberOfLines}: PropsWithChildren<{numberOfLines
 }
 
 interface SettingsListItemProps extends Pick<SettingsListRowProps, 'style' | 'dividers' | 'last' | 'onPress'> {
-  icon?: string;
-  rightIcon?: string;
+  icon?: string | React.ReactNode;
+  rightIcon?: string | React.ReactNode;
   oneLine?: boolean;
   hasNavArrow?: boolean;
   numberOfLines?: number;
@@ -72,7 +72,13 @@ export function SettingsListItem({
     <SettingsListRow
       last={last}
       dividers={dividers}
-      style={[{paddingVertical: 0, flexDirection: 'row', alignItems: 'center', flexGrow: 1}, style]}
+      style={{
+        paddingVertical: 0,
+        flexDirection: 'row',
+        alignItems: 'center',
+        flexGrow: 1,
+        ...StyleSheet.flatten(style),
+      }}
       onPress={onPress}>
       {iconComponent}
 

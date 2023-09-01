@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TouchableOpacity, ViewProps} from 'react-native';
+import {View, TouchableOpacity, ViewProps, StyleSheet} from 'react-native';
 
 import {Divider} from './Divider';
 import {useTheme} from '../../features/themes/useTheme';
@@ -26,8 +26,17 @@ export function SettingsListRow({
   return (
     <View>
       <ViewComponent
-        className="flex-shrink pl-4 py-4 justify-between"
-        style={[{borderColor: colors.border}, style]}
+        style={[
+          {
+            borderColor: colors.border,
+            flexShrink: 1,
+
+            paddingLeft: 15,
+            justifyContent: 'space-between',
+            paddingVertical: 15,
+          },
+          StyleSheet.flatten(style),
+        ]}
         onPress={onPress}>
         {children}
       </ViewComponent>

@@ -8,7 +8,7 @@ export class SDate {
       ? SDate.parseDDMMYYY(`30.08.${year - 1}`)
       : SDate.parseDDMMYYY(`30.08.${year}`);
 
-    const endDay = SDate.parseDDMMYYY(`10.06.${startDay.year()}`);
+    const endDay = SDate.parseDDMMYYY(`10.06.${startDay.year() + 1}`);
 
     return {startDay, endDay};
   }

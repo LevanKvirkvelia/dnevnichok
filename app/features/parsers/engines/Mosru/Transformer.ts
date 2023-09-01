@@ -29,6 +29,7 @@ export class Transformer {
     const name = isWebStudent
       ? student.short_name
       : [student.last_name, student.first_name].filter(v => !!v).join(' ');
+
     return {
       id: student.id.toString(),
       engine: 'MOS.RU',

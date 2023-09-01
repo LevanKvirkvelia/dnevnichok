@@ -1,7 +1,7 @@
 import {useCallback} from 'react';
 
 import {Linking} from 'react-native';
-import {useInAppBrowser} from '../../navigation/InAppBrowser';
+import {useInAppBrowser} from '../../navigation/diary/InAppBrowser';
 
 export function openLink(url: string) {
   Linking.openURL(url).catch(error => console.log({error}));

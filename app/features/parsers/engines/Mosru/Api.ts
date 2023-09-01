@@ -14,7 +14,7 @@ import {
 } from './types';
 
 export class API {
-  static AcademicYear = '9';
+  static AcademicYear = '11';
 
   static getTeachers(
     session: SessionData,

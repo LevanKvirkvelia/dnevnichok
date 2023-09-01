@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {Dimensions} from 'react-native';
 import {Route, TabView} from 'react-native-tab-view';
 
-const initialLayout = {width: Dimensions.get('window').width};
+const initialLayout = Dimensions.get('window');
 
 interface InfiniteHorizontalScrollProps {
   current: string | number;
@@ -35,7 +35,7 @@ export function InfiniteHorizontalScroll({
   }, [rows, current]);
 
   const routes = useMemo<Route[]>(() => {
-    return rows.map(item => ({key: String(item)}));
+    return rows.map(item => ({key: String(item), title: String(item)}));
   }, [rows]);
 
   return (

@@ -4,7 +4,7 @@ import ContentLoader, {Rect} from 'react-content-loader/native';
 import {useTheme} from '../../features/themes/useTheme';
 
 export const LessonRowLoader = React.memo(() => {
-  const {colors} = useTheme();
+  const {colors, styles} = useTheme();
 
   return (
     <View style={[styles.mainWrapper, styles.largeWrapper, {borderWidth: 0}]}>

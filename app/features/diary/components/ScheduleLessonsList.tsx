@@ -11,7 +11,7 @@ import {StyledText} from '../../../ui/typography/StyledText';
 import {SDate} from '../../auth/helpers/SDate';
 import {CardSettingsList} from '../../../ui/card/CardSettingsList';
 import {SettingsListItem} from '../../../ui/SettingsList/SettingsListItem';
-import {useInAppBrowser} from '../../../navigation/InAppBrowser';
+import {useInAppBrowser} from '../../../navigation/diary/InAppBrowser';
 import {useUsersStore} from '../../auth/state/useUsersStore';
 import {useDiaryState} from '../state/useDiaryState';
 import {LessonsLoadingSkeleton} from '../../../shared/components/SubjectsLoadingSkeleton';

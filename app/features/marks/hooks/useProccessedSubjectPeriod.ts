@@ -10,17 +10,19 @@ function getStatus(middle: number | string, target: number) {
   return 'problem';
 }
 
-export function useProcessedSubjectPeriod(subjectPeriod: ISubjectPeriod) {
+export function useProcessedSubjectPeriod(subjectPeriod?: ISubjectPeriod) {
   const user = useActiveUser();
   const {colors} = useTheme();
   const average = useMemo(() => {
+    if (!subjectPeriod) return '';
     return (
       subjectPeriod.forcedAverage ||
       subjectPeriod.marks
         .map(mark => (+mark.value * mark.weight) / subjectPeriod.marks.length)
-        .reduce((a, b) => a + b, 0)
+        .reduce((a, b) => a + b, 0) ||
+      ''
     );
-  }, [subjectPeriod.forcedAverage, subjectPeriod.marks]);
+  }, [subjectPeriod?.forcedAverage, subjectPeriod?.marks]);
 
   const status = getStatus(average, user.settings.target);
 

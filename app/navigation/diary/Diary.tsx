@@ -21,15 +21,15 @@ function calculateScrollRange(showSaturday: boolean) {
 }
 const Placeholder = React.memo(() => null);
 
-const RenderItem = React.memo(({ddmmyyyy}: {ddmmyyyy: string}) => {
+const RenderItem = ({ddmmyyyy}: {ddmmyyyy: string}) => {
   const {width} = useWindowDimensions();
 
   return (
-    <View style={{width, minHeight: 100, flexGrow: 1}}>
+    <View style={{flex: 1, width, minHeight: 100, flexGrow: 1}}>
       <ScheduleLessonsList ddmmyyyy={ddmmyyyy} />
     </View>
   );
-});
+};
 
 export function Diary() {
   const user = useActiveUser();

@@ -1,5 +1,4 @@
 import {useNavigation} from '@react-navigation/native';
-import color from 'color';
 import {View, Text} from 'react-native';
 import {Divider} from '../../../ui/SettingsList/Divider';
 import {SettingsListItem} from '../../../ui/SettingsList/SettingsListItem';
@@ -7,12 +6,11 @@ import {Card} from '../../../ui/card/Card';
 import {CardSettingsList} from '../../../ui/card/CardSettingsList';
 import {StyledText} from '../../../ui/typography/StyledText';
 import {StyledTitle} from '../../../ui/typography/StyledTitle';
-import {SubjectTextAdvice} from '../../advices/SubjectTextAdvice';
 import {ISubjectPeriod} from '../../parsers/data/types';
-import {activeUserPeriodSelector} from '../redux/selectors';
-import {RootStackScreenProps, TabsScreenProps} from '../../../navigation/types';
+import {TabsScreenProps} from '../../../navigation/types';
 import {useProcessedSubjectPeriod} from '../hooks/useProccessedSubjectPeriod';
 import {useActiveUser} from '../../auth/hooks/useActiveUser';
+import {SubjectTextAdvice} from './SubjectTextAdvice';
 
 interface GoalCardProps {
   subject: ISubjectPeriod;

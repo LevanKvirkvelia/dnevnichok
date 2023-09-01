@@ -119,12 +119,12 @@ async function getWebDaysWithDay(account: Account, user: User, sDate: SDate): Pr
 }
 
 async function getDaysWithDay(account: Account, user: User, sDate: SDate): Promise<IDaySchedule[]> {
-  const web = getWebDaysWithDay(account, user, sDate);
-  try {
-    return await timeout(web, 4000);
-  } catch (e) {
-    return await any([web, getMobileDaysWithDay(account, user, sDate)]);
-  }
+  return getMobileDaysWithDay(account, user, sDate);
+  // try {
+  //   return await timeout(web, 1);
+  // } catch (e) {
+  //   return await any([web, getMobileDaysWithDay(account, user, sDate)]);
+  // }
 }
 
 async function getWebStudents(sessionData: SessionData): Promise<ParsedUser[]> {

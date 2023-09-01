@@ -27,7 +27,7 @@ export type DiaryTabParamList = {
     title: string;
     ddmmyyyy: string;
   };
-  InAppBrowser: {
+  InAppBrowser?: {
     displayUrl?: string;
     startUrl?: string;
     nextUrl?: string;

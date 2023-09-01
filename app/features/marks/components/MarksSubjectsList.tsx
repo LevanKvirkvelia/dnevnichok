@@ -6,9 +6,50 @@ import {LessonsLoadingSkeleton} from '../../../shared/components/SubjectsLoading
 import {MarksRow} from './MarksRow';
 import {useNavigation} from '@react-navigation/native';
 import {PeriodsTabScreenProps} from '../../../navigation/types';
+import {IonIcon} from '../../../ui/IonIcon';
+import {useTheme} from '../../themes/useTheme';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 interface MarksSubjectsListProps {
   period: number;
+}
+
+export function CardButton(props) {
+  const {onPress, style = {}, title, desc, icon} = props;
+  const {colors, styles, theme, isDark} = useTheme();
+  return (
+    <TouchableOpacity activeOpacity={0.6} onPress={() => onPress && onPress()}>
+      <View
+        style={[
+          styles.mainContainer,
+          styles.mainWrapper,
+          {
+            backgroundColor: colors.rowBackgroundColor,
+          },
+          style,
+        ]}>
+        <View style={[styles.contentField, {padding: 10}]}>
+          <View style={styles.listNoteButton}>
+            <Text style={styles.titleAlpha}>{title}</Text>
+          </View>
+          {desc ? (
+            <View style={styles.listNoteButton}>
+              <Text style={styles.subtitle}>{desc}</Text>
+            </View>
+          ) : null}
+        </View>
+        {onPress ? (
+          <View style={styles.arrowFieldNoteButton}>
+            <IonIcon
+              name={icon || 'add-outline'}
+              style={{color: isDark ? colors.textOnPrimary : colors.primary}}
+              size={30}
+            />
+          </View>
+        ) : null}
+      </View>
+    </TouchableOpacity>
+  );
 }
 
 export function MarksSubjectsList({period}: MarksSubjectsListProps) {
@@ -21,11 +62,8 @@ export function MarksSubjectsList({period}: MarksSubjectsListProps) {
     }
 
     // TODO check this code
-    // if (!marks) {
-    //   return (
-    //     <CardButton style={{margin: 5}} title="Оценок пока нет" desc="Получите оценку и она здесь появится 👨‍🎓👩‍🎓" />
-    //   );
-    // }
+
+    return <CardButton style={{margin: 5}} title="Оценок пока нет" desc="Получите оценку и она здесь появится 👨‍🎓👩‍🎓" />;
 
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>

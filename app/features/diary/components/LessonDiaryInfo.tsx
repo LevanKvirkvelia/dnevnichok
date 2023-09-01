@@ -1,6 +1,5 @@
 import React from 'react';
 import {ScrollView, StatusBar, Text, TouchableOpacity} from 'react-native';
-import {useNavigation} from '@react-navigation/core';
 import Color from 'color';
 import {HomeworkText} from './HomeworkText';
 import {Files} from './Files';
@@ -13,15 +12,14 @@ import {ILesson} from '../../parsers/data/types';
 import {MarkWeight} from '../../../ui/MarkWeight';
 import {useActiveUser} from '../../auth/hooks/useActiveUser';
 import {copyHomework} from '../../../shared/helpers/clipboard';
+import {GoalCard} from '../../marks/components/GoalCard';
+import {useSubjectPeriodById} from '../../marks/hooks/usePeriodById';
 
 export function LessonDiaryInfo({lesson}: {lesson: ILesson}) {
-  const navigation = useNavigation();
   const {colors} = useTheme();
-
   const user = useActiveUser();
-
-  const period = useSelector(activeUserPeriodSelector);
-  const marks = useLessonMarksByDate(lesson.id, lesson.date);
+  const subject = useSubjectPeriodById(lesson.id);
+  const marks = subject?.marks.filter(mark => mark.date === lesson.date) || [];
 
   function renderMarks() {
     const items = marks.map((mark, i) => (
@@ -67,7 +65,7 @@ export function LessonDiaryInfo({lesson}: {lesson: ILesson}) {
       </Text>
 
       {renderMarks()}
-      <GoalCard showOpenPeriods goal={user.settings.target} subject={period?.[lesson.id] || {}} />
+      {subject && <GoalCard showOpenPeriods subject={subject} />}
       {lesson.homework?.text ? (
         <TouchableOpacity
           activeOpacity={0.6}
@@ -76,7 +74,7 @@ export function LessonDiaryInfo({lesson}: {lesson: ILesson}) {
           <Card>
             <StyledTitle>Домашнее задание</StyledTitle>
             <StyledText>
-              <HomeworkText text={lesson.homework.text} lesson={lesson} />
+              <HomeworkText lesson={lesson} />
             </StyledText>
           </Card>
 

@@ -2,7 +2,7 @@ import {create} from 'zustand';
 import {createJSONStorage, persist} from 'zustand/middleware';
 import {immer} from 'zustand/middleware/immer';
 import {zustandStorage} from '../../../shared/helpers/zustandStorage';
-import { EngineNames } from '../../parsers/getParser';
+import {EngineNames} from '../../parsers/getParser';
 
 export type UserSettings = {
   showSaturday: boolean;
@@ -60,11 +60,10 @@ interface UsersState {
   upsertAccount: (account: Partial<Account> & Pick<Account, 'id'>) => void;
   removeAccount: (index: number) => void;
   fullLogout: () => void;
-
-  getUsers: () => User[];
-  getActiveUser: () => User | undefined;
-  getActiveAccount: () => Account | undefined;
   setUserSettings: (settings: Partial<UserSettings>) => void;
+
+  _getActiveUser: () => User | undefined;
+  _getActiveAccount: () => Account | undefined;
 }
 
 export const useUsersStore = create<UsersState>()(
@@ -104,12 +103,7 @@ export const useUsersStore = create<UsersState>()(
         }));
       },
 
-      getUsers: () => {
-        const state = get();
-        return Object.values(state.accounts).flatMap(account => Object.values(account.users));
-      },
-
-      getActiveUser: () => {
+      _getActiveUser: () => {
         const state = get();
         if (!state.activeAccountId || !state.activeUserId) return undefined;
         const activeUser = state.accounts[state.activeAccountId]?.users[state.activeUserId];
@@ -123,7 +117,7 @@ export const useUsersStore = create<UsersState>()(
         };
       },
 
-      getActiveAccount: () => {
+      _getActiveAccount: () => {
         const state = get();
         if (!state.activeAccountId) return undefined;
         return state.accounts[state.activeAccountId];

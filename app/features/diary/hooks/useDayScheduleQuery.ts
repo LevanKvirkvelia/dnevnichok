@@ -1,7 +1,7 @@
 import {FetchQueryOptions, useQuery, useQueryClient} from '@tanstack/react-query';
 import {useActiveAccount, useActiveUser} from '../../auth/hooks/useActiveUser';
 import {SDate} from '../../auth/helpers/SDate';
-import { getParser } from '../../parsers/getParser';
+import {getParser} from '../../parsers/getParser';
 
 const HOUR = 1000 * 60 * 60;
 const DAY = HOUR * 24;
@@ -27,7 +27,7 @@ export function useDayScheduleQuery(ddmmyyy: string) {
       const result = await parser.diary.getDaysWithDay({
         account,
         user,
-        sDate: new SDate(ddmmyyy),
+        sDate: SDate.parseDDMMYYY(ddmmyyy),
       });
 
       // This code saves all diary days to cache

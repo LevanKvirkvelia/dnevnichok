@@ -48,8 +48,8 @@ export async function logOutIfNeeded({
 }
 
 function changeActiveUserIfNeeded(account: Account) {
-  const activeAccount = useUsersStore.getState().getActiveAccount();
-  const activeUser = useUsersStore.getState().getActiveUser();
+  const activeAccount = useUsersStore.getState()._getActiveAccount();
+  const activeUser = useUsersStore.getState()._getActiveUser();
 
   if (!activeAccount || activeAccount.id !== account.id || !activeUser?.id || !account.users[activeUser.id]) {
     useUsersStore.getState().setActiveUserId(Object.keys(account.users)[0], account.id);
@@ -82,8 +82,12 @@ export async function processLogin({
     let key = `${engine}:${s.id}`; // TODO USE ID
 
     return {
-      ...s,
       accountId: account.id,
+      settings: {
+        target: 5,
+        showSaturday: true,
+      },
+      ...s,
     };
   });
 
