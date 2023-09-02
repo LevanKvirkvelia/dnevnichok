@@ -31,7 +31,7 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
 
       setForce(forceMode);
 
-      await codePush.sync(
+      return codePush.sync(
         {installMode, deploymentKey},
         status => {
           if (!forceMode) return;
@@ -48,7 +48,7 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
         data => setProgress(data.receivedBytes / data.totalBytes),
       );
     },
-    {refetchOnWindowFocus: true, enabled: !isEmulator},
+    {refetchOnWindowFocus: true, enabled: !isEmulator && !!currentVersionQuery.data, retry: false},
   );
 
   return force && query.isFetching && !isEmulator ? splash : children;

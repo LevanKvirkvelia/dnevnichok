@@ -13,6 +13,8 @@ export function useActiveUser(suspense = true): User | undefined {
 
   return useMemo(() => {
     const user = accounts[activeAccountId!]?.users[activeUserId!];
+    if (!user) return undefined;
+    
     return {
       ...user,
       settings: {
@@ -20,7 +22,7 @@ export function useActiveUser(suspense = true): User | undefined {
         showSaturday: true,
         // @ts-ignore // TODO FIX
         target: 5,
-        ...user.settings,
+        ...user?.settings,
       },
     };
   }, [activeAccountId, activeUserId, accounts]);
