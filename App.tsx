@@ -1,19 +1,20 @@
 import React, {useEffect} from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native';
-import {FlashMessage} from './app/ui/FlashMessage';
+import {FlashMessage, showMessage} from './app/ui/FlashMessage';
 import RootNavigation from './app/navigation/Root';
 import {RootStackParamList} from './app/navigation/types';
 import {HeadlessBrowserProvider} from './app/features/parsers/HeadlessBrowser/HeadlessBrowser';
 import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import {mmkvClientPersister} from './app/shared/helpers/mmkvClientPersister';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
-import {QueryClient, focusManager} from '@tanstack/react-query';
+import {QueryCache, QueryClient, focusManager} from '@tanstack/react-query';
 import {AppStateStatus, AppState} from 'react-native';
 import BootSplash from 'react-native-bootsplash';
 import {CodePushProvider} from './app/features/codePush/components/CodePushWall';
 import {Splash} from './app/shared/components/Splash';
 import {OTAProgressBar} from './app/features/codePush/components/OTAProgressBar';
+import {errorToString} from './app/shared/helpers/errorToString';
 
 declare global {
   namespace ReactNavigation {
@@ -36,11 +37,17 @@ function InitQueryClient() {
 }
 
 const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError(error, query) {
+      showMessage({message: errorToString(error)});
+    },
+  }),
   defaultOptions: {
     queries: {
       cacheTime: 0,
       staleTime: 0,
-
+      retry: 2,
+      retryDelay: 2000,
       refetchInterval: false,
       refetchOnReconnect: false,
       refetchOnMount: false,

@@ -60,10 +60,12 @@ export async function processLogin({
   engine,
   authData,
   sessionData,
+  engineAccountData,
 }: {
   engine: EngineNames;
   authData: AccountAuthData;
   sessionData?: SessionData;
+  engineAccountData?: any;
 }) {
   const parser = getParser(engine);
 
@@ -72,11 +74,11 @@ export async function processLogin({
     engine,
     sessionData,
     authData,
-    accountData: {}, // ACCOUNT DATA
+    engineAccountData,
     users: {},
   };
 
-  const students = await parser.auth.getStudents({authData, sessionData});
+  const students = await parser.auth.getStudents({authData, sessionData, engineAccountData});
 
   const newUsers: User[] = students.map(s => {
     let key = `${engine}:${s.id}`; // TODO USE ID
@@ -113,9 +115,9 @@ export async function doLogin({
 }) {
   try {
     const parser = getParser(engine);
-    const newSessionData = await parser.auth.login!({authData, sessionData});
+    const {sessionData: newSessionData, engineAccountData} = await parser.auth.login!({authData, sessionData});
 
-    await processLogin({engine, authData, sessionData: newSessionData});
+    await processLogin({engine, authData, sessionData: newSessionData, engineAccountData});
     return true;
   } catch (error) {
     const errorMessage = errorToString(error);

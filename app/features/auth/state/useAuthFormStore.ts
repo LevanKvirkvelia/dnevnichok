@@ -1,6 +1,6 @@
 import {create} from 'zustand';
 import {devtools, persist} from 'zustand/middleware';
-import {EngineNames} from '../../parsers/parsers/getParser';
+import {EngineNames} from '../../parsers/getParser';
 
 interface AuthFormState {
   engine: EngineNames;

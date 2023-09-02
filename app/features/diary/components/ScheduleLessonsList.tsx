@@ -21,7 +21,7 @@ import {useDayScheduleQuery} from '../hooks/useDayScheduleQuery';
 function ListHeader() {
   const user = useActiveUser();
   const {setCurrentDisplayDate, currentDisplayDate} = useDiaryState();
-  const dayQuery = useDayScheduleQuery(currentDisplayDate);
+  const dayQuery = useDayScheduleQuery(currentDisplayDate, {enabled: false});
 
   const {setUserSettings} = useUsersStore();
   const openInAppBrowser = useInAppBrowser();
@@ -76,11 +76,11 @@ export function ScheduleLessonsList({ddmmyyyy}: {ddmmyyyy: string}) {
         <FlatList
           style={{flexGrow: 1}}
           contentContainerStyle={{flexGrow: 1, paddingBottom: 5}}
-          ListEmptyComponent={ListHeader}
+          ListEmptyComponent={() => <ListHeader />}
           showsVerticalScrollIndicator={false}
           refreshControl={<RefreshControl refreshing={isFetching} onRefresh={() => refetch()} />}
           data={data?.lessons || []}
-          keyExtractor={item => `${item.name}${item.number}`}
+          keyExtractor={item => `${item.name}${item.numberFrom1}`}
           renderItem={({item, index}) => (
             <LessonRow
               lesson={item}

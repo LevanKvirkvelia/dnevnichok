@@ -3,7 +3,7 @@ import {ISubjectPeriod} from '../../parsers/data/types';
 import {useProcessedSubjectPeriod} from '../hooks/useProccessedSubjectPeriod';
 import {useTheme} from '../../themes/useTheme';
 
-export function ItemColor({subjectPeriod, style = {}}: {subjectPeriod: ISubjectPeriod; style?: ViewProps['style']}) {
+export function ItemColor({subjectPeriod, style = {}}: {subjectPeriod?: ISubjectPeriod; style?: ViewProps['style']}) {
   const {color} = useProcessedSubjectPeriod(subjectPeriod);
 
   return <View style={[{width: 7, maxWidth: 7, backgroundColor: color}, style]} />;

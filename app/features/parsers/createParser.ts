@@ -34,16 +34,17 @@ type AuthBaseProps = {
 export interface ParserDefitionFeatures {
   auth: Feature<{
     login: OptionalFeatureFunction<
-      {
-        authData: AccountAuthData;
-        sessionData?: SessionData;
-      },
+      Pick<Account, 'authData' | 'sessionData'>,
       Error,
-      SessionData
+      Pick<Account, 'sessionData' | 'engineAccountData'>
     >;
-    getStudents: FeatureFunction<AuthBaseProps, Error, ParsedUser[]>;
-    getAccountId: FeatureFunction<AuthBaseProps, Error, string>;
-    backgroundLogin: FeatureFunction<BaseProps, Error, SessionData>;
+    getStudents: FeatureFunction<Pick<Account, 'authData' | 'sessionData' | 'engineAccountData'>, Error, ParsedUser[]>;
+    getAccountId: FeatureFunction<Pick<Account, 'authData' | 'sessionData'>, Error, string>;
+    backgroundLogin: FeatureFunction<
+      Pick<Account, 'authData' | 'sessionData'>,
+      Error,
+      Pick<Account, 'sessionData' | 'engineAccountData'>
+    >;
   }>;
 
   diary: Feature<{

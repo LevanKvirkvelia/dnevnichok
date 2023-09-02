@@ -7,12 +7,14 @@ import {StyledDescription} from '../../../ui/typography/StyledDescription';
 import {HomeworkText} from './HomeworkText';
 import {Files} from './Files';
 import {ItemColor} from '../../marks/components/ItemColor';
+import {useSubjectPeriodById} from '../../marks/hooks/usePeriodById';
 
 const Touchable = TouchableOpacity;
 
 export function LessonRow({onPress, lesson, onCopy}: {onPress(): void; lesson: ILesson; onCopy(): void}) {
   const {styles, colors} = useTheme();
   const rm0 = (s = '') => (s.slice(0, 1) === '0' ? s.slice(1) : s);
+  const subjectPeriod = useSubjectPeriodById(lesson.id);
 
   return (
     <Touchable onPress={onPress} delayLongPress={1000} onLongPress={onCopy}>
@@ -28,10 +30,10 @@ export function LessonRow({onPress, lesson, onCopy}: {onPress(): void; lesson: I
             flexDirection: 'row',
           },
         ]}>
-        <ItemColor subjectId={lesson.id} />
+        <ItemColor subjectPeriod={subjectPeriod} />
 
         <View style={styles.numberField}>
-          <Text style={styles.lessonNum}>{lesson.number}</Text>
+          <Text style={styles.lessonNum}>{lesson.numberFrom1}</Text>
         </View>
 
         <View style={styles.contentField}>

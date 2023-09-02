@@ -8,9 +8,7 @@ export class PeriodConstructor {
     this.periodId = periodId;
   }
 
-  upsertLessonData(
-    lesson: Partial<ISubjectPeriod> & Pick<ISubjectPeriod, 'id'>,
-  ) {
+  upsertLessonData(lesson: Partial<ISubjectPeriod> & Pick<ISubjectPeriod, 'id'>) {
     if (this.data[lesson.id]) {
       this.data[lesson.id] = {...this.data[lesson.id], ...lesson};
     } else {
@@ -46,10 +44,10 @@ export class PeriodConstructor {
 
 export class DayScheduleConstructor {
   data: {[lessonNumber: string]: ILesson} = {};
-  date: string = '';
+  ddmmyyyy: string = '';
 
-  constructor(date: string) {
-    this.date = date;
+  constructor(ddmmyyyy: string) {
+    this.ddmmyyyy = ddmmyyyy;
   }
 
   upsertLessonData(lesson: Omit<ILesson, 'a'>) {
@@ -58,8 +56,8 @@ export class DayScheduleConstructor {
 
   toDaySchedule(): IDaySchedule {
     return {
-      ddmmyyyy: this.date,
-      lessons: Object.values(this.data).sort((a, b) => a.number - b.number),
+      ddmmyyyy: this.ddmmyyyy,
+      lessons: Object.values(this.data).sort((a, b) => a.numberFrom1 - b.numberFrom1),
     };
   }
 }

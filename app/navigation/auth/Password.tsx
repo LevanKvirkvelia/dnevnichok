@@ -38,6 +38,17 @@ export const Password = () => {
       });
     },
     {
+      onSuccess() {
+        navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: 'Tabs',
+              state: {routes: [{name: 'DiaryTab'}]},
+            },
+          ],
+        });
+      },
       onError(error) {
         if (errorToString(error)?.includes('Ваш пароль устарел')) {
           openLink(WORKERS[engine].recoveryLink!);

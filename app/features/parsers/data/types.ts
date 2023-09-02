@@ -34,16 +34,16 @@ export interface IAttachment {
 
 export interface ILesson {
   id: string | number;
-  number: number;
+  numberFrom1: number;
   date: string;
   name?: string;
 
   missed?: boolean;
   marks?: IMark[];
 
-  theme?: string;
+  topic?: string;
   location?: string;
-  homework?: {text: string; attachments: IAttachment[]};
+  homework?: {text?: string; attachments?: IAttachment[]};
   comment?: string;
 
   time?: {

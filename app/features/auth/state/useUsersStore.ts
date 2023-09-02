@@ -36,7 +36,7 @@ export type AccountAuthData = {
 
 export type SessionData = {
   token?: string;
-  pid?: string;
+  pid?: number;
 };
 
 export type Account = {
@@ -45,7 +45,7 @@ export type Account = {
 
   authData: AccountAuthData;
   sessionData?: SessionData;
-  accountData: any;
+  engineAccountData: any;
 
   users: {[id: string]: User};
 };

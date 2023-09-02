@@ -17,7 +17,9 @@ export function InjectMosAuth() {
 
     parser.replaceFeature('auth.backgroundLogin', async props => {
       const {account} = props as BaseProps;
-      const {token, pid} = await doRelogin(account.accountData.login, account.accountData.password);
+      if (!account.authData?.login || !account.authData?.password) return false;
+
+      const {token, pid} = await doRelogin(account.authData.login, account.authData.password);
 
       if (token && pid) {
         return {token, pid};
@@ -144,15 +146,16 @@ export function useHeadlessRelogin() {
 }
 
 function trackSuccessUrl(onRequest: HeadlessBrowserHandlers['onRequest'], close: HeadlessBrowserHandlers['close']) {
-  return new Promise<{token: string; pid: string}>((resolve, reject) => {
+  return new Promise<Awaited<ReturnType<typeof getToken>>>((resolve, reject) => {
     onRequest(url => {
       if (url?.includes('code=')) {
         getToken(url)
-          .then(({token, pid}) => {
-            if (!token || !pid) {
+          .then(({sessionData, engineAccountData}) => {
+            console.log('resolved token', sessionData.token);
+            if (!sessionData.token || !sessionData.pid) {
               reject(new Error('Не удалось получить токен'));
             } else {
-              resolve({token, pid});
+              resolve({sessionData, engineAccountData});
               close();
             }
           })
@@ -220,37 +223,47 @@ export function useVisibleMosAuth() {
   const startAuth = useGetLatest(async () => {
     const successPromise = trackSuccessUrl(browser.onRequest, browser.close);
 
-    await browser.goto(`https://school.mos.ru/v1/sudir/main/auth`);
+    const errorHandler = new Promise((resolve, reject) => {
+      browser.onError(reject);
+    });
 
-    const loginSelector = 'input[name="login"]';
-    const passwordSelector = 'input[name="password"]';
+    const runner = new Promise(async (resolve, reject) => {
+      try {
+        await browser.goto(`https://school.mos.ru/v1/sudir/main/auth`);
 
-    await browser.waitForSelector(loginSelector);
-    console.log('waited for selector');
+        const loginSelector = 'input[name="login"]';
+        const passwordSelector = 'input[name="password"]';
 
-    await browser.evaluate(
-      `function (loginArg){
-      const $notMe = document.querySelector('.profile-name button');
-      if ($notMe) $notMe.click();
-      const $login = document.querySelector('input[name="login"]');
-      if ($login && loginArg) $login.value = loginArg;
-    }`,
-      form.login,
-    );
+        await browser.waitForSelector(loginSelector);
+        console.log('waited for selector');
 
-    const onEvent = `function(event){ return event.target && (event.target).value || '' }`;
+        await browser.evaluate(
+          `function (loginArg){
+          const $notMe = document.querySelector('.profile-name button');
+          if ($notMe) $notMe.click();
+          const $login = document.querySelector('input[name="login"]');
+          if ($login && loginArg) $login.value = loginArg;
+        }`,
+          form.login,
+        );
 
-    browser.subscribe(
-      'input',
-      (v: string) => {
-        setForm({login: v});
-      },
-      onEvent,
-      loginSelector,
-    );
-    browser.subscribe('input', (v: string) => setForm({password: v}), onEvent, passwordSelector);
+        const onEvent = `function(event){ return event.target && (event.target).value || '' }`;
 
-    return successPromise;
+        browser.subscribe(
+          'input',
+          (v: string) => {
+            setForm({login: v});
+          },
+          onEvent,
+          loginSelector,
+        );
+        browser.subscribe('input', (v: string) => setForm({password: v}), onEvent, passwordSelector);
+      } catch (e) {
+        reject(e);
+      }
+    });
+
+    return Promise.race([successPromise, errorHandler, runner]) as typeof successPromise;
   });
 
   return [browser.webview, startAuth] as const;
@@ -266,7 +279,7 @@ export function useRefreshMosLink() {
 
       const {token, pid} = activeAccount.sessionData || {};
       if (!token || !pid) return url;
-      return setUrlParams(url, {authToken: token, profileId: pid});
+      return setUrlParams(url, {authToken: token, profileId: String(pid)});
     },
     [activeAccount],
   );

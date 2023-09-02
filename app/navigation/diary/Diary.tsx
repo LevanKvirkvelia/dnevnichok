@@ -11,15 +11,15 @@ import {useDiaryState} from '../../features/diary/state/useDiaryState';
 
 const Placeholder = React.memo(() => null);
 
-function RenderItem({ ddmmyyyy }: { ddmmyyyy: string; }) {
-  const { width } = useWindowDimensions();
+const RenderItem = React.memo(({ddmmyyyy}: {ddmmyyyy: string}) => {
+  const {width} = useWindowDimensions();
 
   return (
-    <View style={{ flex: 1, width, minHeight: 100, flexGrow: 1 }}>
+    <View style={{flex: 1, width, minHeight: 100, flexGrow: 1}}>
       <ScheduleLessonsList ddmmyyyy={ddmmyyyy} />
     </View>
   );
-}
+});
 
 export function Diary() {
   const user = useActiveUser();
@@ -41,7 +41,7 @@ export function Diary() {
     header: () => <DiaryHeader />,
   });
 
-  const renderItem = useCallback((ddmmyyyy: string) => <RenderItem ddmmyyyy={ddmmyyyy} />, []);
+  const renderItem = useCallback((ddmmyyyy: string) => <RenderItem key={ddmmyyyy} ddmmyyyy={ddmmyyyy} />, []);
   const placeholder = useCallback(() => <Placeholder />, []);
 
   if (!user) {

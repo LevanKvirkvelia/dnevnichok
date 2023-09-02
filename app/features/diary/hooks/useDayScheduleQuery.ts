@@ -1,7 +1,10 @@
-import {FetchQueryOptions, useQuery, useQueryClient} from '@tanstack/react-query';
+import {FetchQueryOptions, UseQueryOptions, useQuery, useQueryClient} from '@tanstack/react-query';
 import {useActiveAccount, useActiveUser} from '../../auth/hooks/useActiveUser';
 import {SDate} from '../../auth/helpers/SDate';
 import {getParser} from '../../parsers/getParser';
+import {useEffect} from 'react';
+import {showMessage} from 'react-native-flash-message';
+import {IDaySchedule} from '../../parsers/data/types';
 
 const HOUR = 1000 * 60 * 60;
 const DAY = HOUR * 24;
@@ -15,7 +18,13 @@ function getStaleTime(ddmmyyy?: string): number {
   return daysAgo < 14 ? HOUR : WEEK;
 }
 
-export function useDayScheduleQuery(ddmmyyy: string) {
+export function useDayScheduleQuery(
+  ddmmyyy: string,
+  options?: Omit<
+    UseQueryOptions<IDaySchedule | undefined, any, IDaySchedule | undefined, [string, string, string, string]>,
+    'queryKey' | 'queryFn' | 'initialData'
+  >,
+) {
   const user = useActiveUser();
   const account = useActiveAccount();
   const parser = getParser(account.engine);
@@ -33,6 +42,7 @@ export function useDayScheduleQuery(ddmmyyy: string) {
       // This code saves all diary days to cache
       result.forEach(day => {
         if (day.ddmmyyyy === ddmmyyy) return;
+        console.log('loop');
         queryClient.fetchQuery(['diaryDay', account.id, user.id, day.ddmmyyyy], () => day, {
           cacheTime: DAY * 180,
         });
@@ -41,10 +51,21 @@ export function useDayScheduleQuery(ddmmyyy: string) {
       return result.find(day => day.ddmmyyyy === ddmmyyy);
     },
     {
+      retry: retry => {
+        console.log({retry});
+        return false;
+      },
       cacheTime: DAY * 180,
       staleTime: getStaleTime(ddmmyyy),
+      ...options,
     },
   );
 
-  return query;
+  return {
+    ...query,
+    refetch: () => {
+      console.log('refetch');
+      query.refetch();
+    },
+  };
 }

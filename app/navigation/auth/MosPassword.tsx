@@ -18,23 +18,38 @@ export function MosPassword() {
 
   const {form, setForm} = useAuthFormStore();
 
-  const navigator = useNavigation<NavigationProp<any>>();
+  const navigation = useNavigation();
 
   useAuthHeader({header: 'MOS.RU', onBack: () => setForm({password: ''})});
   const {mutate} = useMutation(
     ['MosAuth'],
     async () => {
-      const {pid, token} = await startAuth();
+      const {sessionData, engineAccountData} = await startAuth();
+
       await processLogin({
         authData: form,
-        sessionData: {token, pid},
         engine: 'MOS.RU',
+        sessionData,
+        engineAccountData,
       });
+      console.log('processed login', sessionData.pid);
+
+      return true;
     },
     {
       onSuccess() {
         console.log('success auth');
-        navigator.navigate('Tabs');
+        navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: 'Tabs',
+              state: {
+                routes: [{name: 'DiaryTab'}],
+              },
+            },
+          ],
+        });
       },
       onError(error) {
         setError(errorToString(error));
