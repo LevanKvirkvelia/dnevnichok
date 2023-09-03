@@ -14,8 +14,8 @@ const Tab = createBottomTabNavigator();
 
 export default function Tabs() {
   const {colors} = useTheme();
-  const user = useActiveUser();
-
+  const user = useActiveUser(false);
+  if (!user) return null;
   return (
     <Tab.Navigator
       initialRouteName={'DiaryTab'}

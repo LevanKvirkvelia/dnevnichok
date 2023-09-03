@@ -1,9 +1,9 @@
-import { Req } from '../../../auth/helpers/Req';
-import { SDate } from '../../../auth/helpers/SDate';
-import { SessionData, ParsedUser, Account, User } from '../../../auth/state/useUsersStore';
-import { createParser } from '../../createParser';
-import { PeriodConstructor, DayScheduleConstructor } from '../../data/constructors';
-import { IDaySchedule } from '../../data/types';
+import {Req} from '../../../auth/helpers/Req';
+import {SDate} from '../../../auth/helpers/SDate';
+import {SessionData, ParsedUser, Account, User} from '../../../auth/state/useUsersStore';
+import {createParser} from '../../createParser';
+import {PeriodConstructor, DayScheduleConstructor} from '../../data/constructors';
+import {IDaySchedule} from '../../data/types';
 import {
   APIGroupGroupGetListPeriod,
   APIJournalEstimateTable,
@@ -16,7 +16,7 @@ import {
 } from './types';
 import {stringMd5} from 'react-native-quick-md5';
 
-async function login(login: string, password: string): Promise<{token: string}> {
+async function login(login: string, password: string): Promise<Pick<Account, 'sessionData' | 'engineAccountData'>> {
   const logon: APIUserAuthLogin = await Req.post(
     'https://dnevnik2.petersburgedu.ru/api/user/auth/login',
     {
@@ -36,7 +36,10 @@ async function login(login: string, password: string): Promise<{token: string}> 
   );
 
   if (logon.data && typeof logon.data.token == 'string') {
-    return logon.data;
+    return {
+      sessionData: logon.data,
+      engineAccountData: {},
+    };
   }
 
   throw new Error(logon?.validations[0]?.message || 'Неправильный логин или пароль');
@@ -134,14 +137,14 @@ async function getPeriodsWith(account: Account, user: User, periodNum: number) {
 }
 
 async function getDaysWithDay(account: Account, user: User, sDate: SDate): Promise<IDaySchedule[]> {
-  const selectedDate = new SDate(sDate).copy().setMonday();
+  const selectedDate = new SDate(sDate).copy();
   const response: APIJournalLessonListByEducation = await Req.get(
     'https://dnevnik2.petersburgedu.ru/api/journal/lesson/list-by-education',
     {
       p_limit: 1000,
       p_page: 1,
       p_datetime_from: selectedDate.ddmmyyyy(),
-      p_datetime_to: selectedDate.copy().setDayPlus(6).ddmmyyyy(),
+      p_datetime_to: selectedDate.ddmmyyyy(),
       'p_groups[]': user.parsedData.classId,
       'p_educations[]': user.engineUserData.educationId,
       date: selectedDate.ddmmyyyy(),
@@ -154,7 +157,7 @@ async function getDaysWithDay(account: Account, user: User, sDate: SDate): Promi
       p_limit: 1000,
       p_page: 1,
       p_datetime_from: selectedDate.ddmmyyyy(),
-      p_datetime_to: selectedDate.copy().setDayPlus(6).ddmmyyyy() + ' 23:59:59',
+      p_datetime_to: selectedDate.ddmmyyyy() + ' 23:59:59',
       'p_groups[]': user.parsedData.classId,
       'p_educations[]': user.engineUserData.educationId,
       date: selectedDate.ddmmyyyy(),
@@ -173,40 +176,45 @@ async function getDaysWithDay(account: Account, user: User, sDate: SDate): Promi
 
   const days = Object.values(lessons).reduce<{
     [date: string]: DayScheduleConstructor;
-  }>((acc, item) => {
-    const date = item.datetime_from.split(' ')[0];
-    if (!acc[date]) acc[date] = new DayScheduleConstructor(date);
-    acc[date].upsertLessonData({
-      name: item.subject_name,
-      id: stringMd5(item.subject_name),
-      time: {
-        start: item.datetime_from.split(' ')[1].slice(0, -3),
-        end: item.datetime_to.split(' ')[1].slice(0, -3),
-      },
-      number: item.number,
-      date: date,
-      teacher: {
-        id: String(item.subject_id),
-      },
-      homework: {
-        attachments: [],
-        text: ('tasks' in item && item.tasks[0] && item.tasks[0].task_name) || '',
-      },
-      theme: ('content_name' in item && item.content_name) || '',
-      marks:
-        'estimates' in item
-          ? item.estimates.map(mark => ({
-              id: '',
-              value: +mark.estimate_value_name || 'H',
-              weight: 1,
-              name: mark.estimate_type_name || mark.estimate_value_name,
-              date: date,
-            }))
-          : [],
-    });
+  }>(
+    (acc, item) => {
+      const date = item.datetime_from.split(' ')[0];
+      if (!acc[date]) acc[date] = new DayScheduleConstructor(date);
+      acc[date].upsertLessonData({
+        name: item.subject_name,
+        id: stringMd5(item.subject_name),
+        time: {
+          start: item.datetime_from.split(' ')[1].slice(0, -3),
+          end: item.datetime_to.split(' ')[1].slice(0, -3),
+        },
+        numberFrom1: item.number,
+        date: date,
+        teacher: {
+          id: String(item.subject_id),
+        },
+        homework: {
+          attachments: [],
+          text: ('tasks' in item && item.tasks[0] && item.tasks[0].task_name) || '',
+        },
+        topic: ('content_name' in item && item.content_name) || '',
+        marks:
+          'estimates' in item
+            ? item.estimates.map(mark => ({
+                id: '',
+                value: +mark.estimate_value_name || 'H',
+                weight: 1,
+                name: mark.estimate_type_name || mark.estimate_value_name,
+                date: date,
+              }))
+            : [],
+      });
 
-    return acc;
-  }, {});
+      return acc;
+    },
+    {
+      [selectedDate.ddmmyyyy()]: new DayScheduleConstructor(selectedDate.ddmmyyyy()),
+    },
+  );
 
   return Object.values(days).map(day => day.toDaySchedule());
 }
@@ -218,14 +226,14 @@ export const peterburgParser = createParser({
       }
       return login(authData.login, authData.password);
     },
-    async backgroundLogin({account}) {
+    async backgroundLogin({authData, sessionData}) {
       return peterburgParser.auth.login!({
-        authData: account.authData,
-        sessionData: account.sessionData,
+        authData,
+        sessionData,
       });
     },
     async getStudents({sessionData}) {
-      return getStudents(sessionData);
+      return getStudents(sessionData!);
     },
     async getAccountId({authData}) {
       return 'Peterburg:' + authData.login.toLowerCase();
@@ -239,24 +247,7 @@ export const peterburgParser = createParser({
     async getPeriodsWith({account, user, period}) {
       return getPeriodsWith(account, user, period as number); // TODO DEFAULT PERIOD
     },
-    async getAllPeriodsQuick({account, user}) {
-      const lenPeriods = await this.getPeriodsLenQuick({
-        account,
-        user,
-      });
-      const response = await Promise.all(
-        Array(lenPeriods)
-          .fill(null)
-          .map(async (u, i: number) =>
-            this.getPeriodsWith({
-              period: i,
-              account,
-              user,
-            }),
-          ),
-      );
-      return response.flat();
-    },
+    getAllPeriodsQuick: null,
   },
   diary: {
     async getDaysWithDay({account, user, sDate}) {

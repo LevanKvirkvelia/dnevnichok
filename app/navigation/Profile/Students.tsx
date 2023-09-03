@@ -187,7 +187,21 @@ export function Students() {
       </Card>
       <Card>
         <CardSettingsList>
-          <SettingsListItem onPress={() => fullLogout()} title="Выход" hasNavArrow />
+          <SettingsListItem
+            onPress={() => {
+              navigation.reset({
+                routes: [
+                  {
+                    name: 'Auth',
+                    state: {routes: [{name: 'Login'}]},
+                  },
+                ],
+              });
+              fullLogout();
+            }}
+            title="Выход"
+            hasNavArrow
+          />
         </CardSettingsList>
       </Card>
 

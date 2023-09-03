@@ -23,6 +23,7 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
   const query = useQuery(
     ['codepush', deploymentKey, currentVersionQuery.data],
     async ({queryKey}) => {
+      console.log('fetch this shit');
       const [_, deploymentKey, currentVersion] = queryKey;
 
       const check = await codePush.checkForUpdate(deploymentKey);
@@ -48,7 +49,13 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
         data => setProgress(data.receivedBytes / data.totalBytes),
       );
     },
-    {refetchOnWindowFocus: true, enabled: !isEmulator && !!currentVersionQuery.data, retry: false, retryDelay: 30000},
+    {
+      refetchOnWindowFocus: false,
+      enabled: !isEmulator && !!currentVersionQuery.data,
+      retry: false,
+      retryDelay: 30000,
+      staleTime: 1000 * 60 * 10,
+    },
   );
 
   return force && query.isFetching && !isEmulator ? splash : children;

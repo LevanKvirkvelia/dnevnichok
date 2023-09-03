@@ -33,7 +33,9 @@ async function getDaysWithDay(account: Account, user: User, sDate: SDate): Promi
     eventGroups[yyyymmdd].push(event);
   });
 
-  const days: {[yyyymmdd: string]: DayScheduleConstructor} = {};
+  const days: {[yyyymmdd: string]: DayScheduleConstructor} = {
+    [sDate.yyyymmdd()]: new DayScheduleConstructor(sDate.ddmmyyyy()),
+  };
 
   for (const yyyymmdd in eventGroups) {
     const sdate = SDate.parseYYYYMMDD(yyyymmdd);
