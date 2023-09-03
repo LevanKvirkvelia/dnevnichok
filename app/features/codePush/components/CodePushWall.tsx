@@ -31,7 +31,7 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
     ['checkUpdate', deploymentKey],
     async ({queryKey}) => codePush.checkForUpdate(queryKey[1]),
     {
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: true,
       enabled: !isEmulator,
       retry: true,
       retryDelay: 1000 * 200,
@@ -72,7 +72,6 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
       enabled: !isEmulator && !!currentVersionQuery.data && !!checkUpdateQuery.data,
       retry: true,
       retryDelay: 1000 * 200,
-      // staleTime: 1000 * 60 * 10,
     },
   );
 
