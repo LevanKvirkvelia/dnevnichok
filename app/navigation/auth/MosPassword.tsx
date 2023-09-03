@@ -32,13 +32,11 @@ export function MosPassword() {
         sessionData,
         engineAccountData,
       });
-      console.log('processed login', sessionData.pid);
 
       return true;
     },
     {
       onSuccess() {
-        console.log('success auth');
         navigation.reset({
           index: 0,
           routes: [

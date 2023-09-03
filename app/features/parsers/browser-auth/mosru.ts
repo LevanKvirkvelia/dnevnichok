@@ -235,7 +235,6 @@ export function useVisibleMosAuth() {
         const passwordSelector = 'input[name="password"]';
 
         await browser.waitForSelector(loginSelector);
-        console.log('waited for selector');
 
         await browser.evaluate(
           `function (loginArg){

@@ -42,7 +42,6 @@ export function useDayScheduleQuery(
       // This code saves all diary days to cache
       result.forEach(day => {
         if (day.ddmmyyyy === ddmmyyy) return;
-        console.log('loop');
         queryClient.fetchQuery(['diaryDay', account.id, user.id, day.ddmmyyyy], () => day, {
           cacheTime: DAY * 180,
         });
@@ -51,21 +50,11 @@ export function useDayScheduleQuery(
       return result.find(day => day.ddmmyyyy === ddmmyyy);
     },
     {
-      retry: retry => {
-        console.log({retry});
-        return false;
-      },
       cacheTime: DAY * 180,
       staleTime: getStaleTime(ddmmyyy),
       ...options,
     },
   );
 
-  return {
-    ...query,
-    refetch: () => {
-      console.log('refetch');
-      query.refetch();
-    },
-  };
+  return query;
 }

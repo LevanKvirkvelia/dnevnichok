@@ -23,7 +23,6 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
   const query = useQuery(
     ['codepush', deploymentKey, currentVersionQuery.data],
     async ({queryKey}) => {
-      console.log('fetch this shit');
       const [_, deploymentKey, currentVersion] = queryKey;
 
       const check = await codePush.checkForUpdate(deploymentKey);

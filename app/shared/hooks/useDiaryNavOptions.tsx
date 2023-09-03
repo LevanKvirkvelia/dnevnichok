@@ -11,7 +11,6 @@ export function useDiaryNavOptions(options: Partial<StackNavigationOptions> = {}
   const {top} = useSafeAreaInsets();
 
   useEffect(() => {
-    console.log('route updated');
     navigation.setOptions({
       headerTruncatedBackTitle: 'Назад',
       headerBackTitle: 'Назад',
