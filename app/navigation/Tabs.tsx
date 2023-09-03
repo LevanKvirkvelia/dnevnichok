@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Suspense} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Platform} from 'react-native';
 import {DiaryTab} from './diary/DiaryTab';
@@ -9,13 +9,13 @@ import {PeriodsTab} from './periods/PeriodsTab';
 import {ProfileTab} from './Profile/ProfileTab';
 import {useActiveUser} from '../features/auth/hooks/useActiveUser';
 import {Avatar} from '../features/profile/components/Avatar';
+import {Splash} from '../shared/components/Splash';
 
 const Tab = createBottomTabNavigator();
 
-export default function Tabs() {
+function ProtectedTabs() {
   const {colors} = useTheme();
-  const user = useActiveUser(false);
-  if (!user) return null;
+  const user = useActiveUser();
   return (
     <Tab.Navigator
       initialRouteName={'DiaryTab'}
@@ -66,5 +66,13 @@ export default function Tabs() {
         }}
       />
     </Tab.Navigator>
+  );
+}
+
+export default function Tabs() {
+  return (
+    <Suspense fallback={<Splash />}>
+      <ProtectedTabs />
+    </Suspense>
   );
 }

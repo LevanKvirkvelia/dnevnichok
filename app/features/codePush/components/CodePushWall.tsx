@@ -28,7 +28,7 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
   }, [currentVersionQuery.data]);
 
   const checkUpdateQuery = useQuery(
-    ['checkUpdate', deploymentKey],
+    ['codePush/checkUpdate', deploymentKey],
     async ({queryKey}) => codePush.checkForUpdate(queryKey[1]),
     {
       refetchOnWindowFocus: true,

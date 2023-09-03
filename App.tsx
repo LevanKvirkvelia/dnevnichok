@@ -36,9 +36,13 @@ function InitQueryClient() {
   return null;
 }
 
+const ignoreQueryKeys = ['codePush'];
+
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError(error, query) {
+      const key = typeof query.queryKey?.[0];
+      if (typeof key === 'string' && ignoreQueryKeys.some(key => key.startsWith(key))) return;
       showMessage({message: errorToString(error)});
     },
   }),
