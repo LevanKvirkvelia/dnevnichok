@@ -9,8 +9,7 @@ import {DiaryTabScreenProps} from '../types';
 
 export function useInAppBrowser() {
   const {navigate} = useNavigation();
-
-  return useCallback(
+  const openBrowser = useCallback(
     (params?: {displayUrl?: string; startUrl?: string; nextUrl?: string; title?: string}) => {
       navigate('Tabs', {
         screen: 'DiaryTab',
@@ -19,6 +18,7 @@ export function useInAppBrowser() {
     },
     [navigate],
   );
+  return openBrowser;
 }
 
 export function InAppBrowser() {

@@ -31,13 +31,8 @@ export function usePhotoPicker({
       const image = await ImagePicker.openPicker({
         includeBase64: true,
         mediaType: 'photo',
-        compressImageQuality: 0.45,
         forceJpg: true,
-        cropping: true,
-        compressImageMaxWidth: 500,
-        width: 500,
-        compressImageMaxHeight: 500,
-        height: 500,
+        compressImageQuality: 0.45,
         ...pickerOptions,
       });
       await onImage(image.data, image.mime);

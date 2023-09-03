@@ -15,10 +15,11 @@ import {useNavigation} from '@react-navigation/native';
 import {useThemedActionSheet} from '../../shared/helpers/useActionSheet';
 import {useActiveUser} from '../../features/auth/hooks/useActiveUser';
 import {IonIcon} from '../../ui/IonIcon';
-import {AvatarPicker, AvatarPickerRef} from '../../features/profile/components/AvatarPicker';
 import {Avatar} from '../../features/profile/components/Avatar';
 import {useOTAVersionQuery} from '../../features/codePush/hooks/useOTAVersion';
 import {useOTAState} from '../../features/codePush/state/useOTAState';
+import {useStoredPhotoPicker} from '../../shared/hooks/useStoredPhotoPicker';
+import {Link} from '../../ui/Link';
 
 export function StudentsList() {
   const navigation = useNavigation();
@@ -94,6 +95,14 @@ export function Students() {
   const appVersion = useOTAVersionQuery();
   const {progress} = useOTAState();
 
+  const {base64Photo, showPicker} = useStoredPhotoPicker(`avatar/${user.id}`, {
+    cropping: true,
+    compressImageMaxWidth: 500,
+    compressImageMaxHeight: 500,
+    width: 500,
+    height: 500,
+  });
+
   return (
     <ThemedScrollView style={{paddingBottom: 20}}>
       <Card>
@@ -130,7 +139,7 @@ export function Students() {
               color: colors.textOnRow,
             }}
             numberOfLines={2}
-            description={<AvatarPicker />}
+            description={<Link onPress={showPicker}>{base64Photo ? 'Изменить аватарку' : 'Добавить аватарку'}</Link>}
             icon={<Avatar user={user} size={60} />}
           />
           <SettingsListItem
@@ -159,7 +168,14 @@ export function Students() {
           <SettingsListItem
             icon={<SettingsIconWrapper backgroundColor={colors.primary} iconName="color-palette" />}
             title="Тема"
-            // onPress={() => openPage('Theme')}
+            onPress={() =>
+              navigation.navigate('Tabs', {
+                screen: 'ProfileTab',
+                params: {
+                  screen: 'Theme',
+                },
+              })
+            }
             // rightIcon={<ThemeCircle style={{marginRight: 5}} size={15} showActive={false} />}
             hasNavArrow
           />

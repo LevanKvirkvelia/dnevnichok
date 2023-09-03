@@ -1,5 +1,5 @@
 {
-  "name": "Дневничок",
+  "name": "Dnevnichok",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -8,7 +8,21 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "postinstall": "react-native setup-ios-permissions"
+    "postinstall": "react-native setup-ios-permissions",
+    "_dep": "(code-push deployment add \"lekvirkvelia/mrko-${PLATFORM}\" \"$(git rev-parse --abbrev-ref HEAD)\" || echo \"Deployment ${PLATFORM} ${GITHUB_REF##*/}\")",
+    "_promote": "code-push promote lekvirkvelia/mrko-${PLATFORM} \"$(git rev-parse --abbrev-ref HEAD)\" Production",
+    "ios-staging": "PLATFORM=ios yarn _dep && code-push release-react lekvirkvelia/mrko-iOs ios --plistFile \"ios/Dnevnichok/Info.plist\" -o ./sourcemaps/ios -m -d \"$(git rev-parse --abbrev-ref HEAD)\"",
+    "is": "yarn ios-staging",
+    "ios-promote": "PLATFORM=ios yarn _promote",
+    "ios-full-release": "yarn ios-staging && yarn ios-promote",
+    "ifr": "yarn ios-full-release",
+    "android-staging": "PLATFORM=android yarn _dep && code-push release-react lekvirkvelia/mrko-android android -o ./sourcemaps/android/  -m -d \"$(git rev-parse --abbrev-ref HEAD)\"",
+    "as": "yarn android-staging",
+    "android-promote": "PLATFORM=android yarn _promote",
+    "fr": "yarn install && yarn all-full-release",
+    "android-full-release": "yarn android-staging && yarn android-promote",
+    "afr": "yarn android-full-release",
+    "all-full-release": "yarn android-full-release && yarn ios-full-release"
   },
   "reactNativePermissionsIOS": [
     "AppTrackingTransparency",

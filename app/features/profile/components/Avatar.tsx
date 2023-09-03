@@ -6,6 +6,7 @@ import {User} from '../../auth/state/useUsersStore';
 import FastImage from 'react-native-fast-image';
 import {useMMKVBuffer, useMMKVString} from 'react-native-mmkv';
 import {IonIcon} from '../../../ui/IonIcon';
+import {useStoredPhotoPicker} from '../../../shared/hooks/useStoredPhotoPicker';
 
 export type AvatarProps = {
   user: User;
@@ -51,12 +52,12 @@ export function Avatar({
     ...containerStyle,
   };
 
-  const [base64Avatar, setBase64Avatar] = useMMKVString(`avatar-${user.id}`);
+  const {base64Photo} = useStoredPhotoPicker(`avatar/${user.id}`);
 
-  if (base64Avatar) {
+  if (base64Photo) {
     return (
       <View style={_containerStyle}>
-        <FastImage style={{...commonStyles, ...style}} source={{uri: base64Avatar}} />
+        <FastImage style={{...commonStyles, ...style}} source={{uri: base64Photo}} />
       </View>
     );
   }

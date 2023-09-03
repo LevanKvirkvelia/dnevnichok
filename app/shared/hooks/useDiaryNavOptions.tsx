@@ -27,5 +27,5 @@ export function useDiaryNavOptions(options: Partial<StackNavigationOptions> = {}
       },
       ...options,
     });
-  }, [navigation, route, ...deps]);
+  }, [navigation, route, colors.primary, colors.textOnPrimary, ...deps]);
 }
