@@ -48,7 +48,7 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
         data => setProgress(data.receivedBytes / data.totalBytes),
       );
     },
-    {refetchOnWindowFocus: true, enabled: !isEmulator && !!currentVersionQuery.data, retry: false},
+    {refetchOnWindowFocus: true, enabled: !isEmulator && !!currentVersionQuery.data, retry: false, retryDelay: 30000},
   );
 
   return force && query.isFetching && !isEmulator ? splash : children;
