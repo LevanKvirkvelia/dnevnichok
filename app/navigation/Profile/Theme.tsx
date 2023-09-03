@@ -2,7 +2,7 @@ import React from 'react';
 import {useDiaryNavOptions} from '../../shared/hooks/useDiaryNavOptions';
 import {Palette, useTheme} from '../../features/themes/useTheme';
 import {useStoredPhotoPicker} from '../../shared/hooks/useStoredPhotoPicker';
-import {TouchableOpacity, View, FlatList, Dimensions, ViewProps} from 'react-native';
+import {TouchableOpacity, View, FlatList, Dimensions, ViewProps, PixelRatio} from 'react-native';
 import {usePrevious} from '../../shared/hooks/usePrevious';
 import {Button} from '../../ui/Button';
 import {useThemeState} from '../../features/themes/useThemeState';
@@ -79,8 +79,9 @@ export function Theme() {
   const {base64Photo, showPicker} = useStoredPhotoPicker('background', {
     cropping: true,
     compressImageQuality: 0.85,
-    width,
-    height,
+    // pix ratio from RN api
+    width: width * PixelRatio.get(),
+    height: height * PixelRatio.get(),
   });
 
   const {colors} = useTheme();

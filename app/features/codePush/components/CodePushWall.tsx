@@ -51,9 +51,9 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
     {
       refetchOnWindowFocus: false,
       enabled: !isEmulator && !!currentVersionQuery.data,
-      retry: false,
-      retryDelay: 30000,
-      staleTime: 1000 * 60 * 10,
+      retry: true,
+      retryDelay: 1000 * 200,
+      // staleTime: 1000 * 60 * 10,
     },
   );
 

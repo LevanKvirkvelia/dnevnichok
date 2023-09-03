@@ -7,6 +7,6 @@ interface useDiaryState {
 }
 
 export const useDiaryState = create<useDiaryState>()(set => ({
-  currentDisplayDate: new SDate().ddmmyyyy(),
+  currentDisplayDate: new SDate().nearestWorkDay().ddmmyyyy(),
   setCurrentDisplayDate: date => set({currentDisplayDate: date}),
 }));

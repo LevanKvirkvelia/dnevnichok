@@ -23,8 +23,8 @@ export function DiaryHeader() {
       style={Platform.select({
         ios: {
           backgroundColor: colors.primary,
-          paddingTop: 20 + top,
-          height: 64 + top,
+          paddingTop: top,
+          height: 44 + top,
           flexDirection: 'row',
           justifyContent: 'space-between',
         },

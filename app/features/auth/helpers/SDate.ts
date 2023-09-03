@@ -43,20 +43,20 @@ export class SDate {
     return yyyy + '-' + (mm[1] ? mm : '0' + mm[0]) + '-' + (dd[1] ? dd : '0' + dd[0]);
   }
 
-  weekName() {
-    return ['', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'][this.getWeekDayNum()];
-  }
-
-  weekNameAccus() {
-    return ['', 'понедельник', 'вторник', 'среду', 'четверг', 'пятницу', 'субботу'][this.getWeekDayNum()];
-  }
-
   ddmmyyyy() {
     let yyyy = this.date.getFullYear().toString();
     let mm = (this.date.getMonth() + 1).toString(); // getMonth() is zero-based
     let dd = this.date.getDate().toString();
 
     return (dd[1] ? dd : '0' + dd[0]) + '.' + (mm[1] ? mm : '0' + mm[0]) + '.' + yyyy;
+  }
+
+  weekName() {
+    return ['', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'][this.getWeekDayNum()];
+  }
+
+  weekNameAccus() {
+    return ['', 'понедельник', 'вторник', 'среду', 'четверг', 'пятницу', 'субботу'][this.getWeekDayNum()];
   }
 
   getWeekDayNum() {
@@ -88,22 +88,17 @@ export class SDate {
     return this;
   }
 
-  setLastDay() {
-    this.date.setDate(this.date.getDate() + 7 - this.getWeekDayNum());
-    return this;
-  }
-
   copy() {
     return new SDate(this.date.getTime());
   }
 
   getLastWorkDate(is6: boolean): SDate {
-    let maxD = is6 ? 7 : 6;
+    const maxD = is6 ? 7 : 6;
     return this.setDayPlus(-1).getWeekDayNum() >= maxD ? this.getLastWorkDate(is6) : this;
   }
 
   getNextWorkDate(is6: boolean): SDate {
-    let maxD = is6 ? 7 : 6;
+    const maxD = is6 ? 7 : 6;
     return this.setDayPlus(1).getWeekDayNum() < maxD ? this : this.getNextWorkDate(is6);
   }
 
@@ -113,5 +108,9 @@ export class SDate {
 
   year() {
     return this.date.getFullYear();
+  }
+
+  nearestWorkDay() {
+    return this.getWeekDayNum() < 6 ? this.copy() : this.setDayPlus(1).copy();
   }
 }

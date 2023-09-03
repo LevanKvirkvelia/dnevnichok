@@ -60,7 +60,7 @@ export function Periods() {
   const renderItem = useCallback((item: number) => <RenderItem period={item} />, []);
   const placeholder = useCallback(() => <LessonsLoadingSkeleton />, []);
   const rows = useMemo(() => new Array(len).fill(0).map((_, i) => i + 1), [len]);
-  if (!len) return null;
+
 
   return (
     <ThemedBackgroundImage>
