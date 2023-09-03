@@ -1,5 +1,6 @@
 import React from 'react';
-import {ScrollView, StatusBar, Text, TouchableOpacity} from 'react-native';
+import {ScrollView, StatusBar, Text} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import Color from 'color';
 import {HomeworkText} from './HomeworkText';
 import {Files} from './Files';
@@ -90,10 +91,10 @@ export function LessonDiaryInfo({lesson}: {lesson: ILesson}) {
         </TouchableOpacity>
       ) : null}
       <Files renderMethod="LessonDiary" lesson={lesson} />
-      {lesson.theme ? (
+      {lesson.topic ? (
         <Card>
           <StyledTitle>Тема урока</StyledTitle>
-          <StyledText>{lesson.theme}</StyledText>
+          <StyledText>{lesson.topic}</StyledText>
         </Card>
       ) : null}
       {lesson?.teacher?.name ? (

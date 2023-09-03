@@ -13,7 +13,7 @@ import Color from 'color';
 export function PeriodsHeader() {
   const {colors} = useTheme();
 
-  const navigation = useNavigation<PeriodsTabScreenProps['navigation']>();
+  const navigation = useNavigation();
   const showActionSheet = useThemedActionSheet();
 
   const {activePeriodNumber, setActivePeriod, customPeriods, variant} = useUserPeriodsState();
@@ -27,7 +27,14 @@ export function PeriodsHeader() {
       ...new Array(len)
         .fill(0)
         .map((_, num) => ({text: `${num + 1}-й период`, onPress: () => setActivePeriod(num + 1)})),
-      {text: 'Настроить периоды', onPress: () => navigation.navigate('PeriodsSettings')},
+      {
+        text: 'Настроить периоды',
+        onPress: () =>
+          navigation.navigate('Tabs', {
+            screen: 'PeriodsTab',
+            params: {screen: 'PeriodsSettings'},
+          }),
+      },
     ]);
   }, [len, navigation, showActionSheet]);
 

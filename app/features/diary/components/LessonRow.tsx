@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, Image, View, TouchableOpacity} from 'react-native';
+import {Text, Image, View} from 'react-native';
 import door from '../assets/door.png';
 import {ILesson} from '../../parsers/data/types';
 import {useTheme} from '../../themes/useTheme';
@@ -8,6 +8,7 @@ import {HomeworkText} from './HomeworkText';
 import {Files} from './Files';
 import {ItemColor} from '../../marks/components/ItemColor';
 import {useSubjectPeriodById} from '../../marks/hooks/usePeriodById';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const Touchable = TouchableOpacity;
 

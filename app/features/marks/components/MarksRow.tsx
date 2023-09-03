@@ -1,5 +1,6 @@
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Text, View} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import {ItemColor, MiddleWithColor} from './ItemColor';
 import {useTheme} from '../../themes/useTheme';
 import {ISubjectPeriod} from '../../parsers/data/types';

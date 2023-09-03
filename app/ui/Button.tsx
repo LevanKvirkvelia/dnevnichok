@@ -1,15 +1,8 @@
 import React from 'react';
 import {IconProps} from 'react-native-vector-icons/Icon';
 import {SquircleView} from 'react-native-figma-squircle';
-import {
-  ActivityIndicator,
-  TouchableOpacity,
-  Text,
-  TouchableOpacityProps,
-  TextProps,
-  StyleSheet,
-  View,
-} from 'react-native';
+import {ActivityIndicator, Text, TouchableOpacityProps, TextProps, StyleSheet, View} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useTheme} from '../features/themes/useTheme';
 import {IonIcon} from './IonIcon';
 
@@ -45,6 +38,7 @@ export const Button: React.FC<ButtonProps> = ({
   } = StyleSheet.flatten(styleProp) || {};
 
   return (
+    // @ts-ignore // todo fix props types
     <TouchableOpacity disabled={disabled} {...props}>
       <SquircleView
         style={{
@@ -72,10 +66,7 @@ export const Button: React.FC<ButtonProps> = ({
             style,
           ]}>
           {loading ? (
-            <ActivityIndicator
-              style={{width: 30}}
-              color={colors.textOnPrimary}
-            />
+            <ActivityIndicator style={{width: 30}} color={colors.textOnPrimary} />
           ) : (
             <>
               {typeof icon === 'string' ? (

@@ -1,11 +1,12 @@
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Text, View} from 'react-native';
 import {useTheme} from '../../themes/useTheme';
 import {useAuthFormStore} from '../state/useAuthFormStore';
 import FastImage from 'react-native-fast-image';
 import {IonIcon} from '../../../ui/IonIcon';
 import {WORKERS} from '../../parsers/Workers';
 import {EngineNames} from '../../parsers/getParser';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 export function EngineList({onNavigate}: {onNavigate(engine: EngineNames): void}) {
   const {colors} = useTheme();
