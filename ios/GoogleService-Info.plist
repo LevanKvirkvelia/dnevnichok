@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>449401121080-bk043q464muarp0fhmvs0mr3ubrl7fmo.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.449401121080-bk043q464muarp0fhmvs0mr3ubrl7fmo</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>449401121080-3q5fcns1k6bfao33npjp05fvmrssqipl.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCqxGlvE1Ui9_tl7f45hwfUJoq2eFhVe0c</string>
+	<key>GCM_SENDER_ID</key>
+	<string>449401121080</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>ru.inkout.mcko</string>
+	<key>PROJECT_ID</key>
+	<string>dnevnik-c91f4</string>
+	<key>STORAGE_BUCKET</key>
+	<string>dnevnik-c91f4.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:449401121080:ios:a94af4ba33075a13</string>
+	<key>DATABASE_URL</key>
+	<string>https://dnevnik-c91f4.firebaseio.com</string>
+	<key>ADMOB_APP_ID</key>
+	<string>ca-app-pub-4173410513187488~4329580453</string>
+</dict>
+</plist>

@@ -5,7 +5,7 @@ import {useTheme} from '../../themes/useTheme';
 import {usePeriodQuery} from '../hooks/usePeriodQuery';
 import {PeriodsTabScreenProps} from '../../../navigation/types';
 import {useUserPeriodsState} from '../state/usePeriodsState';
-import {useThemedActionSheet} from '../../../shared/helpers/useActionSheet';
+import {useThemedActionSheet} from '../../../shared/hooks/useActionSheet';
 import {IonIcon} from '../../../ui/IonIcon';
 import {periodDateToSDate} from '../utils';
 import Color from 'color';

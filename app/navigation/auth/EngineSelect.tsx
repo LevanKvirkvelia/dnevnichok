@@ -8,12 +8,15 @@ import {HeaderBackButton} from '@react-navigation/elements';
 import {EngineList} from '../../features/auth/components/EngineList';
 import {AuthNavigationProp} from './Auth';
 import {openLink} from '../../shared/hooks/useOptimisticOpenLink';
+import {usePushMessages} from '../../shared/hooks/usePushMessages';
 
 export const EngineSelect = () => {
   const {colors} = useTheme();
   const {top} = useSafeAreaInsets();
 
   useIDFA(true);
+  usePushMessages();
+
   const navigation = useNavigation<AuthNavigationProp>();
 
   return (

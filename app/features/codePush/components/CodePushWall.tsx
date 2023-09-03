@@ -56,6 +56,9 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
       // staleTime: 1000 * 60 * 10,
     },
   );
+  if (isEmulator) return children;
+  if (!currentVersionQuery.data || currentVersionQuery.data === 'bundle') return splash;
+  if (force && query.isFetching) return splash;
 
-  return force && query.isFetching && !isEmulator ? splash : children;
+  return children;
 }

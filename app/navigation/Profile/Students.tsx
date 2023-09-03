@@ -12,7 +12,7 @@ import {isEmulatorSync} from 'react-native-device-info';
 import {ThemedScrollView} from '../../features/themes/ThemedScrollView';
 import {replaceAbbr} from '../../shared/helpers/replaceAbbr';
 import {useNavigation} from '@react-navigation/native';
-import {useThemedActionSheet} from '../../shared/helpers/useActionSheet';
+import {useThemedActionSheet} from '../../shared/hooks/useActionSheet';
 import {useActiveUser} from '../../features/auth/hooks/useActiveUser';
 import {IonIcon} from '../../ui/IonIcon';
 import {Avatar} from '../../features/profile/components/Avatar';

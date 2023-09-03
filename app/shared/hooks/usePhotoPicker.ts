@@ -1,7 +1,7 @@
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
 import {useCallback, useMemo, useState} from 'react';
 import {errorToString} from '../helpers/errorToString';
-import {ActionSheetOption, useThemedActionSheet} from '../helpers/useActionSheet';
+import {ActionSheetOption, useThemedActionSheet} from './useActionSheet';
 import {showMessage} from '../../ui/FlashMessage';
 
 const OPTION_TEXTS = {
