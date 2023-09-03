@@ -1,9 +1,10 @@
-import {useState, ReactElement} from 'react';
+import {useState, ReactElement, useEffect} from 'react';
 import {Platform} from 'react-native';
 import codePush from 'react-native-code-push';
 import {isEmulatorSync} from 'react-native-device-info';
 import {useOTAState} from '../state/useOTAState';
 import {useQuery} from '@tanstack/react-query';
+import BootSplash from 'react-native-bootsplash';
 import {useOTAVersionQuery} from '../hooks/useOTAVersion';
 
 const keys: Partial<Record<typeof Platform.OS, string>> = {
@@ -20,13 +21,29 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
 
   const currentVersionQuery = useOTAVersionQuery();
 
-  const query = useQuery(
-    ['codepush', deploymentKey, currentVersionQuery.data],
-    async ({queryKey}) => {
-      const [_, deploymentKey, currentVersion] = queryKey;
+  useEffect(() => {
+    if (currentVersionQuery.data === 'bundle') {
+      setForce(true);
+    }
+  }, [currentVersionQuery.data]);
 
-      const check = await codePush.checkForUpdate(deploymentKey);
-      const forceMode = !currentVersion || check?.description?.includes('force') || false;
+  const checkUpdateQuery = useQuery(
+    ['checkUpdate', deploymentKey],
+    async ({queryKey}) => codePush.checkForUpdate(queryKey[1]),
+    {
+      refetchOnWindowFocus: false,
+      enabled: !isEmulator,
+      retry: true,
+      retryDelay: 1000 * 200,
+    },
+  );
+
+  const query = useQuery(
+    ['codepush', deploymentKey, currentVersionQuery.data, checkUpdateQuery.data?.description],
+    async ({queryKey}) => {
+      const [_, deploymentKey, currentVersion, updateDescription] = queryKey;
+
+      const forceMode = currentVersion == 'bundle' || updateDescription?.includes('force') || false;
       const installMode = forceMode ? codePush.InstallMode.IMMEDIATE : codePush.InstallMode.ON_NEXT_RESUME;
 
       setForce(forceMode);
@@ -35,7 +52,9 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
         {installMode, deploymentKey},
         status => {
           if (!forceMode) return;
-
+          requestAnimationFrame(() => {
+            BootSplash.hide({fade: true});
+          });
           if (status === codePush.SyncStatus.DOWNLOADING_PACKAGE || status === codePush.SyncStatus.INSTALLING_UPDATE) {
             setIsLoading(true);
           }
@@ -49,13 +68,20 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
       );
     },
     {
-      refetchOnWindowFocus: false,
-      enabled: !isEmulator && !!currentVersionQuery.data,
+      refetchOnWindowFocus: true,
+      enabled: !isEmulator && !!currentVersionQuery.data && !!checkUpdateQuery.data,
       retry: true,
       retryDelay: 1000 * 200,
       // staleTime: 1000 * 60 * 10,
     },
   );
+
+  useEffect(() => {
+    if (query.isError) {
+      BootSplash.hide({fade: true});
+    }
+  }, [query.isError]);
+
   if (isEmulator) return children;
   if (!currentVersionQuery.data || currentVersionQuery.data === 'bundle') return splash;
   if (force && query.isFetching) return splash;

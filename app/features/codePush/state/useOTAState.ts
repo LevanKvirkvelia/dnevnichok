@@ -12,7 +12,7 @@ interface useOTAState {
 }
 
 export const useOTAState = create<useOTAState>()(set => ({
-  isLoading: false,
+  isLoading: true,
   progress: 0,
   setIsLoading: isLoading => set({isLoading, progress: 0}),
   setProgress: progress => set({progress}),
