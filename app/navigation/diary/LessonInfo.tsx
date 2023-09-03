@@ -26,7 +26,7 @@ export function LessonInfo() {
   }, [dayQuery.data?.lessons.length]);
 
   useDiaryNavOptions({
-    headerTitle: 'Расписание',
+    headerTitle: '',
     headerStyle: {
       borderBottomWidth: 0,
       elevation: 0,
@@ -38,9 +38,9 @@ export function LessonInfo() {
     ...(Platform.OS === 'ios'
       ? {
           headerTransparent: true,
-          headerBackground: () => (
-            <BlurView blurType={isDark ? 'dark' : 'light'} blurAmount={10} style={StyleSheet.absoluteFill} />
-          ),
+          // headerBackground: () => (
+          //   <BlurView blurType={isDark ? 'dark' : 'light'} blurAmount={10} style={StyleSheet.absoluteFill} />
+          // ),
         }
       : {}),
   });
