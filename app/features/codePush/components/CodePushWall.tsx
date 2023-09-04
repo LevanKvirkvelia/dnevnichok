@@ -27,23 +27,12 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
     }
   }, [currentVersionQuery.data]);
 
-  const checkUpdateQuery = useQuery(
-    ['codePush/checkUpdate', deploymentKey],
-    async ({queryKey}) => codePush.checkForUpdate(queryKey[1]),
-    {
-      refetchOnWindowFocus: true,
-      enabled: !isEmulator,
-      retry: true,
-      retryDelay: 1000 * 200,
-    },
-  );
-
   const query = useQuery(
-    ['codepush', deploymentKey, currentVersionQuery.data, checkUpdateQuery.data?.description],
+    ['codepush', deploymentKey, currentVersionQuery.data],
     async ({queryKey}) => {
-      const [_, deploymentKey, currentVersion, updateDescription] = queryKey;
+      const [_, deploymentKey, currentVersion] = queryKey;
 
-      const forceMode = currentVersion == 'bundle' || updateDescription?.includes('force') || false;
+      const forceMode = currentVersion == 'bundle';
       const installMode = forceMode ? codePush.InstallMode.IMMEDIATE : codePush.InstallMode.ON_NEXT_RESUME;
 
       setForce(forceMode);
@@ -69,7 +58,7 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
     },
     {
       refetchOnWindowFocus: true,
-      enabled: !isEmulator && !!currentVersionQuery.data && !!checkUpdateQuery.data,
+      enabled: !isEmulator && !!currentVersionQuery.data,
       retry: true,
       retryDelay: 1000 * 200,
     },
