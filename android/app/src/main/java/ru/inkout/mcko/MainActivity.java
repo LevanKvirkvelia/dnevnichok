@@ -1,4 +1,4 @@
-package com.dnevnichok;
+package ru.inkout.mcko;
 
 import android.os.Bundle;
 import com.zoontek.rnbootsplash.RNBootSplash;

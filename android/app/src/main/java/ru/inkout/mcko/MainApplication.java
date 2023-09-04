@@ -1,4 +1,4 @@
-package com.dnevnichok;
+package ru.inkout.mcko;
 
 import com.microsoft.codepush.react.CodePush;
 import android.app.Application;
