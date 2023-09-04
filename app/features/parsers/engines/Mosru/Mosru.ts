@@ -109,9 +109,7 @@ export async function getToken(url: string) {
 export const mosruParser = createParser({
   auth: {
     login: null,
-    backgroundLogin() {
-      throw new Error('Error at backgroundLogin');
-    },
+    backgroundLogin: null,
     async getStudents({sessionData, engineAccountData}) {
       const students = await API.getStudents({sessionData, engineAccountData});
 

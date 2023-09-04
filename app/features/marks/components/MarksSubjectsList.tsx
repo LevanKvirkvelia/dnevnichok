@@ -8,13 +8,17 @@ import {useNavigation} from '@react-navigation/native';
 import {Card} from '../../../ui/card/Card';
 import {StyledTitle} from '../../../ui/typography/StyledTitle';
 import {StyledDescription} from '../../../ui/typography/StyledDescription';
+import {useQueryClient} from '@tanstack/react-query';
+import {useSessionQuery} from '../../auth/components/SessionProvider';
 
 interface MarksSubjectsListProps {
   period: number;
 }
 
 export function MarksSubjectsList({period}: MarksSubjectsListProps) {
-  const {periodQuery} = usePeriodQuery(period);
+  const sessionQuery = useSessionQuery();
+  const {periodQuery, queryKey} = usePeriodQuery(period);
+  const queryClient = useQueryClient();
   const navigation = useNavigation();
 
   function getListHeaderComponent() {
@@ -55,9 +59,14 @@ export function MarksSubjectsList({period}: MarksSubjectsListProps) {
       contentContainerStyle={{paddingBottom: 5}}
       data={data}
       removeClippedSubviews={false}
-      refreshing={periodQuery.isFetching}
+      refreshing={periodQuery.isFetching || sessionQuery.isFetching}
       showsVerticalScrollIndicator={false}
-      onRefresh={() => periodQuery.refetch()}
+      onRefresh={() => {
+        if (!sessionQuery.data || sessionQuery.isError) sessionQuery.refetch({cancelRefetch: false});
+        queryClient.invalidateQueries({
+          queryKey,
+        });
+      }}
       ListHeaderComponent={getListHeaderComponent()}
       keyExtractor={(item, index) => (periodQuery.isLoading ? String(index) : item.name + period)}
       renderItem={({item}) => <MarksRow onPress={() => openItem(item)} subjectPeriod={item} />}

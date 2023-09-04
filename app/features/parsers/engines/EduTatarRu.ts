@@ -1,13 +1,13 @@
 import {stringMd5} from 'react-native-quick-md5';
 import {Req} from '../../auth/helpers/Req';
 import {SDate} from '../../auth/helpers/SDate';
-import {SessionData, User, ParsedUser} from '../../auth/state/useUsersStore';
+import {SessionData, User, ParsedUser, Account} from '../../auth/state/useUsersStore';
 import {createParser} from '../createParser';
 import {DayScheduleConstructor, PeriodConstructor} from '../data/constructors';
 import {IDaySchedule, IMark} from '../data/types';
 const cheerio = require('cheerio-without-node-native');
 
-async function login(login: string, password: string): Promise<SessionData> {
+async function login(login: string, password: string): Promise<Pick<Account, 'sessionData' | 'engineAccountData'>> {
   let logon = await Req.post(
     'https://edu.tatar.ru/logon',
     {
@@ -24,7 +24,10 @@ async function login(login: string, password: string): Promise<SessionData> {
     'all',
   );
   if (logon.data.indexOf('Моя анкета') + 1) {
-    return {};
+    return {
+      sessionData: {},
+      engineAccountData: {},
+    };
   } else throw new Error('Неправильный логин или пароль');
 }
 
@@ -69,7 +72,7 @@ async function getDaysWithDay(user: User, sDate: SDate): Promise<IDaySchedule[]>
     });
     day.upsertLessonData({
       id: stringMd5(lesson[1]),
-      number: index + 1,
+      numberFrom1: index + 1,
       name: lesson[1],
       date: date.ddmmyyyy(),
       homework: {
@@ -158,11 +161,8 @@ export const eduTatarParser = createParser({
       return login(authData.login, authData.password);
     },
 
-    async backgroundLogin({account}) {
-      return eduTatarParser.auth.login!({
-        authData: account.authData,
-        sessionData: account.sessionData,
-      });
+    async backgroundLogin({authData, sessionData}) {
+      return eduTatarParser.auth.login!({authData, sessionData});
     },
 
     async getStudents() {

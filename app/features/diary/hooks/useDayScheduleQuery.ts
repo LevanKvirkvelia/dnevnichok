@@ -5,6 +5,7 @@ import {getParser} from '../../parsers/getParser';
 import {useEffect} from 'react';
 import {showMessage} from 'react-native-flash-message';
 import {IDaySchedule} from '../../parsers/data/types';
+import {useSessionQuery} from '../../auth/components/SessionProvider';
 
 const HOUR = 1000 * 60 * 60;
 const DAY = HOUR * 24;
@@ -30,6 +31,8 @@ export function useDayScheduleQuery(
   const parser = getParser(account.engine);
   const queryClient = useQueryClient();
 
+  const sessionQuery = useSessionQuery();
+
   const query = useQuery(
     ['diaryDay', account.id, user.id, ddmmyyy],
     async () => {
@@ -52,9 +55,10 @@ export function useDayScheduleQuery(
     {
       cacheTime: DAY * 180,
       staleTime: getStaleTime(ddmmyyy),
+      enabled: sessionQuery?.data && !sessionQuery.isFetching,
       ...options,
     },
   );
 
-  return query;
+  return {...query, queryKey: ['diaryDay', account.id, user.id, ddmmyyy]};
 }

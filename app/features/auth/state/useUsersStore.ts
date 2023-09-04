@@ -45,7 +45,7 @@ export type Account = {
 
   authData: AccountAuthData;
   sessionData?: SessionData;
-  engineAccountData: any;
+  engineAccountData?: any;
 
   users: {[id: string]: User};
 };

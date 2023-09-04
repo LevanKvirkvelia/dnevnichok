@@ -2,7 +2,8 @@ import {QueryClient, UseQueryOptions, useQueries, useQuery, useQueryClient} from
 import {useActiveAccount, useActiveUser} from '../../auth/hooks/useActiveUser';
 import {getParser} from '../../parsers/getParser';
 import {IPeriod} from '../../parsers/data/types';
-import { Account, User } from '../../auth/state/useUsersStore';
+import {Account, User} from '../../auth/state/useUsersStore';
+import {useSessionQuery} from '../../auth/components/SessionProvider';
 
 const HOUR = 1000 * 60 * 60;
 const DAY = HOUR * 24;
@@ -29,13 +30,12 @@ const DAY = HOUR * 24;
   * But the request would not be done twice, because we use react-query
 */
 
-
 function allPeriodsQueryOptions(account: Account, user: User, queryClient: QueryClient) {
   const parser = getParser(account.engine);
-  return ({
+  return {
     queryKey: ['allPeriods', account.id, user.id],
-    async queryFn({ queryKey }) {
-      const result = await parser.periods.getAllPeriodsQuick!({ account, user });
+    async queryFn({queryKey}) {
+      const result = await parser.periods.getAllPeriodsQuick!({account, user});
 
       // This code saves all diary days to cache
       result.map(period => {
@@ -48,7 +48,7 @@ function allPeriodsQueryOptions(account: Account, user: User, queryClient: Query
     },
     cacheTime: DAY * 180,
     staleTime: HOUR,
-  } satisfies UseQueryOptions<IPeriod[], Error, IPeriod[], [string, string, string]>);
+  } satisfies UseQueryOptions<IPeriod[], Error, IPeriod[], [string, string, string]>;
 }
 
 export function useAllPeriodsQuery() {
@@ -65,6 +65,8 @@ export function usePeriodsLenQuery() {
   const parser = getParser(account.engine);
   const queryClient = useQueryClient();
 
+  const sessionQuery = useSessionQuery();
+
   return useQueries({
     queries: [
       parser.periods.getAllPeriodsQuick
@@ -72,6 +74,7 @@ export function usePeriodsLenQuery() {
             ...allPeriodsQueryOptions(account, user, queryClient),
             placeholderData: [],
             select: (data: IPeriod[]) => data.length,
+            enabled: sessionQuery?.data && !sessionQuery.isFetching,
           }
         : {
             queryKey: ['periodsLen', account.id, user.id],
@@ -81,6 +84,7 @@ export function usePeriodsLenQuery() {
             cacheTime: DAY * 180,
             staleTime: HOUR,
             placeholderData: 0,
+            enabled: sessionQuery?.data && !sessionQuery.isFetching,
           },
     ],
   })[0];
@@ -93,6 +97,7 @@ export function usePeriodQuery(periodNumber: number | string) {
   const queryClient = useQueryClient();
 
   const periodsLenQuery = usePeriodsLenQuery();
+  const sessionQuery = useSessionQuery();
 
   const periodQuery = useQueries({
     queries: [
@@ -100,6 +105,7 @@ export function usePeriodQuery(periodNumber: number | string) {
         ? {
             ...allPeriodsQueryOptions(account, user, queryClient),
             select: (data: IPeriod[]) => data.find(period => period.id === periodNumber),
+            enabled: sessionQuery?.data && !sessionQuery.isFetching,
           }
         : {
             queryKey: ['period', account.id, user.id, String(periodNumber)],
@@ -122,12 +128,18 @@ export function usePeriodQuery(periodNumber: number | string) {
             },
             cacheTime: DAY * 180,
             staleTime: HOUR,
+            enabled: sessionQuery?.data && !sessionQuery.isFetching,
           },
     ],
   })[0];
 
+  const queryKey = parser.periods.getAllPeriodsQuick
+    ? ['allPeriods', account.id, user.id]
+    : ['period', account.id, user.id, String(periodNumber)];
+
   return {
     periodsLenQuery,
     periodQuery,
+    queryKey,
   };
 }

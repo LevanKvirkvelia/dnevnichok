@@ -30,11 +30,7 @@ module.exports = {
     'jsx-a11y/accessible-emoji': 'off',
     'import/no-unresolved': 'off',
     'import/prefer-default-export': 'off',
-    'import/extensions': [
-      'error',
-      'ignorePackages',
-      {js: 'never', jsx: 'never', ts: 'never', tsx: 'never'},
-    ],
+    'import/extensions': ['error', 'ignorePackages', {js: 'never', jsx: 'never', ts: 'never', tsx: 'never'}],
     'react/jsx-key': 'warn',
     'react/no-danger': 'off',
     'react/sort-comp': 'off',
@@ -55,10 +51,7 @@ module.exports = {
     'react/jsx-no-duplicate-props': ['error', {ignoreCase: false}],
     'react/jsx-filename-extension': ['error', {extensions: ['.tsx', '.js']}],
     'react-hooks/rules-of-hooks': 'error',
-    'react-hooks/exhaustive-deps': [
-      'warn',
-      {additionalHooks: '(useIsomorphicLayoutEffect)'},
-    ],
+    'react-hooks/exhaustive-deps': 'error',
     'react-native/sort-styles': 'off',
     'react-native/no-raw-text': 'off',
     'react-native/no-inline-styles': 'off',
@@ -73,13 +66,11 @@ module.exports = {
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-unused-vars': [
-      'warn',
-      {args: 'after-used', ignoreRestSiblings: true},
-    ],
+    '@typescript-eslint/no-unused-vars': ['warn', {args: 'after-used', ignoreRestSiblings: true}],
     '@typescript-eslint/no-empty-function': 'off',
     'prettier/prettier': ['error', {endOfLine: 'auto'}],
     curly: 'off',
-    "import/extensions": 'never'
+    'import/extensions': 'never',
+    '@tanstack/query/exhaustive-deps': 'error',
   },
 };

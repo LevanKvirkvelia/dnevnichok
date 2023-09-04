@@ -40,7 +40,7 @@ export interface ParserDefitionFeatures {
     >;
     getStudents: FeatureFunction<Pick<Account, 'authData' | 'sessionData' | 'engineAccountData'>, Error, ParsedUser[]>;
     getAccountId: FeatureFunction<Pick<Account, 'authData' | 'sessionData'>, Error, string>;
-    backgroundLogin: FeatureFunction<
+    backgroundLogin: OptionalFeatureFunction<
       Pick<Account, 'authData' | 'sessionData'>,
       Error,
       Pick<Account, 'sessionData' | 'engineAccountData'>

@@ -94,7 +94,7 @@ export function LessonDiaryInfo({lesson}: {lesson: ILesson}) {
       {lesson.topic ? (
         <Card>
           <StyledTitle>Тема урока</StyledTitle>
-          <StyledText>{lesson.topic}</StyledText>
+          <StyledText>{lesson.topic.trim()}</StyledText>
         </Card>
       ) : null}
       {lesson?.teacher?.name ? (

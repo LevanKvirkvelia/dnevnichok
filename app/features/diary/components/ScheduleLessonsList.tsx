@@ -17,6 +17,8 @@ import {useDiaryState} from '../state/useDiaryState';
 import {LessonsLoadingSkeleton} from '../../../shared/components/SubjectsLoadingSkeleton';
 import {copyHomework} from '../../../shared/helpers/clipboard';
 import {useDayScheduleQuery} from '../hooks/useDayScheduleQuery';
+import {useQueryClient} from '@tanstack/react-query';
+import {useSessionQuery} from '../../auth/components/SessionProvider';
 
 function ListHeader() {
   const user = useActiveUser();
@@ -66,7 +68,9 @@ function ListHeader() {
 
 export function ScheduleLessonsList({ddmmyyyy}: {ddmmyyyy: string}) {
   const navigation = useNavigation();
-  const {isLoading, data, refetch, isFetching} = useDayScheduleQuery(ddmmyyyy);
+  const sessionQuery = useSessionQuery();
+  const {isLoading, data, refetch, isFetching, queryKey} = useDayScheduleQuery(ddmmyyyy);
+  const queryClient = useQueryClient();
 
   return (
     <View style={{flexGrow: 1}}>
@@ -78,7 +82,15 @@ export function ScheduleLessonsList({ddmmyyyy}: {ddmmyyyy: string}) {
           contentContainerStyle={{flexGrow: 1, paddingBottom: 5}}
           ListEmptyComponent={() => <ListHeader />}
           showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={isFetching} onRefresh={() => refetch()} />}
+          refreshControl={
+            <RefreshControl
+              refreshing={isFetching || sessionQuery.isFetching}
+              onRefresh={() => {
+                if (!sessionQuery.data || sessionQuery.isError) sessionQuery.refetch({cancelRefetch: false});
+                queryClient.invalidateQueries({queryKey});
+              }}
+            />
+          }
           data={data?.lessons || []}
           keyExtractor={item => `${item.name}${item.numberFrom1}`}
           renderItem={({item, index}) => (
