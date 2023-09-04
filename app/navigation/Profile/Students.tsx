@@ -20,6 +20,7 @@ import {useOTAVersionQuery} from '../../features/codePush/hooks/useOTAVersion';
 import {useOTAState} from '../../features/codePush/state/useOTAState';
 import {useStoredPhotoPicker} from '../../shared/hooks/useStoredPhotoPicker';
 import {Link} from '../../ui/Link';
+import {openLink} from '../../shared/hooks/useOptimisticOpenLink';
 
 export function StudentsList() {
   const navigation = useNavigation();
@@ -164,7 +165,7 @@ export function Students() {
       </Card>
       <StudentsList />
       <Card>
-        <CardSettingsList debug>
+        <CardSettingsList>
           <SettingsListItem
             icon={<SettingsIconWrapper backgroundColor={colors.primary} iconName="color-palette" />}
             title="Тема"
@@ -201,6 +202,19 @@ export function Students() {
           ) : null}
         </CardSettingsList>
       </Card>
+
+      <Card>
+        <CardSettingsList>
+          <SettingsListItem
+            icon={<SettingsIconWrapper backgroundColor={'black'} iconName="logo-github" />}
+            title="GitHub"
+            onPress={() => openLink('https://github.com/LevanKvirkvelia/dnevnichok')}
+            // rightIcon={<ThemeCircle style={{marginRight: 5}} size={15} showActive={false} />}
+            hasNavArrow
+          />
+        </CardSettingsList>
+      </Card>
+
       <Card>
         <CardSettingsList>
           <SettingsListItem
@@ -223,7 +237,7 @@ export function Students() {
 
       <View style={{alignItems: 'center', padding: 8}}>
         <Text style={{color: colors.textOnRow, opacity: 0.2}}>
-          {appVersion.data} - {+progress * 100}
+          {appVersion.data} - {(+progress * 100).toFixed(2)}
         </Text>
       </View>
     </ThemedScrollView>

@@ -3,17 +3,10 @@ import {View, ViewProps} from 'react-native';
 import {Divider} from '../SettingsList/Divider';
 
 interface CardSettingsListProps extends ViewProps {
-  debug?: boolean;
   dividerTop?: boolean;
 }
 
-export const CardSettingsList: React.FC<CardSettingsListProps> = ({
-  style = {},
-  children,
-  debug,
-  dividerTop,
-  ...props
-}) => {
+export const CardSettingsList: React.FC<CardSettingsListProps> = ({style = {}, children, dividerTop, ...props}) => {
   const _children = React.Children.toArray(children).filter(child => !!child);
 
   return (

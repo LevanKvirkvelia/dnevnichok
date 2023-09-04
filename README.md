@@ -1,79 +1,46 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Дневничок
 
-# Getting Started
+Это моя переписанная за 6 дней мини-версия Дневничка.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+Дневничок был когда-то очень большим продуктом:
+- 300К еженедельных активных пользователей
+- +2М установок
+- Команда разработки, которая тестировала 4-8 продуктовых гипотез в неделю
+- Команда редакторов для сторис, которая каждый день запускала 1-2 сторис с конверсией в прочтение 70% 
+- Сервис вопросов и ответов, с командой экспертов, которая отвечала на тысячи вопросов в день
+- Почти все дневники России в Дневничке
+- Пуш уведомления
+- Поддержка 4 платформ (iOS, Android, Web, VK приложения)
+- Бот во ВКонтакте
+- Инфраструктура для аналитики
+- Инфраструктура микросервисов для поддержки 100к запросов в минуту в пиковое время
 
-## Step 1: Start the Metro Server
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+В этой мини-версии я оставил минимально необходимый код для работы базового функционала дневников. Цель проекта быть easy-hackable, чтобы каждый мог быстро разобраться в коде, внести изменения или сделать свой Дневничок на его основе.
 
-To start Metro, run the following command from the _root_ of your React Native project:
+Вы можете использовать этот репозиторий как основу для своего Дневничка, или пулл-реквестить в него свои фичи, чтобы Дневничок стал лучше.
 
-```bash
-# using npm
-npm start
+## Todo
+- [ ] Вернуть Android версию в стор
+- [ ] Переписать Readme
+- [ ] Сделать релизы в CodePush после каждого коммита
+- [ ] Вернуть поддержку всех дневников России
 
-# OR using Yarn
-yarn start
-```
 
-## Step 2: Start your Application
+## Из чего состоит Дневничок
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+1. Дневничок работает полностью на клиенте. Бекенд не нужен.
+2. Дневничок полностью написан на TypeScript, используя React Native
+3. Мы используем React Query для хренения стейта с API, и Zustand для хранения стейта внутри приложения
+4. Мы используем React Navigation для навигации
+5. Мы используем React Native Firebase для аналитики и пуш уведомлений
+6. CodePush для обновления приложения без релиза в AppStore и Google Play
 
-### For Android
+## Как запустить Дневничок
+Воспользуйтесь инструкцией по работе с React Native. Я не пробовал запускать Дневничок на других компьютерах, поэтому не могу гарантировать, что все будет работать сразу. Если у вас не получается запустить Дневничок, то пишите мне в [телеграм чате](https://t.me/+804g3J7utW9kZWEy), я постараюсь помочь.
 
-```bash
-# using npm
-npm run android
+Скорее всего, из xcode запустить не получится, потому что необходим аккаунт разработчика. Но через `yarn ios` или `yarn android` все должно работать.
+Скоро я постараюсь сделаю превью-релизы коммитов, чтобы можно было тестить Дневничок в продакшен версии из AppStore/Google Play.
 
-# OR using Yarn
-yarn android
-```
 
-### For iOS
-
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+[телеграм чат](https://t.me/+804g3J7utW9kZWEy)
