@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Dnevnichok</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">iclAkZe9uY22qk3Ose0XH1Mn2Hxf8f2b4b6f-3714-43b5-918e-fe59aadba369</string>
+    <string name="app_name">Дневник</string>
+    <string name="RNB_GOOGLE_PLAY_LICENSE_KEY">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAo4l9gM5egdDeYdrmDGiXlK0WWyv9YVTO4Kh0NDE/PuLMIseJ4CxH2ZZiPZlZtWaEynlEGlzTjx41uw3loCpkDxz/H/f9Hy4D9GVaWI4zntf8Ke7XMkbvqKdTKiLmB+X/6BvjwD5zhNVaF9agHG9I5cSQ8HfnOI29WTxstZnNW0P+EwSsqs8gq3EQbr4nR0Sed5ebI78YmthsP7AdiMncncTPq1A1lm1LqHKf2pk5ELl5m3ZLp3zo5MccqpnY9RSY8MUfP38Dt07QXaBnOEqyS9B7w6kNwT4SJYYgDuQecr6vK4lnPAGGaPSsCk8JIA51u6G4SI0ICDF17tV/vFcsewIDAQAB</string>
 </resources>

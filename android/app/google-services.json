@@ -1,0 +1,131 @@
+{
+	"project_info": {
+		"project_number": "449401121080",
+		"firebase_url": "https://dnevnik-c91f4.firebaseio.com",
+		"project_id": "dnevnik-c91f4",
+		"storage_bucket": "dnevnik-c91f4.appspot.com"
+	},
+	"client": [
+		{
+			"client_info": {
+				"mobilesdk_app_id": "1:449401121080:android:a94af4ba33075a13",
+				"android_client_info": {
+					"package_name": "ru.inkout.mcko"
+				}
+			},
+			"oauth_client": [
+				{
+					"client_id": "449401121080-3q5fcns1k6bfao33npjp05fvmrssqipl.apps.googleusercontent.com",
+					"client_type": 1,
+					"android_info": {
+						"package_name": "ru.inkout.mcko",
+						"certificate_hash": "1896d473a6d1c06906a518bc1a89de462bfb9070"
+					}
+				},
+				{
+					"client_id": "449401121080-u97h6fr3pk4ivpvumkokjpvgoug62lc4.apps.googleusercontent.com",
+					"client_type": 3
+				}
+			],
+			"api_key": [
+				{
+					"current_key": "AIzaSyD09I0bCTwbZLd6NcETV141XhbYzf-2qPA"
+				}
+			],
+			"services": {
+				"appinvite_service": {
+					"other_platform_oauth_client": [
+						{
+							"client_id": "449401121080-u97h6fr3pk4ivpvumkokjpvgoug62lc4.apps.googleusercontent.com",
+							"client_type": 3
+						},
+						{
+							"client_id": "449401121080-4u33mteabm72cpl718tkp5adnhv7vq10.apps.googleusercontent.com",
+							"client_type": 2,
+							"ios_info": {
+								"bundle_id": "ru.inkout.spb",
+								"app_store_id": "1470885428"
+							}
+						}
+					]
+				}
+			},
+			"admob_app_id": "ca-app-pub-4173410513187488~5027584453"
+		},
+		{
+			"client_info": {
+				"mobilesdk_app_id": "1:449401121080:android:cf25cd27fae05fa9",
+				"android_client_info": {
+					"package_name": "ru.inkout.spb"
+				}
+			},
+			"oauth_client": [
+				{
+					"client_id": "449401121080-u97h6fr3pk4ivpvumkokjpvgoug62lc4.apps.googleusercontent.com",
+					"client_type": 3
+				}
+			],
+			"api_key": [
+				{
+					"current_key": "AIzaSyD09I0bCTwbZLd6NcETV141XhbYzf-2qPA"
+				}
+			],
+			"services": {
+				"appinvite_service": {
+					"other_platform_oauth_client": [
+						{
+							"client_id": "449401121080-u97h6fr3pk4ivpvumkokjpvgoug62lc4.apps.googleusercontent.com",
+							"client_type": 3
+						},
+						{
+							"client_id": "449401121080-4u33mteabm72cpl718tkp5adnhv7vq10.apps.googleusercontent.com",
+							"client_type": 2,
+							"ios_info": {
+								"bundle_id": "ru.inkout.spb",
+								"app_store_id": "1470885428"
+							}
+						}
+					]
+				}
+			}
+		},
+		{
+			"client_info": {
+				"mobilesdk_app_id": "1:449401121080:android:d119f499ffb8ec24",
+				"android_client_info": {
+					"package_name": "ru.inkout.tatar"
+				}
+			},
+			"oauth_client": [
+				{
+					"client_id": "449401121080-u97h6fr3pk4ivpvumkokjpvgoug62lc4.apps.googleusercontent.com",
+					"client_type": 3
+				}
+			],
+			"api_key": [
+				{
+					"current_key": "AIzaSyD09I0bCTwbZLd6NcETV141XhbYzf-2qPA"
+				}
+			],
+			"services": {
+				"appinvite_service": {
+					"other_platform_oauth_client": [
+						{
+							"client_id": "449401121080-u97h6fr3pk4ivpvumkokjpvgoug62lc4.apps.googleusercontent.com",
+							"client_type": 3
+						},
+						{
+							"client_id": "449401121080-4u33mteabm72cpl718tkp5adnhv7vq10.apps.googleusercontent.com",
+							"client_type": 2,
+							"ios_info": {
+								"bundle_id": "ru.inkout.spb",
+								"app_store_id": "1470885428"
+							}
+						}
+					]
+				}
+			}
+		}
+	],
+	"configuration_version": "1"
+}
