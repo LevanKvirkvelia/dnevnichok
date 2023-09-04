@@ -40,30 +40,28 @@ function App(): JSX.Element {
   return (
     <QueryClientProvider client={queryClient}>
       <InitQueryClient />
-      <SessionProvider>
-        <CodePushProvider
-          splash={
-            <Splash loveText={'Создано независимыми разработчиками\nиз ❤️ к образованию.'}>
-              <OTAProgressBar />
-            </Splash>
-          }>
-          <HeadlessBrowserProvider>
-            <NavigationContainer
-              onReady={() =>
-                requestAnimationFrame(() => {
-                  BootSplash.hide({fade: true});
-                })
-              }>
-              <ActionSheetProvider>
-                <SafeAreaProvider>
-                  <RootNavigation />
-                  <FlashMessage />
-                </SafeAreaProvider>
-              </ActionSheetProvider>
-            </NavigationContainer>
-          </HeadlessBrowserProvider>
-        </CodePushProvider>
-      </SessionProvider>
+      <CodePushProvider
+        splash={
+          <Splash loveText={'Создано независимыми разработчиками\nиз ❤️ к образованию.'}>
+            <OTAProgressBar />
+          </Splash>
+        }>
+        <HeadlessBrowserProvider>
+          <NavigationContainer
+            onReady={() =>
+              requestAnimationFrame(() => {
+                BootSplash.hide({fade: true});
+              })
+            }>
+            <ActionSheetProvider>
+              <SafeAreaProvider>
+                <RootNavigation />
+                <FlashMessage />
+              </SafeAreaProvider>
+            </ActionSheetProvider>
+          </NavigationContainer>
+        </HeadlessBrowserProvider>
+      </CodePushProvider>
     </QueryClientProvider>
   );
 }

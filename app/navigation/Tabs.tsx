@@ -9,6 +9,7 @@ import {PeriodsTab} from './periods/PeriodsTab';
 import {ProfileTab} from './Profile/ProfileTab';
 import {useActiveUser} from '../features/auth/hooks/useActiveUser';
 import {Avatar} from '../features/profile/components/Avatar';
+import { SessionProvider } from '../features/auth/components/SessionProvider';
 
 const Tab = createBottomTabNavigator();
 
@@ -71,5 +72,9 @@ function ProtectedTabs() {
 export default function Tabs() {
   const user = useActiveUser(false);
   if (!user) return null;
-  return <ProtectedTabs />;
+  return (
+    <SessionProvider>
+      <ProtectedTabs />
+    </SessionProvider>
+  );
 }
