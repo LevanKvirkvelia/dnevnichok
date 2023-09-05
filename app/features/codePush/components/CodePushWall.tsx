@@ -70,7 +70,7 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
     }
   }, [query.isError]);
 
-  if (isEmulator) return children;
+  if (isEmulator || __DEV__) return children;
   if (!currentVersionQuery.data || currentVersionQuery.data === 'bundle') return splash;
   if (force && query.isFetching) return splash;
 

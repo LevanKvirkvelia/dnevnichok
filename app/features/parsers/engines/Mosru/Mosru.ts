@@ -8,6 +8,8 @@ import {SDate} from '../../../auth/helpers/SDate';
 import {Account, User} from '../../../auth/state/useUsersStore';
 import {DayScheduleConstructor} from '../../data/constructors';
 import {IDaySchedule} from '../../data/types';
+import CookieManager from '@react-native-cookies/cookies';
+import {Platform} from 'react-native';
 
 async function getDaysWithDay(account: Account, user: User, sDate: SDate): Promise<IDaySchedule[]> {
   const dateFrom = sDate.copy();
@@ -86,7 +88,7 @@ async function validateToken(token: string) {
 
 export async function getToken(url: string) {
   const code = url.split('code=')[1];
-  await Req.get(`https://school.mos.ru/v3/auth/sudir/callback?code=${code}`, {}, {});
+  await Req.get(`https://school.mos.ru/v3/auth/sudir/callback?code=${code}`, {}, {}, 'text');
   const session: UserInfo = await Req.get(`https://school.mos.ru/v3/userinfo`, {}, {});
 
   // @ts-ignore
@@ -101,7 +103,24 @@ export async function getToken(url: string) {
     {},
     'text',
   );
-  await Req.get(`https://dnevnik.mos.ru/aupd/auth`, {}, {Cookie: `;aupd_token=${token};obr_id=${userId};`}, 'text');
+
+  if (Platform.OS === 'android')
+    await Promise.all([
+      CookieManager.setFromResponse(
+        'https://school.mos.ru/v3/auth/sudir/callback',
+        `aupd_token=${token}; Max-Age=86400; Expires=Tue, 05 Sep 2029 23:33:39 GMT; SameSite=None; Path=/; Domain=.mos.ru; Secure`,
+      ),
+    ]);
+
+  await Req.get(
+    `https://dnevnik.mos.ru/aupd/auth`,
+    {},
+    {
+      Authorization: `Bearer ${token}`,
+      Cookie: `aupd_token=${token};obr_id=${userId};`,
+    },
+    'text',
+  );
 
   return validateToken(token);
 }
