@@ -208,7 +208,7 @@ export function Students() {
           <SettingsListItem
             icon={<SettingsIconWrapper backgroundColor={'black'} iconName="logo-github" />}
             title="GitHub"
-            onPress={() => openLink('https://github.com/LevanKvirkvelia/dnevnichok')}
+            onPress={() => openLink('https://github.com/LevanKvirkvelia/dnevnichok?ref=app')}
             // rightIcon={<ThemeCircle style={{marginRight: 5}} size={15} showActive={false} />}
             hasNavArrow
           />
