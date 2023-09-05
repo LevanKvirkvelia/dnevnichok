@@ -78,7 +78,7 @@ android {
         applicationId "ru.inkout.mcko"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 15000001
+        versionCode 15000003
         versionName "15.0.0"
     }
     signingConfigs {
