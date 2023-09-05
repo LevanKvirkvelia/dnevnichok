@@ -1,4 +1,4 @@
-import {useState, ReactElement, useEffect} from 'react';
+import {ReactElement, useEffect, useState} from 'react';
 import {Platform} from 'react-native';
 import codePush from 'react-native-code-push';
 import {isEmulatorSync} from 'react-native-device-info';
@@ -15,17 +15,15 @@ const keys: Partial<Record<typeof Platform.OS, string>> = {
 const isEmulator = isEmulatorSync();
 
 export function CodePushProvider({splash, children}: {splash: ReactElement; children: ReactElement}) {
-  const {setIsLoading, setProgress, deploymentKey = keys[Platform.OS]} = useOTAState();
-
-  const [force, setForce] = useState(false);
+  const {deploymentKey = keys[Platform.OS]} = useOTAState();
 
   const currentVersionQuery = useOTAVersionQuery();
 
+  const [isTimedOut, setIsTimedOut] = useState(false);
+
   useEffect(() => {
-    if (currentVersionQuery.data === 'bundle') {
-      setForce(true);
-    }
-  }, [currentVersionQuery.data]);
+    setTimeout(() => setIsTimedOut(true), 1000 * 45);
+  }, []);
 
   const query = useQuery(
     ['codepush', deploymentKey, currentVersionQuery.data],
@@ -35,8 +33,6 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
       const forceMode = currentVersion == 'bundle';
       const installMode = forceMode ? codePush.InstallMode.IMMEDIATE : codePush.InstallMode.ON_NEXT_RESUME;
 
-      setForce(forceMode);
-
       return codePush.sync(
         {installMode, deploymentKey},
         status => {
@@ -45,20 +41,19 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
             BootSplash.hide({fade: true});
           });
           if (status === codePush.SyncStatus.DOWNLOADING_PACKAGE || status === codePush.SyncStatus.INSTALLING_UPDATE) {
-            setIsLoading(true);
+            useOTAState.getState().setIsLoading(true);
           }
 
           if (status === codePush.SyncStatus.UP_TO_DATE) {
-            setIsLoading(false);
-            setForce(false);
+            useOTAState.getState().setIsLoading(false);
           }
         },
-        data => setProgress(data.receivedBytes / data.totalBytes),
+        data => useOTAState.getState().setProgress(data.receivedBytes / data.totalBytes),
       );
     },
     {
       refetchOnWindowFocus: true,
-      enabled: !isEmulator && !!currentVersionQuery.data,
+      enabled: !isEmulator && !__DEV__ && !!currentVersionQuery.data,
       retry: true,
       retryDelay: 1000 * 200,
     },
@@ -71,8 +66,8 @@ export function CodePushProvider({splash, children}: {splash: ReactElement; chil
   }, [query.isError]);
 
   if (isEmulator || __DEV__) return children;
-  if (!currentVersionQuery.data || currentVersionQuery.data === 'bundle') return splash;
-  if (force && query.isFetching) return splash;
+  if ((!currentVersionQuery.data || currentVersionQuery.data === 'bundle') && !query.isError && !isTimedOut)
+    return splash;
 
   return children;
 }
