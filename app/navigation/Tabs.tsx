@@ -9,7 +9,9 @@ import {PeriodsTab} from './periods/PeriodsTab';
 import {ProfileTab} from './Profile/ProfileTab';
 import {useActiveUser} from '../features/auth/hooks/useActiveUser';
 import {Avatar} from '../features/profile/components/Avatar';
-import { SessionProvider } from '../features/auth/components/SessionProvider';
+import {SessionProvider} from '../features/auth/components/SessionProvider';
+import {NavigatorIcon} from '../icons/NavigatorIcon';
+import {AIChat} from './ai/AIChat';
 
 const Tab = createBottomTabNavigator();
 
@@ -54,6 +56,15 @@ function ProtectedTabs() {
         options={{
           tabBarLabel: 'Дневник',
           tabBarIcon: ({color}) => <DiaryIcon fill={color} />,
+        }}
+      />
+      <Tab.Screen
+        key="AITab"
+        name="AITab"
+        component={AIChat}
+        options={{
+          tabBarLabel: 'AI',
+          tabBarIcon: ({color}) => <NavigatorIcon fill={color} />,
         }}
       />
       <Tab.Screen
