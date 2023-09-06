@@ -21,6 +21,7 @@ import {useOTAState} from '../../features/codePush/state/useOTAState';
 import {useStoredPhotoPicker} from '../../shared/hooks/useStoredPhotoPicker';
 import {Link} from '../../ui/Link';
 import {openLink} from '../../shared/hooks/useOptimisticOpenLink';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 
 export function StudentsList() {
   const navigation = useNavigation();
@@ -75,6 +76,36 @@ export function StudentsList() {
   );
 }
 
+function FiveClicksDetector() {
+  const {colors} = useTheme();
+  const [isAdmin = false, setIsAdmin] = useMMKVBoolean('isAdmin');
+  const [clicks, setClicks] = useState<number[]>([]);
+  const clickValidityDuration = 5000; // 5 seconds in milliseconds
+
+  const handleClick = () => {
+    const now = Date.now();
+    const updatedClicks = [...clicks, now].filter(clickTimestamp => now - clickTimestamp <= clickValidityDuration);
+
+    setClicks(updatedClicks);
+
+    if (updatedClicks.length === 5) {
+      setIsAdmin(true);
+      setClicks([]);
+    }
+  };
+
+  const appVersion = useOTAVersionQuery();
+  const {progress} = useOTAState();
+
+  return (
+    <TouchableWithoutFeedback onPress={handleClick} style={{alignItems: 'center', padding: 8}}>
+      <Text style={{color: colors.textOnRow, opacity: 0.2}}>
+        {appVersion.data} - {(+progress * 100).toFixed(2)}
+      </Text>
+    </TouchableWithoutFeedback>
+  );
+}
+
 export function Students() {
   const {colors} = useTheme();
   const user = useActiveUser();
@@ -92,9 +123,6 @@ export function Students() {
 
   const [isEmulator] = useState(isEmulatorSync());
   const [isAdmin = false, setIsAdmin] = useMMKVBoolean('isAdmin');
-
-  const appVersion = useOTAVersionQuery();
-  const {progress} = useOTAState();
 
   const {base64Photo, showPicker} = useStoredPhotoPicker(`avatar/${user.id}`, {
     cropping: true,
@@ -234,12 +262,7 @@ export function Students() {
           />
         </CardSettingsList>
       </Card>
-
-      <View style={{alignItems: 'center', padding: 8}}>
-        <Text style={{color: colors.textOnRow, opacity: 0.2}}>
-          {appVersion.data} - {(+progress * 100).toFixed(2)}
-        </Text>
-      </View>
+      <FiveClicksDetector />
     </ThemedScrollView>
   );
 }

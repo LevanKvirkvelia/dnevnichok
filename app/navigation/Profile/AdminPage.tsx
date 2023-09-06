@@ -9,12 +9,13 @@ import {clearCookies} from '../../features/auth/helpers/cookies';
 import {useActiveAccount, useActiveUser} from '../../features/auth/hooks/useActiveUser';
 import {useUsersStore} from '../../features/auth/state/useUsersStore';
 import {ThemedScrollView} from '../../features/themes/ThemedScrollView';
+import {useAIStore} from '../../features/ai/hooks/useUsersStore';
 
 // @ts-ignore
 const isHermes = !!global.HermesInternal;
 
 export function AdminPage() {
-  useDiaryNavOptions({headerTitle: 'Управление приложением'});
+  useDiaryNavOptions({headerTitle: 'Управление приложением', headerBackTitle: 'Назад'});
 
   const user = useActiveUser();
   const account = useActiveAccount();
@@ -30,6 +31,8 @@ export function AdminPage() {
       },
     });
   }
+
+  const {setForcedAB} = useAIStore();
 
   return (
     <ThemedScrollView>
@@ -50,6 +53,13 @@ export function AdminPage() {
           <SettingsListItem title="user" rightText={JSON.stringify({...user, userData: null})} />
         </CardSettingsList>
       </Card>
+      <Card>
+        <StyledTitle>AI</StyledTitle>
+        <CardSettingsList dividerTop>
+          <SettingsListItem onPress={() => setForcedAB(true)} title="setForcedAB" hasNavArrow />
+        </CardSettingsList>
+      </Card>
+
       <Card>
         <StyledTitle>Ads</StyledTitle>
         <CardSettingsList dividerTop>

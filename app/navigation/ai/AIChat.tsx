@@ -1,5 +1,13 @@
-import React, {useState} from 'react';
-import {GiftedChat, IMessage, Composer, InputToolbar, Bubble, Message as ChatMessage} from 'react-native-gifted-chat';
+import React, {useEffect, useState} from 'react';
+import {
+  GiftedChat,
+  IMessage,
+  Composer,
+  InputToolbar,
+  Bubble,
+  Message as ChatMessage,
+  Send,
+} from 'react-native-gifted-chat';
 import {ThemedBackgroundImage} from '../../features/themes/ThemedBackgroundImage';
 import {useTheme} from '../../features/themes/useTheme';
 import {useDiaryNavOptions} from '../../shared/hooks/useDiaryNavOptions';
@@ -8,17 +16,63 @@ import axios from 'axios';
 import {OpenAI} from 'openai';
 import {View, Text} from 'react-native';
 import {QuotaWidget} from '../../features/ai/components/QuotaWidget';
+import {useAIStore} from '../../features/ai/hooks/useUsersStore';
+import {useBackwardTimer} from '../../shared/hooks/useBackwardTimer';
+import endent from 'endent';
+
+const LIMIT = 10;
+const TIME_WINDOW = 1000 * 60 * 60;
+
+function AIChatHeaderRight() {
+  const {counter} = useAIStore();
+
+  return <QuotaWidget>{LIMIT - (counter?.length ?? 0)}</QuotaWidget>;
+}
 
 export function AIChat() {
   const {colors, isDark} = useTheme();
 
-  const [messages, setMessages] = useState<IMessage[]>([]);
+  const {counter, incrementCounter, setCounter, temporaryId} = useAIStore();
+  const isDisabled = (counter?.length ?? 0) >= LIMIT;
+  const timer = useBackwardTimer({endTime: counter?.[counter.length - 1] + TIME_WINDOW});
+
+  const [messages, setMessages] = useState<IMessage[]>(() => [
+    {
+      _id: String(Math.random()),
+      createdAt: new Date(),
+      text: endent`
+      Привет! Я - Дневничок AI. 
+      Я могу ответить на твои вопросы, помочь с выполнением заданий и даже научить тебя новому! 
+      
+      В данный момент я могу отвечать только на ${LIMIT} сообщений в час.
+      Справа сверху ты можешь увидеть сколько сообщений тебе осталось.
+
+      Напиши мне что-нибудь, чтобы начать общение.
+      `,
+      user: {
+        _id: 'assistant',
+      },
+    },
+  ]);
   const [input, setInput] = useState('');
+
+  useEffect(() => {
+    const newCounter = counter.filter(id => new Date().getTime() - id < TIME_WINDOW);
+
+    if (newCounter.length !== counter.length) {
+      setCounter(newCounter);
+    }
+  }, [counter, timer]);
 
   const mutation = useMutation(
     ['chat', 'append'],
     async (messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[]) => {
-      return axios.post('http://localhost:3000/api/chat', {messages}, {responseType: 'text'});
+      return axios.post(
+        // 'https://dnevnichok-backend.vercel.app/api/chat',
+        'http://localhost:3000/api/chat',
+        {messages, temporaryId},
+        {responseType: 'text'},
+      );
     },
     {
       onSuccess: data => {
@@ -40,11 +94,10 @@ export function AIChat() {
 
   useDiaryNavOptions({
     header: undefined,
-    headerTitleAlign: 'left',
     headerTitleStyle: {color: colors.textOnRow},
     headerStyle: {elevation: 0, shadowOpacity: 0, backgroundColor: colors.rowBackgroundColor},
     headerTitle: 'Чат с AI',
-    headerRight: () => <QuotaWidget>5/5</QuotaWidget>,
+    headerRight: () => <AIChatHeaderRight />,
   });
 
   return (
@@ -55,23 +108,38 @@ export function AIChat() {
         bottomOffset={33}
         user={{_id: 'user'}}
         onSend={async message => {
-          setInput('');
+          if (isDisabled) {
+            return;
+          }
+          incrementCounter();
           setMessages(GiftedChat.append(messages, message));
           mutation.mutate(
-            GiftedChat.append(messages, message).map(m => ({
-              content: m.text,
-              role: String(m.user._id) as 'user' | 'assistant',
-            })),
+            GiftedChat.append(messages, message)
+              .map(m => ({
+                content: m.text,
+                role: String(m.user._id) as 'user' | 'assistant',
+              }))
+              .reverse()
+              .slice(1),
           );
+          setInput('');
         }}
         text={input}
         onInputTextChanged={text => {
           setInput(text);
         }}
         isTyping={mutation.isLoading}
-        disableComposer={mutation.isLoading}
+        disableComposer={mutation.isLoading || isDisabled}
         renderComposer={props => (
-          <Composer {...props} placeholder="Введите сообщение" textInputStyle={{color: colors.textOnRow}} />
+          <Composer
+            {...props}
+            placeholder={
+              isDisabled
+                ? `До восстановления осталось ${timer[0]}:${timer[1].toString().padStart(2, '0')}`
+                : 'Введите сообщение'
+            }
+            textInputStyle={{color: colors.textOnRow}}
+          />
         )}
         minInputToolbarHeight={54}
         renderInputToolbar={props => (
