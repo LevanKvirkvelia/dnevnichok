@@ -1,5 +1,5 @@
 import React, {Suspense} from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {BottomTabBar, BottomTabBarProps, createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Platform} from 'react-native';
 import {DiaryTab} from './diary/DiaryTab';
 import {DiaryIcon} from '../icons/DiaryIcon';
@@ -10,10 +10,13 @@ import {ProfileTab} from './Profile/ProfileTab';
 import {useActiveUser} from '../features/auth/hooks/useActiveUser';
 import {Avatar} from '../features/profile/components/Avatar';
 import {SessionProvider} from '../features/auth/components/SessionProvider';
-import {NavigatorIcon} from '../icons/NavigatorIcon';
+
 import {AIChat} from './ai/AIChat';
 import {IonIcon} from '../ui/IonIcon';
 import {useAIStore} from '../features/ai/hooks/useUsersStore';
+import {AdBanner} from '../features/ads/AdBanner';
+import {useCanShowAd} from '../features/ads/useCanShowAd';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator();
 
@@ -23,6 +26,8 @@ function ProtectedTabs() {
   const user = useActiveUser();
   const {temporaryId, isForcedAB} = useAIStore();
   const groupId = parseInt(temporaryId, 36) % fractions;
+  const canShowAd = useCanShowAd();
+  const {bottom, left, right, top} = useSafeAreaInsets();
 
   return (
     <Tab.Navigator
@@ -44,7 +49,14 @@ function ProtectedTabs() {
           },
           Platform.OS === 'ios' ? {} : {padding: 0, margin: 0},
         ],
+
         header: () => null,
+      }}
+      safeAreaInsets={{
+        bottom: canShowAd ? 0 : bottom,
+        left,
+        right,
+        top,
       }}>
       <Tab.Screen
         key="PeriodsTab"
@@ -95,6 +107,7 @@ export default function Tabs() {
   return (
     <SessionProvider>
       <ProtectedTabs />
+      <AdBanner />
     </SessionProvider>
   );
 }
