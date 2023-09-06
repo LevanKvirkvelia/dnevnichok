@@ -27,7 +27,7 @@ function AIChatHeaderRight() {
   const {colors, isDark} = useTheme();
   const {counter} = useAIStore();
   const timer = useBackwardTimer({endTime: counter?.[counter.length - 1] + TIME_WINDOW});
-  if (!counter.length) return null;
+
   return (
     <View className="flex flex-row justify-center items-center">
       {timer && (
@@ -105,8 +105,6 @@ export function AIChat() {
 
   useDiaryNavOptions({
     header: undefined,
-    headerTitleStyle: {color: colors.textOnRow},
-    headerStyle: {elevation: 0, shadowOpacity: 0, backgroundColor: colors.rowBackgroundColor},
     headerTitle: 'Чат с AI',
     headerRight: () => <AIChatHeaderRight />,
   });
