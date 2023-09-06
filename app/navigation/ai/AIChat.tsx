@@ -24,9 +24,20 @@ const LIMIT = 10;
 const TIME_WINDOW = 1000 * 60 * 60;
 
 function AIChatHeaderRight() {
+  const {colors, isDark} = useTheme();
   const {counter} = useAIStore();
-
-  return <QuotaWidget>{LIMIT - (counter?.length ?? 0)}</QuotaWidget>;
+  const timer = useBackwardTimer({endTime: counter?.[counter.length - 1] + TIME_WINDOW});
+  if (!counter.length) return null;
+  return (
+    <View className="flex flex-row justify-center items-center">
+      {timer && (
+        <Text style={{color: colors.textOnPrimary, marginRight: 8}}>
+          {timer[0]}:{timer[1].toString().padStart(2, '0')}
+        </Text>
+      )}
+      <QuotaWidget>{LIMIT - (counter?.length ?? 0)}</QuotaWidget>
+    </View>
+  );
 }
 
 export function AIChat() {
@@ -68,8 +79,8 @@ export function AIChat() {
     ['chat', 'append'],
     async (messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[]) => {
       return axios.post(
-        // 'https://dnevnichok-backend.vercel.app/api/chat',
-        'http://localhost:3000/api/chat',
+        'https://dnevnichok-backend.vercel.app/api/chat',
+        // 'http://localhost:3000/api/chat',
         {messages, temporaryId},
         {responseType: 'text'},
       );

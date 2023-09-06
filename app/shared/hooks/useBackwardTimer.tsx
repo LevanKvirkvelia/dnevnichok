@@ -15,5 +15,5 @@ export function useBackwardTimer({endTime}: {endTime: number}) {
   const minutes = Math.floor(time / 1000 / 60);
   const seconds = Math.floor((time / 1000) % 60);
 
-  return [minutes, seconds] as const;
+  return time > 0 ? ([minutes, seconds] as const) : null;
 }
