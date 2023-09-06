@@ -25,7 +25,7 @@ function ProtectedTabs() {
   const {colors} = useTheme();
   const user = useActiveUser();
   const {temporaryId, isForcedAB} = useAIStore();
-  const groupId = parseInt(temporaryId, 36) % fractions;
+  const groupId = parseInt(temporaryId.slice(0, 5), 36) % fractions;
   const canShowAd = useCanShowAd();
   const {bottom, left, right, top} = useSafeAreaInsets();
 
