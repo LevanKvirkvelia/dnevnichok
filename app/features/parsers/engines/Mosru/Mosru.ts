@@ -104,13 +104,12 @@ export async function getToken(url: string) {
     'text',
   );
 
-  if (Platform.OS === 'android')
-    await Promise.all([
-      CookieManager.setFromResponse(
-        'https://school.mos.ru/v3/auth/sudir/callback',
-        `aupd_token=${token}; Max-Age=86400; Expires=Tue, 05 Sep 2029 23:33:39 GMT; SameSite=None; Path=/; Domain=.mos.ru; Secure`,
-      ),
-    ]);
+  await Promise.all([
+    CookieManager.setFromResponse(
+      'https://school.mos.ru/v3/auth/sudir/callback',
+      `aupd_token=${token}; Max-Age=86400; Expires=Tue, 05 Sep 2029 23:33:39 GMT; SameSite=None; Path=/; Domain=.mos.ru; Secure`,
+    ),
+  ]);
 
   await Req.get(
     `https://dnevnik.mos.ru/aupd/auth`,
