@@ -2,8 +2,28 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>Dnevnichok</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Дневничок</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -45,5 +65,35 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>Дневнику нужен доступ к камере, чтобы позволить фотогафировать ДЗ</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string></string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Дневнику нужен доступ к микрофону, чтобы позволить снимать ДЗ на видео</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Дневнику нужен доступ к галерее, чтобы позволить загрузить ДЗ</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Дневнику нужен доступ к галерее, чтобы позволить загрузить ДЗ</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Дневничок будет учитывать ваши интересы при показе рекламы</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Дневничок позволит слушать музыку во время работы над ДЗ</string>
+		<key>UILaunchStoryboardName</key>
+	<string>LaunchScren.storyboard</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
 </dict>
 </plist>
