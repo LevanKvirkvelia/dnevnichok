@@ -129,7 +129,7 @@ export function useTheme() {
   const colors = {...defaultColors, ...Palette[paletteName as keyof typeof Palette]};
 
   return {
-    isDark: false,
+    isDark: paletteName.includes('dark'),
     backgroundNameOrUrl,
     paletteName,
     colors,

@@ -92,7 +92,7 @@ export function Theme() {
   const size = (width - margin * 2) / numColumns - margin * 2;
 
   const renderItem = ({item}: {item: string}) => (
-    <TouchableOpacity onPress={() => setBackgroundNameOrUrl(item)}>
+    <TouchableOpacity onPress={() => setBackgroundNameOrUrl(item ? item : null)}>
       <BackgroundPreview bgName={item} margin={margin} size={size} />
     </TouchableOpacity>
   );
@@ -129,7 +129,7 @@ export function Theme() {
         }}
         style={{margin: 0, padding: 0}}
         contentContainerStyle={{margin: 0, paddingHorizontal: margin}}
-        data={base64Photo ? bgList : bgList.slice(1)}
+        data={['', ...(base64Photo ? bgList : bgList.slice(1))]}
         numColumns={numColumns}
         keyExtractor={item => item.toString()}
         renderItem={renderItem}

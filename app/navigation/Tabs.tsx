@@ -12,6 +12,7 @@ import {Avatar} from '../features/profile/components/Avatar';
 import {SessionProvider} from '../features/auth/components/SessionProvider';
 import {NavigatorIcon} from '../icons/NavigatorIcon';
 import {AIChat} from './ai/AIChat';
+import { IonIcon } from '../ui/IonIcon';
 
 const Tab = createBottomTabNavigator();
 
@@ -64,7 +65,7 @@ function ProtectedTabs() {
         component={AIChat}
         options={{
           tabBarLabel: 'AI',
-          tabBarIcon: ({color}) => <NavigatorIcon fill={color} />,
+          tabBarIcon: ({color}) => <IonIcon color={color} name='chatbubbles' size={24} />,
         }}
       />
       <Tab.Screen
