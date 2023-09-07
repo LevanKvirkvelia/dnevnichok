@@ -8,14 +8,15 @@ import {
   Message as ChatMessage,
   Send,
   Message,
+  MessageImage,
 } from 'react-native-gifted-chat';
 import {ThemedBackgroundImage} from '../../features/themes/ThemedBackgroundImage';
 import {useTheme} from '../../features/themes/useTheme';
 import {useDiaryNavOptions} from '../../shared/hooks/useDiaryNavOptions';
-import {useMutation} from '@tanstack/react-query';
+import {useMutation, useQuery} from '@tanstack/react-query';
 import axios from 'axios';
 import {OpenAI} from 'openai';
-import {View, Text} from 'react-native';
+import {View, Text, ActivityIndicator, ImageBackground} from 'react-native';
 import {QuotaWidget} from '../../features/ai/components/QuotaWidget';
 import {useAIStore} from '../../features/ai/hooks/useUsersStore';
 import {useBackwardTimer} from '../../shared/hooks/useBackwardTimer';
@@ -24,9 +25,74 @@ import {getIdeas, useIdeas} from '../../features/ai/hooks/useIdeas';
 import {QuickReplies} from 'react-native-gifted-chat/lib/QuickReplies';
 import {NavButton} from '../../ui/NavButton';
 import {useMMKVBoolean} from 'react-native-mmkv';
+import {ChatCompletion} from 'openai/resources/chat';
+import FastImage from 'react-native-fast-image';
+import {IonIcon} from '../../ui/IonIcon';
+import {Image} from 'react-native';
+import Lightbox from 'react-native-lightbox-v2';
 
-const LIMIT = 10;
+const LIMIT = 25;
 const TIME_WINDOW = 1000 * 60 * 60;
+
+const BASE_URL = 'http://localhost:3000';
+
+function FastImageWithLoader({url}: {url: string}) {
+  const {colors} = useTheme();
+  const img = useQuery([url], async () => {
+    const resp = await fetch(url);
+    return resp.text();
+  });
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  if (!img.isSuccess)
+    return (
+      <View
+        style={{
+          width: '70%',
+          aspectRatio: 1,
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: colors.textOnRow,
+          opacity: 0.5,
+        }}>
+        <ActivityIndicator color={colors.rowBackgroundColor} size={25} />
+      </View>
+    );
+
+  return (
+    // @ts-ignore
+    <Lightbox
+      activeProps={{
+        style: {
+          flex: 1,
+          resizeMode: 'contain',
+        },
+      }}
+      onLongPress={() => {
+        CameraRoll;
+      }}
+      // swipeToDismiss
+      // useNativeDriver
+      onOpen={() => setIsOpen(true)}
+      onClose={() => setIsOpen(false)}>
+      <Image
+        source={{uri: `data:image/png;base64,${img.data}`}}
+        style={{
+          width: '70%',
+          aspectRatio: 1,
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: colors.textOnRow,
+
+          // margin: -10,
+        }}
+      />
+    </Lightbox>
+  );
+}
 
 function AIChatHeaderRight() {
   const {colors, isDark} = useTheme();
@@ -89,20 +155,28 @@ export function AIChat() {
   const mutation = useMutation(
     ['chat', 'append'],
     async (messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[]) => {
-      return axios.post(
-        'https://dnevnichok-backend.vercel.app/api/chat',
-        // 'http://localhost:3000/api/chat',
+      return axios.post<ChatCompletion['choices'][0]['message']>(
+        // 'https://dnevnichok-backend.vercel.app/api/chat',
+        'http://localhost:3000/api/chat',
         {messages, temporaryId},
-        {responseType: 'text'},
+        {responseType: 'json'},
       );
     },
     {
       onSuccess: data => {
+        console.log('args', data.data);
+
+        const args = data.data.function_call
+          ? (JSON.parse(data.data.function_call.arguments) as {engPrompt: string})
+          : null;
+
+        console.log('args', args);
         setMessages(
           GiftedChat.append(messages, [
             {
               _id: String(Math.random()),
-              text: data.data,
+              text: data.data.content || '',
+              image: args ? `${BASE_URL}/api/image?prompt=${encodeURIComponent(args.engPrompt)}` : undefined,
               createdAt: new Date(),
               user: {
                 _id: 'assistant',
@@ -288,6 +362,9 @@ export function AIChat() {
         }}
         renderDay={() => null}
         renderTime={() => null}
+        renderMessageImage={props => {
+          return <FastImageWithLoader url={props.currentMessage?.image!} />;
+        }}
         // qui
         // renderMessageText={({currentMessage}) => (
         //   <QMessageView
