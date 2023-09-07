@@ -24,6 +24,9 @@ import {getIdeas, useIdeas} from '../../features/ai/hooks/useIdeas';
 import {QuickReplies} from 'react-native-gifted-chat/lib/QuickReplies';
 import {NavButton} from '../../ui/NavButton';
 import {useMMKVBoolean} from 'react-native-mmkv';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useCanShowAd} from '../../features/ads/useCanShowAd';
 
 const LIMIT = 10;
 const TIME_WINDOW = 1000 * 60 * 60;
@@ -147,12 +150,16 @@ export function AIChat() {
     [isDisabled, messages, mutation, incrementCounter, setMessages, setInput],
   );
 
+  const canShowAd = useCanShowAd();
+  const {bottom} = useSafeAreaInsets();
+  const tabHeight = useBottomTabBarHeight();
+
   return (
     <ThemedBackgroundImage style={{backgroundColor: colors.backgroundColor}}>
       <GiftedChat
         messages={messages}
         messagesContainerStyle={{backgroundColor: 'transparent'}}
-        bottomOffset={33}
+        bottomOffset={canShowAd ? tabHeight + bottom + 50 : tabHeight}
         user={{_id: 'user'}}
         onSend={async message => {
           if (isDisabled) {
