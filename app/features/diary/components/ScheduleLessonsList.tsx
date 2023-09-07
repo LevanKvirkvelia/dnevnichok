@@ -19,6 +19,8 @@ import {copyHomework} from '../../../shared/helpers/clipboard';
 import {useDayScheduleQuery} from '../hooks/useDayScheduleQuery';
 import {useQueryClient} from '@tanstack/react-query';
 import {useSessionQuery} from '../../auth/components/SessionProvider';
+import {useTheme} from '../../themes/useTheme';
+import Color from 'color';
 
 function ListHeader() {
   const user = useActiveUser();
@@ -67,6 +69,7 @@ function ListHeader() {
 }
 
 export function ScheduleLessonsList({ddmmyyyy}: {ddmmyyyy: string}) {
+  const {colors} = useTheme();
   const navigation = useNavigation();
   const sessionQuery = useSessionQuery();
   const {isLoading, data, refetch, isFetching, queryKey} = useDayScheduleQuery(ddmmyyyy);
@@ -89,6 +92,7 @@ export function ScheduleLessonsList({ddmmyyyy}: {ddmmyyyy: string}) {
                 if (!sessionQuery.data || sessionQuery.isError) sessionQuery.refetch({cancelRefetch: false});
                 queryClient.invalidateQueries({queryKey});
               }}
+              tintColor={Color(colors.textOnRow).alpha(0.5).rgb().toString()}
             />
           }
           data={data?.lessons || []}

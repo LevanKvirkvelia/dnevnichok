@@ -2,16 +2,11 @@ import React, {useCallback, useMemo} from 'react';
 import {ThemedBackgroundImage} from '../../features/themes/ThemedBackgroundImage';
 import {useDiaryNavOptions} from '../../shared/hooks/useDiaryNavOptions';
 import {PeriodsHeader} from '../../features/marks/components/PeriodsHeader';
-import {NavButton} from '../../ui/NavButton';
-import {useTheme} from '../../features/themes/useTheme';
-import {useActiveUser} from '../../features/auth/hooks/useActiveUser';
 import {InfiniteHorizontalScroll} from '../../features/diary/components/InfiniteHorizontalScroll';
 import {usePeriodQuery} from '../../features/marks/hooks/usePeriodQuery';
 import {LessonsLoadingSkeleton} from '../../shared/components/SubjectsLoadingSkeleton';
-import {useNavigation} from '@react-navigation/native';
 import {Dimensions, View} from 'react-native';
 import {MarksSubjectsList} from '../../features/marks/components/MarksSubjectsList';
-import {PeriodsTabScreenProps} from '../types';
 import {useUserPeriodsState} from '../../features/marks/state/usePeriodsState';
 
 const {width} = Dimensions.get('window');
@@ -26,8 +21,6 @@ export function Periods() {
   const {activePeriodNumber, setActivePeriod} = useUserPeriodsState();
 
   const {periodsLenQuery} = usePeriodQuery(activePeriodNumber);
-  const {colors} = useTheme();
-  const navigation = useNavigation();
 
   useDiaryNavOptions({
     headerTitleAlign: 'center',
@@ -43,7 +36,7 @@ export function Periods() {
     // ),
   });
 
-  const len = periodsLenQuery.data ?? 0;
+  const len = periodsLenQuery.data || 1;
 
   const onPageChange = useCallback(
     (index: number) => {
@@ -60,7 +53,6 @@ export function Periods() {
   const renderItem = useCallback((item: number) => <RenderItem period={item} />, []);
   const placeholder = useCallback(() => <LessonsLoadingSkeleton />, []);
   const rows = useMemo(() => new Array(len).fill(0).map((_, i) => i + 1), [len]);
-
 
   return (
     <ThemedBackgroundImage>

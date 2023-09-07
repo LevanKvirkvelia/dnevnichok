@@ -1,73 +1,12 @@
 import {stringMd5} from 'react-native-quick-md5';
-
 import {API} from './Api';
 import {createParser} from '../../createParser';
-import {EventcalendarV1ApiEvents, LmsApiSessions, UserInfo} from './types';
+import {EventcalendarV1ApiEvents, LmsApiSessions, ReportsAPIProgressJSON, UserInfo} from './types';
 import {Req} from '../../../auth/helpers/Req';
 import {SDate} from '../../../auth/helpers/SDate';
-import {Account, User} from '../../../auth/state/useUsersStore';
-import {DayScheduleConstructor} from '../../data/constructors';
-import {IDaySchedule} from '../../data/types';
+import {DayScheduleConstructor, PeriodConstructor} from '../../data/constructors';
+import {IMark} from '../../data/types';
 import CookieManager from '@react-native-cookies/cookies';
-import {Platform} from 'react-native';
-
-async function getDaysWithDay(account: Account, user: User, sDate: SDate): Promise<IDaySchedule[]> {
-  const dateFrom = sDate.copy();
-  const dateTo = dateFrom.copy();
-
-  const eventcalendar = await API.getEventcalendar(
-    account,
-    user.engineUserData.contingent_guid,
-    dateFrom.yyyymmdd(),
-    dateTo.yyyymmdd(),
-  );
-
-  // @ts-ignore
-  if (eventcalendar?.message)
-    // @ts-ignore
-    throw new Error(eventcalendar?.message);
-
-  const eventGroups: {[yyyymmdd: string]: EventcalendarV1ApiEvents['response'][0][]} = {};
-
-  eventcalendar.response.forEach(event => {
-    const yyyymmdd = event.start_at.split('T')[0];
-    if (!eventGroups[yyyymmdd]) eventGroups[yyyymmdd] = [];
-    eventGroups[yyyymmdd].push(event);
-  });
-
-  const days: {[yyyymmdd: string]: DayScheduleConstructor} = {
-    [sDate.yyyymmdd()]: new DayScheduleConstructor(sDate.ddmmyyyy()),
-  };
-
-  for (const yyyymmdd in eventGroups) {
-    const sdate = SDate.parseYYYYMMDD(yyyymmdd);
-    if (!days[yyyymmdd]) days[yyyymmdd] = new DayScheduleConstructor(sdate.ddmmyyyy());
-
-    eventGroups[yyyymmdd].forEach((event, numberFrom0) => {
-      days[yyyymmdd].upsertLessonData({
-        date: sdate.ddmmyyyy(),
-        id: event.id,
-        name: event.subject_name,
-        numberFrom1: numberFrom0 + 1,
-        location: event.room_name,
-        time: {
-          start: event.start_at.split('T')[1].slice(0, 5),
-          end: event.finish_at.split('T')[1].slice(0, 5),
-        },
-        topic: event.lesson_name || undefined,
-        teacher: undefined, // TODO
-        homework: {
-          text: event.homework?.descriptions?.join('\n'),
-          attachments: [],
-        },
-        comment: event.comment ?? undefined,
-        missed: event.is_missed_lesson,
-      });
-    });
-  }
-
-  return Object.values(days).map(day => day.toDaySchedule());
-}
 
 async function validateToken(token: string) {
   const data: LmsApiSessions = await Req.post('https://dnevnik.mos.ru/lms/api/sessions', {
@@ -166,15 +105,116 @@ export const mosruParser = createParser({
   periods: {
     getPeriodsLenQuick: null,
     async getAllPeriodsQuick({account, user}) {
-      return [];
+      const subjectsWithPeriods: ReportsAPIProgressJSON = await Req.get(
+        `https://school.mos.ru/api/ej/report/family/v1/progress/json`,
+        {
+          academic_year_id: 11, // todo refetch
+          student_profile_id: user.id,
+        },
+        {
+          'auth-token': account.sessionData!.token,
+          'profile-id': account.sessionData!.pid,
+          'X-mes-subsystem': 'familyweb',
+          Authorization: `Bearer ${account.sessionData!.token}`,
+          'X-Mes-Role': account.engineAccountData.profiles[0].type,
+        },
+      );
+      const periods: PeriodConstructor[] = [];
+
+      subjectsWithPeriods.forEach(subject =>
+        subject.periods.forEach((period, index) => {
+          if (!periods[index]) periods[index] = new PeriodConstructor(index + 1);
+          const periodsConstructor = periods[index];
+
+          periodsConstructor.upsertLessonData({
+            id: subject.subject_id,
+            name: subject.subject_name,
+          });
+
+          period.marks.map(mark => {
+            periodsConstructor.addMark(subject.subject_id.toString(), {
+              value: mark.values[0].original,
+              weight: mark.weight,
+              name: [mark.control_form_name, mark.topic_name, mark.comment].filter(Boolean).join('; '),
+              date: mark.date,
+            });
+          });
+        }),
+      );
+      if (periods.length === 0) {
+        const alonePeriod = new PeriodConstructor(1);
+        periods.push(alonePeriod);
+      }
+
+      return periods.map(p => p.toPeriod());
     },
-    async getPeriodsWith({account, user, period}) {
-      return [];
-    },
+    getPeriodsWith: null,
   },
   diary: {
-    getDaysWithDay({account, user, sDate}) {
-      return getDaysWithDay(account, user, sDate);
+    async getDaysWithDay({account, user, sDate}) {
+      const dateFrom = sDate.copy();
+      const dateTo = dateFrom.copy();
+
+      const eventcalendar = await API.getEventcalendar(
+        account,
+        user.engineUserData.contingent_guid,
+        dateFrom.yyyymmdd(),
+        dateTo.yyyymmdd(),
+      );
+
+      // @ts-ignore
+      if (eventcalendar?.message)
+        // @ts-ignore
+        throw new Error(eventcalendar?.message);
+
+      const eventGroups: {[yyyymmdd: string]: EventcalendarV1ApiEvents['response'][0][]} = {};
+
+      eventcalendar.response.forEach(event => {
+        const yyyymmdd = event.start_at.split('T')[0];
+        if (!eventGroups[yyyymmdd]) eventGroups[yyyymmdd] = [];
+        eventGroups[yyyymmdd].push(event);
+      });
+
+      const days: {[yyyymmdd: string]: DayScheduleConstructor} = {
+        [sDate.yyyymmdd()]: new DayScheduleConstructor(sDate.ddmmyyyy()),
+      };
+
+      for (const yyyymmdd in eventGroups) {
+        const sdate = SDate.parseYYYYMMDD(yyyymmdd);
+        if (!days[yyyymmdd]) days[yyyymmdd] = new DayScheduleConstructor(sdate.ddmmyyyy());
+
+        eventGroups[yyyymmdd].forEach((event, numberFrom0) => {
+          days[yyyymmdd].upsertLessonData({
+            date: sdate.ddmmyyyy(),
+            id: event.id,
+            name: event.subject_name,
+            numberFrom1: numberFrom0 + 1,
+            location: event.room_name,
+            time: {
+              start: event.start_at.split('T')[1].slice(0, 5),
+              end: event.finish_at.split('T')[1].slice(0, 5),
+            },
+            topic: event.lesson_name || undefined,
+            teacher: undefined, // TODO
+            homework: {
+              text: event.homework?.descriptions?.join('\n'),
+              attachments: [],
+            },
+            comment: event.comment ?? undefined,
+            missed: event.is_missed_lesson,
+            marks: event.marks.map<IMark>(mark => ({
+              value: mark.value,
+              weight: mark.weight,
+              date: sdate.ddmmyyyy(),
+              id: mark.id,
+              name: mark.control_form_name,
+              point: mark.is_point,
+            })),
+          });
+        });
+      }
+
+      return Object.values(days).map(day => day.toDaySchedule());
     },
   },
 });

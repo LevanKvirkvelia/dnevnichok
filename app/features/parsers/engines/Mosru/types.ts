@@ -111,109 +111,131 @@ export type WebV1Profile = {
 
 export type EventcalendarV1ApiEvents = {
   total_count: number;
-  response: {
+  response: Array<{
     id: number;
-    author_id: null;
-    title: null;
-    description: null;
+    author_id: any;
+    title: any;
+    description: any;
     start_at: string;
     finish_at: string;
-    is_all_day: null;
-    conference_link: null;
-    outdoor: null;
-    place: null;
-    place_latitude: null;
-    place_longitude: null;
-    created_at: null;
-    updated_at: null;
-    types: null;
-    author_name: null;
-    registration_start_at: null;
-    registration_end_at: null;
+    is_all_day: any;
+    conference_link: any;
+    outdoor: any;
+    place: any;
+    place_latitude: any;
+    place_longitude: any;
+    created_at: any;
+    updated_at: any;
+    types: any;
+    author_name: any;
+    registration_start_at: any;
+    registration_end_at: any;
     source: string;
     source_id: string;
-    place_name: null;
-    contact_name: null;
-    contact_phone: null;
-    contact_email: null;
-    comment: null;
-    need_document: null;
-    type: null;
-    format_name: null;
-    url: null;
+    place_name: any;
+    contact_name: any;
+    contact_phone: any;
+    contact_email: any;
+    comment: any;
+    need_document: any;
+    type: any;
+    format_name: any;
+    url: any;
     subject_id: number;
     subject_name: string;
     room_name: string;
     room_number: string;
     replaced: boolean;
-    replaced_teacher_id: null;
-    esz_field_id: null;
+    replaced_teacher_id: any;
+    esz_field_id: any;
     lesson_type: string;
-    course_lesson_type: null;
-    lesson_education_type: null;
-    lesson_name: null | string;
-    lesson_theme: null | string;
-    activities: null;
-    link_to_join: null;
-    control: null;
-    class_unit_ids: null;
+    course_lesson_type: any;
+    lesson_education_type: any;
+    lesson_name?: string;
+    lesson_theme?: string;
+    activities: any;
+    link_to_join: any;
+    control: any;
+    class_unit_ids: any;
     class_unit_name: string;
     group_id: number;
     group_name: string;
-    external_activities_type: null;
-    address: null;
-    place_comment: null;
+    external_activities_type: any;
+    address: any;
+    place_comment: any;
     building_id: number;
     building_name: string;
-    city_building_name: null;
+    city_building_name: any;
     cancelled: boolean;
     is_missed_lesson: boolean;
-    is_metagroup: null;
-    absence_reason_id: null;
-    nonattendance_reason_id: null;
-    visible_fake_group: null;
-    health_status: null;
-    student_count: null;
-    attendances: null;
+    is_metagroup: any;
+    absence_reason_id: any;
+    nonattendance_reason_id: any;
+    visible_fake_group: any;
+    health_status: any;
+    student_count: any;
+    attendances: any;
     journal_fill: boolean;
-    comment_count: null;
-    comments: null;
+    comment_count: any;
+    comments: any;
     homework: {
       presence_status_id: number;
       total_count: number;
-      execute_count: number | null;
-      descriptions: string[] | null;
-      link_types: null;
-      materials: {
+      execute_count?: number;
+      descriptions?: Array<string>;
+      link_types: any;
+      materials?: {
         count_execute: number;
         count_learn: number;
-      } | null;
-      entries:
-        | {
-            homework_entry_id: number;
-            date_assigned_on: string;
-            date_prepared_for: string;
-            description: string;
-            duration: number;
-            materials: string;
-            attachment_ids: any[];
-            attachments: any[];
-            student_ids: null;
-          }[]
-        | null;
+      };
+      entries?: Array<{
+        homework_entry_id: number;
+        date_assigned_on: string;
+        date_prepared_for: string;
+        description: string;
+        duration: number;
+        materials?: string;
+        attachment_ids: Array<any>;
+        attachments: Array<any>;
+        student_ids: any;
+      }>;
     };
-    materials:
-      | {
-          uuid: string;
-          learningTargets: {
-            forLesson: boolean;
-            forHome: boolean;
-          };
-          isHiddenFromStudents: boolean;
-        }[]
-      | null;
-    marks: any[];
-  }[];
+    materials?: Array<{
+      uuid: string;
+      learningTargets: {
+        forLesson: boolean;
+        forHome: boolean;
+      };
+      isHiddenFromStudents: boolean;
+    }>;
+    marks: Array<{
+      id: number;
+      comment: any;
+      comment_exists: boolean;
+      control_form_name: string;
+      is_exam: boolean;
+      is_point: boolean;
+      point_date: any;
+      original_grade_system_type: string;
+      criteria: Array<{
+        name: string;
+        value: string;
+      }>;
+      value: string;
+      values: Array<{
+        name: string;
+        grade_system_id: number;
+        grade_system_type: string;
+        nmax: number;
+        grade: {
+          five: number;
+          hundred: number;
+          origin: string;
+        };
+      }>;
+      weight: number;
+    }>;
+  }>;
 };
 
 export type LmsApiSessions = {
@@ -240,3 +262,37 @@ export type LmsApiSessions = {
   date_of_birth: string;
   sex: string;
 };
+
+export type ReportsAPIProgressJSON = Array<{
+  subject_name: string;
+  subject_id: number;
+  periods: Array<{
+    name: string;
+    marks: Array<{
+      id: number;
+      comment: string;
+      values: Array<{
+        five: number;
+        hundred: number;
+        original: string;
+        nmax: number;
+      }>;
+      weight: number;
+      is_exam: boolean;
+      date: string;
+      is_point: boolean;
+      control_form_id: number;
+      grade_system_type: string;
+      topic_name: string;
+      control_form_name: string;
+    }>;
+    start: string;
+    end: string;
+    start_iso: string;
+    end_iso: string;
+    avg_five: string;
+    avg_hundred: string;
+  }>;
+  avg_five: string;
+  avg_hundred: string;
+}>;

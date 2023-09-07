@@ -53,7 +53,7 @@ export interface ParserDefitionFeatures {
 
   periods:
     | Feature<{
-        getPeriodsWith: FeatureFunction<{period: string | number | undefined} & BaseProps, Error, IPeriod[]>;
+        getPeriodsWith: OptionalFeatureFunction<{period: string | number | undefined} & BaseProps, Error, IPeriod[]>;
         getAllPeriodsQuick: FeatureFunction<BaseProps, Error, IPeriod[]>;
         getPeriodsLenQuick: OptionalFeatureFunction<BaseProps, Error, number>;
       }>

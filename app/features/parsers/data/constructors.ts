@@ -13,10 +13,10 @@ export class PeriodConstructor {
       this.data[lesson.id] = {...this.data[lesson.id], ...lesson};
     } else {
       this.data[lesson.id] = {
+        name: '',
+        marks: [],
         ...lesson,
         periodId: this.periodId,
-        marks: [],
-        name: '',
       };
     }
   }

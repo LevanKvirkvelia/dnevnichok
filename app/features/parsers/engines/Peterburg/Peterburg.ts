@@ -87,7 +87,9 @@ async function getListPeriod(account: Account, user: User) {
     },
     {'X-JWT-Token': account.sessionData?.token},
   );
-  return response.data.items;
+  return response.data.items.filter(item => {
+    return /полугодие|триместр|четверть/.test(item.name);
+  });
 }
 
 async function getPeriodsWith(account: Account, user: User, periodNum: number) {
@@ -108,16 +110,14 @@ async function getPeriodsWith(account: Account, user: User, periodNum: number) {
 
   const period = new PeriodConstructor(periodNum);
 
-  response.data.items.map(mark => {
+  response.data.items.forEach(mark => {
     const lessonId = stringMd5(mark.subject_name);
+    console.log({mark});
     period.upsertLessonData({
       id: lessonId,
       name: mark.subject_name,
     });
-    if (
-      mark.estimate_type_name != null &&
-      (mark.estimate_type_name.indexOf('четверть') + 1 || mark.estimate_type_name.indexOf('триместр') + 1)
-    ) {
+    if (mark.estimate_type_name && /полугодие|триместр|четверть/.test(mark.estimate_type_name)) {
       period.upsertLessonData({
         id: lessonId,
         resultMark: +mark.estimate_value_name,

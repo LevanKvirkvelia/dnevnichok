@@ -104,13 +104,13 @@ export function usePeriodQuery(periodNumber: number | string) {
       parser.periods.getAllPeriodsQuick
         ? {
             ...allPeriodsQueryOptions(account, user, queryClient),
-            select: (data: IPeriod[]) => data.find(period => period.id === periodNumber),
+            select: (data: IPeriod[]) => data.find(period => period.id.toString() === periodNumber.toString()),
             enabled: sessionQuery?.data && !sessionQuery.isFetching,
           }
         : {
             queryKey: ['period', account.id, user.id, String(periodNumber)],
             async queryFn() {
-              const result = await parser.periods.getPeriodsWith({
+              const result = await parser.periods.getPeriodsWith!({
                 account,
                 user,
                 period: periodNumber,
