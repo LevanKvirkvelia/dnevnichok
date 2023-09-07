@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   GiftedChat,
   IMessage,
@@ -7,6 +7,7 @@ import {
   Bubble,
   Message as ChatMessage,
   Send,
+  Message,
 } from 'react-native-gifted-chat';
 import {ThemedBackgroundImage} from '../../features/themes/ThemedBackgroundImage';
 import {useTheme} from '../../features/themes/useTheme';
@@ -19,6 +20,9 @@ import {QuotaWidget} from '../../features/ai/components/QuotaWidget';
 import {useAIStore} from '../../features/ai/hooks/useUsersStore';
 import {useBackwardTimer} from '../../shared/hooks/useBackwardTimer';
 import endent from 'endent';
+import {getIdeas, useIdeas} from '../../features/ai/hooks/useIdeas';
+import {QuickReplies} from 'react-native-gifted-chat/lib/QuickReplies';
+import {NavButton} from '../../ui/NavButton';
 
 const LIMIT = 10;
 const TIME_WINDOW = 1000 * 60 * 60;
@@ -40,6 +44,29 @@ function AIChatHeaderRight() {
   );
 }
 
+const getDefaultMessage = (): IMessage => ({
+  _id: String(Math.random()),
+  createdAt: new Date(),
+  text: endent`
+  Привет! Я - Дневничок AI. 
+  
+  Я могу ответить на твои вопросы, помочь с выполнением заданий и даже научить тебя новому! 
+
+  В данный момент я могу отвечать только на ${LIMIT} сообщений в час.
+  Справа сверху ты можешь увидеть сколько сообщений у тебя осталось.
+
+  Напиши мне что-нибудь, чтобы начать общение.
+  `,
+  user: {
+    _id: 'assistant',
+  },
+
+  quickReplies: {
+    type: 'radio',
+    values: getIdeas(4).map(idea => ({value: idea, title: idea})),
+  },
+});
+
 export function AIChat() {
   const {colors, isDark} = useTheme();
 
@@ -47,24 +74,7 @@ export function AIChat() {
   const isDisabled = (counter?.length ?? 0) >= LIMIT;
   const timer = useBackwardTimer({endTime: counter?.[counter.length - 1] + TIME_WINDOW});
 
-  const [messages, setMessages] = useState<IMessage[]>(() => [
-    {
-      _id: String(Math.random()),
-      createdAt: new Date(),
-      text: endent`
-      Привет! Я - Дневничок AI. 
-      Я могу ответить на твои вопросы, помочь с выполнением заданий и даже научить тебя новому! 
-      
-      В данный момент я могу отвечать только на ${LIMIT} сообщений в час.
-      Справа сверху ты можешь увидеть сколько сообщений тебе осталось.
-
-      Напиши мне что-нибудь, чтобы начать общение.
-      `,
-      user: {
-        _id: 'assistant',
-      },
-    },
-  ]);
+  const [messages, setMessages] = useState<IMessage[]>(() => [getDefaultMessage()]);
   const [input, setInput] = useState('');
 
   useEffect(() => {
@@ -106,8 +116,32 @@ export function AIChat() {
   useDiaryNavOptions({
     header: undefined,
     headerTitle: 'Чат с AI',
+    headerLeft: () => (
+      <NavButton color={colors.textOnPrimary} iconName="refresh" onPress={() => setMessages([getDefaultMessage()])} />
+    ),
     headerRight: () => <AIChatHeaderRight />,
   });
+
+  const sendMessage = useCallback(
+    (message: IMessage[]) => {
+      if (isDisabled) {
+        return;
+      }
+      incrementCounter();
+      setMessages(GiftedChat.append(messages, message));
+      mutation.mutate(
+        GiftedChat.append(messages, message)
+          .map(m => ({
+            content: m.text,
+            role: String(m.user._id) as 'user' | 'assistant',
+          }))
+          .reverse()
+          .slice(1),
+      );
+      setInput('');
+    },
+    [isDisabled, messages, mutation, incrementCounter, setMessages, setInput],
+  );
 
   return (
     <ThemedBackgroundImage style={{backgroundColor: colors.backgroundColor}}>
@@ -133,6 +167,32 @@ export function AIChat() {
           );
           setInput('');
         }}
+        onQuickReply={async reply => {
+          sendMessage([
+            {
+              _id: String(Math.random()),
+              text: reply[0].title,
+              createdAt: new Date(),
+              user: {
+                _id: 'user',
+              },
+            },
+          ]);
+        }}
+        quickReplyStyle={{
+          backgroundColor: colors.rowBackgroundColor,
+          maxWidth: '100%',
+          marginLeft: 0,
+          marginBottom: 0,
+          borderRadius: 8,
+        }}
+        quickReplyTextStyle={{
+          color: colors.textOnRow,
+          fontWeight: '500',
+          lineHeight: 16,
+        }}
+        optionTintColor={colors.questionsPrimary}
+        renderQuickReplies={props => <QuickReplies {...props} color={colors.primary} />}
         text={input}
         onInputTextChanged={text => {
           setInput(text);
@@ -143,7 +203,7 @@ export function AIChat() {
           <Composer
             {...props}
             placeholder={
-              isDisabled
+              isDisabled && timer
                 ? `До восстановления осталось ${timer[0]}:${timer[1].toString().padStart(2, '0')}`
                 : 'Введите сообщение'
             }
@@ -224,6 +284,7 @@ export function AIChat() {
         }}
         renderDay={() => null}
         renderTime={() => null}
+        // qui
         // renderMessageText={({currentMessage}) => (
         //   <QMessageView
         //     fontSize={16}

@@ -24,8 +24,6 @@ const fractions = 1000;
 function ProtectedTabs() {
   const {colors} = useTheme();
   const user = useActiveUser();
-  const {temporaryId, isForcedAB} = useAIStore();
-  const groupId = parseInt(temporaryId.slice(0, 5), 36) % fractions;
   const canShowAd = useCanShowAd();
   const {bottom, left, right, top} = useSafeAreaInsets();
 
@@ -76,18 +74,15 @@ function ProtectedTabs() {
           tabBarIcon: ({color}) => <DiaryIcon fill={color} />,
         }}
       />
-
-      {(groupId < fractions * 0.1 || isForcedAB) && (
-        <Tab.Screen
-          key="AITab"
-          name="AITab"
-          component={AIChat}
-          options={{
-            tabBarLabel: 'AI',
-            tabBarIcon: ({color}) => <IonIcon color={color} name="chatbubbles" size={24} />,
-          }}
-        />
-      )}
+      <Tab.Screen
+        key="AITab"
+        name="AITab"
+        component={AIChat}
+        options={{
+          tabBarLabel: 'AI',
+          tabBarIcon: ({color}) => <IonIcon color={color} name="chatbubbles" size={24} />,
+        }}
+      />
       <Tab.Screen
         key="ProfileTab"
         name="ProfileTab"
