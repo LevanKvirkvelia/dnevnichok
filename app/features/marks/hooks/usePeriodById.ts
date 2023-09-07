@@ -5,5 +5,5 @@ export function useSubjectPeriodById(subjectId: string | number) {
   const {activePeriodNumber} = useUserPeriodsState();
   const {periodQuery} = usePeriodQuery(activePeriodNumber);
 
-  return periodQuery.data?.subjects.find(subject => subject.id == subjectId);
+  return periodQuery.data?.subjects.find(subject => subject.id.toString() == subjectId.toString());
 }

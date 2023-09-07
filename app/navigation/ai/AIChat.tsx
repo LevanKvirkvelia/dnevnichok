@@ -23,6 +23,7 @@ import endent from 'endent';
 import {getIdeas, useIdeas} from '../../features/ai/hooks/useIdeas';
 import {QuickReplies} from 'react-native-gifted-chat/lib/QuickReplies';
 import {NavButton} from '../../ui/NavButton';
+import {useMMKVBoolean} from 'react-native-mmkv';
 
 const LIMIT = 10;
 const TIME_WINDOW = 1000 * 60 * 60;
@@ -49,7 +50,7 @@ const getDefaultMessage = (): IMessage => ({
   createdAt: new Date(),
   text: endent`
   Привет! Я - Дневничок AI. 
-  
+
   Я могу ответить на твои вопросы, помочь с выполнением заданий и даже научить тебя новому! 
 
   В данный момент я могу отвечать только на ${LIMIT} сообщений в час.
@@ -122,11 +123,14 @@ export function AIChat() {
     headerRight: () => <AIChatHeaderRight />,
   });
 
+  const [hasShowAI = true, setHasShowAI] = useMMKVBoolean('hasShowAI');
+
   const sendMessage = useCallback(
     (message: IMessage[]) => {
       if (isDisabled) {
         return;
       }
+      setHasShowAI(false);
       incrementCounter();
       setMessages(GiftedChat.append(messages, message));
       mutation.mutate(

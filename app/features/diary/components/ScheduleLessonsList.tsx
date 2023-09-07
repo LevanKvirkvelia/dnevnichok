@@ -1,7 +1,7 @@
 import React, {useCallback} from 'react';
-import {RefreshControl, View} from 'react-native';
+import {RefreshControl, Text, View} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
-import {FlatList} from 'react-native-gesture-handler';
+import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import {LessonRow} from './LessonRow';
 import endent from 'endent';
 import {useActiveUser} from '../../auth/hooks/useActiveUser';
@@ -21,6 +21,7 @@ import {useQueryClient} from '@tanstack/react-query';
 import {useSessionQuery} from '../../auth/components/SessionProvider';
 import {useTheme} from '../../themes/useTheme';
 import Color from 'color';
+import {useMMKVBoolean} from 'react-native-mmkv';
 
 function ListHeader() {
   const user = useActiveUser();
@@ -74,6 +75,7 @@ export function ScheduleLessonsList({ddmmyyyy}: {ddmmyyyy: string}) {
   const sessionQuery = useSessionQuery();
   const {isLoading, data, refetch, isFetching, queryKey} = useDayScheduleQuery(ddmmyyyy);
   const queryClient = useQueryClient();
+  const [hasShowAI = true] = useMMKVBoolean('hasShowAI');
 
   return (
     <View style={{flexGrow: 1}}>
@@ -94,6 +96,17 @@ export function ScheduleLessonsList({ddmmyyyy}: {ddmmyyyy: string}) {
               }}
               tintColor={Color(colors.textOnRow).alpha(0.5).rgb().toString()}
             />
+          }
+          ListHeaderComponent={() =>
+            hasShowAI ? (
+              // @ts-ignore
+              <TouchableOpacity onPress={() => navigation.navigate('AITab')}>
+                <Card style={{marginTop: 5, marginHorizontal: 5}}>
+                  <StyledTitle style={{marginBottom: 0}}>Мы теперь с AI!</StyledTitle>
+                  <StyledText>Дневничок AI поможет с домашкой и по любым другим вопросам 🤔</StyledText>
+                </Card>
+              </TouchableOpacity>
+            ) : null
           }
           data={data?.lessons || []}
           keyExtractor={item => `${item.name}${item.numberFrom1}`}

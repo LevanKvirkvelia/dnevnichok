@@ -125,14 +125,14 @@ export const mosruParser = createParser({
         subject.periods.forEach((period, index) => {
           if (!periods[index]) periods[index] = new PeriodConstructor(index + 1);
           const periodsConstructor = periods[index];
-
+          const subjectId = stringMd5(subject.subject_name);
           periodsConstructor.upsertLessonData({
-            id: subject.subject_id,
+            id: subjectId,
             name: subject.subject_name,
           });
 
-          period.marks.map(mark => {
-            periodsConstructor.addMark(subject.subject_id.toString(), {
+          period?.marks?.map(mark => {
+            periodsConstructor.addMark(subjectId, {
               value: mark.values[0].original,
               weight: mark.weight,
               name: [mark.control_form_name, mark.topic_name, mark.comment].filter(Boolean).join('; '),
@@ -186,7 +186,7 @@ export const mosruParser = createParser({
         eventGroups[yyyymmdd].forEach((event, numberFrom0) => {
           days[yyyymmdd].upsertLessonData({
             date: sdate.ddmmyyyy(),
-            id: event.id,
+            id: stringMd5(event.subject_name),
             name: event.subject_name,
             numberFrom1: numberFrom0 + 1,
             location: event.room_name,
@@ -202,7 +202,7 @@ export const mosruParser = createParser({
             },
             comment: event.comment ?? undefined,
             missed: event.is_missed_lesson,
-            marks: event.marks.map<IMark>(mark => ({
+            marks: event?.marks?.map<IMark>(mark => ({
               value: mark.value,
               weight: mark.weight,
               date: sdate.ddmmyyyy(),

@@ -51,7 +51,7 @@ export class DayScheduleConstructor {
   }
 
   upsertLessonData(lesson: Omit<ILesson, 'a'>) {
-    this.data[lesson.id] = {...this.data[lesson.id], ...lesson};
+    this.data[lesson.numberFrom1 - 1] = {...this.data[lesson.numberFrom1 - 1], ...lesson};
   }
 
   toDaySchedule(): IDaySchedule {
