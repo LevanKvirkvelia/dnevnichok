@@ -2,6 +2,7 @@ import {useMemo} from 'react';
 import {ISubjectPeriod} from '../../parsers/data/types';
 import {useActiveUser} from '../../auth/hooks/useActiveUser';
 import {useTheme} from '../../themes/useTheme';
+import {getAverageMark, isInt} from '../utils';
 
 function getStatus(middle: number | string, target: number) {
   if (!middle) return 'nothing';
@@ -14,14 +15,7 @@ export function useProcessedSubjectPeriod(subjectPeriod?: ISubjectPeriod) {
   const user = useActiveUser();
   const {colors} = useTheme();
   const average = useMemo(() => {
-    if (!subjectPeriod) return '';
-    return (
-      subjectPeriod.forcedAverage ||
-      subjectPeriod.marks
-        .map(mark => (+mark.value * mark.weight) / subjectPeriod.marks.length)
-        .reduce((a, b) => a + b, 0) ||
-      ''
-    );
+    return getAverageMark(subjectPeriod);
   }, [subjectPeriod?.forcedAverage, subjectPeriod?.marks]);
 
   const status = getStatus(average, user.settings.target);

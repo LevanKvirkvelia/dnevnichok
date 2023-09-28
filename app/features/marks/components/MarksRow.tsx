@@ -27,7 +27,7 @@ export function MarksRow({subjectPeriod, onPress}: {subjectPeriod: ISubjectPerio
                       return SDate.parseDDMMYYY(a.date).getTime() - SDate.parseDDMMYYY(b.date).getTime();
                     } else return 0;
                   })
-                  .filter(item => isInt(item.value))
+                  .filter(item => item.value && isInt(item.value))
                   .map((item, i) => (
                     <View key={`${name}${i}`} style={styles.periodsMarkField}>
                       <Text>

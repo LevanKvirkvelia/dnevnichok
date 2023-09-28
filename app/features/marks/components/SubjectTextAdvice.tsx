@@ -5,6 +5,7 @@ import {declOfNum} from '../../../shared/helpers/declOfNum';
 import {useActiveUser} from '../../auth/hooks/useActiveUser';
 import {IMark, ISubjectPeriod} from '../../parsers/data/types';
 import {useTheme} from '../../themes/useTheme';
+import {isInt} from '../utils';
 
 function calculateMarksNeeded(marks?: IMark[], target: number = 5) {
   const marksCopy = [...(marks || [])];
@@ -13,6 +14,8 @@ function calculateMarksNeeded(marks?: IMark[], target: number = 5) {
   let totalWeight = 0;
 
   marksCopy.forEach(mark => {
+    if (!mark.value || !isInt(mark.value)) return;
+
     totalValue += +mark.value * mark.weight;
     totalWeight += mark.weight;
   });

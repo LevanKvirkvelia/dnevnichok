@@ -1,4 +1,5 @@
 import {SDate} from '../auth/helpers/SDate';
+import {ISubjectPeriod} from '../parsers/data/types';
 import {PeriodDate} from './state/usePeriodsState';
 
 export const periodVariants = [
@@ -22,4 +23,18 @@ export function isInt(str: string | number) {
 
   const n = Math.floor(Number(str));
   return n !== Infinity && String(n) === str;
+}
+
+export function getAverageMark(subjectPeriod?: ISubjectPeriod) {
+  if (!subjectPeriod) return '';
+  const realMarks = subjectPeriod.marks.filter(mark => isInt(mark.value));
+
+  return (
+    subjectPeriod.forcedAverage ||
+    realMarks
+      .map(mark => (+mark.value * mark.weight) / realMarks.length)
+      .reduce((a, b) => a + b, 0)
+      .toFixed(2) ||
+    ''
+  );
 }
