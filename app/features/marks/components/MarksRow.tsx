@@ -6,6 +6,7 @@ import {useTheme} from '../../themes/useTheme';
 import {ISubjectPeriod} from '../../parsers/data/types';
 import {SDate} from '../../auth/helpers/SDate';
 import {SubjectTextAdvice} from './SubjectTextAdvice';
+import {isInt} from '../utils';
 
 export function MarksRow({subjectPeriod, onPress}: {subjectPeriod: ISubjectPeriod; onPress: () => void}) {
   const {styles} = useTheme();
@@ -26,6 +27,7 @@ export function MarksRow({subjectPeriod, onPress}: {subjectPeriod: ISubjectPerio
                       return SDate.parseDDMMYYY(a.date).getTime() - SDate.parseDDMMYYY(b.date).getTime();
                     } else return 0;
                   })
+                  .filter(item => isInt(item.value))
                   .map((item, i) => (
                     <View key={`${name}${i}`} style={styles.periodsMarkField}>
                       <Text>

@@ -2,6 +2,7 @@ import {Text, View, ViewProps} from 'react-native';
 import {ISubjectPeriod} from '../../parsers/data/types';
 import {useProcessedSubjectPeriod} from '../hooks/useProccessedSubjectPeriod';
 import {useTheme} from '../../themes/useTheme';
+import {isInt} from '../utils';
 
 export function ItemColor({subjectPeriod, style = {}}: {subjectPeriod?: ISubjectPeriod; style?: ViewProps['style']}) {
   const {color} = useProcessedSubjectPeriod(subjectPeriod);
@@ -23,6 +24,7 @@ export function MiddleWithColor({subjectPeriod}: {subjectPeriod: ISubjectPeriod}
         }}>
         {subjectPeriod.forcedAverage ||
           subjectPeriod.marks
+            .filter(mark => isInt(mark.value))
             .map(mark => (+mark.value * mark.weight) / subjectPeriod.marks.length)
             .reduce((a, b) => a + b, 0)}
       </Text>

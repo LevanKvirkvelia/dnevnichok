@@ -16,3 +16,10 @@ const startYear = SDate.getAcademicYearBoundaries().startDay.year();
 export function periodDateToSDate(date: PeriodDate) {
   return new SDate(new Date(startYear, date.month - 1, date.day));
 }
+
+export function isInt(str: string | number) {
+  if (typeof str === 'number') return Number.isInteger(str);
+
+  const n = Math.floor(Number(str));
+  return n !== Infinity && String(n) === str;
+}
